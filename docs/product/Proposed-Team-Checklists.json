@@ -1,0 +1,32 @@
+{
+  "ready": {
+    "id": "TIJ-READY",
+    "version": "0.1",
+    "status": "proposed",
+    "approvalAuthority": null,
+    "criteria": [
+      "Story scope and measurable acceptance agreed",
+      "Dependencies and source/destination permissions resolved",
+      "Critical fields, privacy/security limits and AI evaluation contract frozen where applicable",
+      "Implementation estimate, owner and authorised test environment confirmed",
+      "Accessible UX and adverse cases specified",
+      "Independent review authority established"
+    ],
+    "contentHash": "225274d82dc7b9e95bbdf5ccfcc35cea33e02f43dda8dee1b6a7aee56d94aaa8"
+  },
+  "done": {
+    "id": "TIJ-DONE",
+    "version": "0.1",
+    "status": "proposed",
+    "approvalAuthority": null,
+    "criteria": [
+      "Every scoped criterion has observed passing evidence",
+      "Required security, accessibility, AI and regression checks pass for the exact candidate",
+      "Code/configuration and data/schema versions are traceable",
+      "Destination recovery and rollback paths exercised where applicable",
+      "Required independent reviews and separate release approval recorded",
+      "Monitoring, support ownership and learning review established"
+    ],
+    "contentHash": "e83359cf12bae5f59e6d20841a6077f1540b1a75c98565f1c140463003483846"
+  }
+}

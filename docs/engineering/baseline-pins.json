@@ -1,0 +1,20 @@
+{
+  "status": "source pins, not approved native adapter bindings",
+  "inputs": [
+    {
+      "path": "docs/product/Native-Product-Plan.json",
+      "sha256": "f5eb7af4ae81b1ca2ec515c6a0e06a6c1c83571da0d6a0261a493e7c2ef673f0",
+      "status": "original draft preserved"
+    },
+    {
+      "path": "docs/product/Planning-View.json",
+      "sha256": "f98fd3ba117a30d87a22a23592a8543573f773826197fb4a27984371b9aa3dcb",
+      "status": "original draft preserved"
+    },
+    {
+      "path": "docs/product/Proposed-Team-Checklists.json",
+      "sha256": "5b87834fb63760d8c822b1744fc263f11516f4cb51b7ebefe6059a3a29e0d9f2",
+      "status": "original draft preserved"
+    }
+  ]
+}

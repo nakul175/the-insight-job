@@ -1,0 +1,234 @@
+{
+  "type": "object",
+  "properties": {
+    "pm": {
+      "type": "object",
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "selector": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fields": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "type": "string",
+              "minLength": 1
+            },
+            "parent": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "parent",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "types": {
+          "type": "object",
+          "properties": {
+            "story": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "acceptance_criterion": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "task": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            }
+          },
+          "required": [
+            "story",
+            "acceptance_criterion",
+            "task"
+          ],
+          "additionalProperties": false
+        },
+        "task_criteria_field": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "task_links_source_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "version_default": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "required": [
+        "source_id",
+        "selector",
+        "fields",
+        "types",
+        "task_criteria_field",
+        "task_links_source_id",
+        "version_default"
+      ],
+      "additionalProperties": false
+    },
+    "qa": {
+      "type": "object",
+      "properties": {
+        "cases_source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "links_source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runs_source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "case_fields": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "link_fields": {
+          "type": "object",
+          "properties": {
+            "case_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "case_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "criterion_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "criterion_version": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "required": [
+            "case_id",
+            "case_version",
+            "criterion_id",
+            "criterion_version"
+          ],
+          "additionalProperties": false
+        },
+        "run_fields": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "case_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "case_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source_revision": {
+              "type": "string",
+              "minLength": 1
+            },
+            "outcome": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "id",
+            "case_id",
+            "case_version",
+            "source_revision",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        "outcome_map": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "cases_source_id",
+        "links_source_id",
+        "runs_source_id",
+        "case_fields",
+        "link_fields",
+        "run_fields",
+        "outcome_map"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "pm",
+    "qa"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Native PM elements / QA relational CSV bindings"
+}

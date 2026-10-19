@@ -1,0 +1,335 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "APLYD repository profile",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "enum": [
+        2
+      ]
+    },
+    "package_version": {
+      "enum": [
+        "2.1.0"
+      ]
+    },
+    "package_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repository_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "adoption_state": {
+      "enum": [
+        "draft",
+        "approved"
+      ]
+    },
+    "maturity": {
+      "enum": [
+        "prototype",
+        "pilot",
+        "production"
+      ]
+    },
+    "owners": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "engineering": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "security": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "operations": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "required": [
+        "product",
+        "engineering",
+        "security",
+        "operations"
+      ],
+      "additionalProperties": false
+    },
+    "approval_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "design_depth": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "languages": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "product_docs": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "baseline": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "role",
+              "reference",
+              "version"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "index",
+        "baseline",
+        "bindings"
+      ],
+      "additionalProperties": false
+    },
+    "required_paths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "default_branch": {
+      "type": "string",
+      "minLength": 1
+    },
+    "branch_policy_evidence_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "toolchain": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provisioning_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "tool",
+          "version",
+          "provisioning_ref"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "tracker": {
+      "type": "object",
+      "properties": {
+        "system": {
+          "enum": [
+            "linear",
+            "github",
+            "jira",
+            "local",
+            "other"
+          ]
+        },
+        "namespace": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reference": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "system",
+        "namespace",
+        "reference"
+      ],
+      "additionalProperties": false
+    },
+    "team_dod_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "exception_register": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "format": {
+          "enum": [
+            "json",
+            "csv"
+          ]
+        },
+        "field_map": {
+          "type": "object"
+        },
+        "status_map": {
+          "type": "object"
+        },
+        "list_separator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "defaults": {
+          "type": "object"
+        },
+        "mapping_approval_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "required": [
+        "path",
+        "format",
+        "field_map",
+        "status_map",
+        "list_separator"
+      ],
+      "additionalProperties": false
+    },
+    "evidence_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "integration_mode": {
+      "enum": [
+        "component",
+        "combined"
+      ]
+    },
+    "component_mode_approval_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "integration_manifest": {
+      "type": "string",
+      "minLength": 1
+    },
+    "executable_code": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "package_version",
+    "package_path",
+    "repository_name",
+    "adoption_state",
+    "maturity",
+    "owners",
+    "approval_ref",
+    "design_depth",
+    "components",
+    "languages",
+    "product_docs",
+    "required_paths",
+    "default_branch",
+    "branch_policy_evidence_ref",
+    "toolchain",
+    "tracker",
+    "team_dod_ref",
+    "exception_register",
+    "evidence_root",
+    "integration_mode",
+    "component_mode_approval_ref",
+    "integration_manifest",
+    "executable_code"
+  ],
+  "additionalProperties": false
+}

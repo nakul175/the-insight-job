@@ -1,0 +1,399 @@
+{
+  "project": "170c8d88-0b96-440f-868e-58ac68436072",
+  "stories": {
+    "US-0101": {
+      "id": "APL-2773",
+      "uuid": "800a83a3-2b2f-41fd-97f6-d9469e25a0ec"
+    },
+    "US-0102": {
+      "id": "APL-2774",
+      "uuid": "03a239db-d477-424c-b7e9-48dc9b916406",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2774/us-0102-invite-and-assign-scoped-roles"
+    },
+    "US-0103": {
+      "id": "APL-2775",
+      "uuid": "3b49fae4-76d8-4f53-9bd4-2cbb21cde3e5",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2775/us-0103-enforce-record-permissions"
+    },
+    "US-0104": {
+      "id": "APL-2776",
+      "uuid": "66253bf8-823a-446d-9238-a9e0fd435e22",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2776/us-0104-revoke-access-safely"
+    },
+    "US-0105": {
+      "id": "APL-2777",
+      "uuid": "0b4db870-d6f4-441b-9390-abdb51229e8c",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2777/us-0105-view-operational-overview"
+    },
+    "US-0201": {
+      "id": "APL-2778",
+      "uuid": "3e6cac99-25cd-4e4d-90f6-b61f115b06d9",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2778/us-0201-register-one-source"
+    },
+    "US-0203": {
+      "id": "APL-2779",
+      "uuid": "e9806269-a1a4-467e-8110-1bdb8fa84710",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2779/us-0203-define-collection-boundaries"
+    },
+    "US-0205": {
+      "id": "APL-2780",
+      "uuid": "0c9f75e9-98ab-49cd-bb15-82ed1029c814",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2780/us-0205-test-before-activation"
+    },
+    "US-0206": {
+      "id": "APL-2781",
+      "uuid": "8812532b-564d-4318-9fa9-7375cbfe55ae",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2781/us-0206-archive-a-source"
+    },
+    "US-0301": {
+      "id": "APL-2782",
+      "uuid": "cd8cbc48-b666-4e51-b5f4-201431fa8e31",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2782/us-0301-choose-access-method"
+    },
+    "US-0302": {
+      "id": "APL-2783",
+      "uuid": "560b9b99-4a25-4812-989e-5cbcfd34c138",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2783/us-0302-complete-interactive-login"
+    },
+    "US-0303": {
+      "id": "APL-2784",
+      "uuid": "e9497405-2e7b-4f80-a874-1fecc68088e9",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2784/us-0303-recover-expired-session"
+    },
+    "US-0304": {
+      "id": "APL-2785",
+      "uuid": "3cba450d-cff5-4f69-98be-592df4892127",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2785/us-0304-rotate-or-disconnect-secrets"
+    },
+    "US-0401": {
+      "id": "APL-2786",
+      "uuid": "f7edfe64-d41f-4d64-9f37-10032dad684e",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2786/us-0401-start-a-collection-run"
+    },
+    "US-0402": {
+      "id": "APL-2787",
+      "uuid": "33e55730-5429-4d72-9c12-9927e418b4be",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2787/us-0402-navigate-supported-pages"
+    },
+    "US-0403": {
+      "id": "APL-2788",
+      "uuid": "a75f58cb-a390-4930-8532-bbf3c1c79493",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2788/us-0403-preserve-original-captures"
+    },
+    "US-0404": {
+      "id": "APL-2789",
+      "uuid": "ff36314f-5cd6-4af8-8d5c-bbc8377d51de",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2789/us-0404-retry-from-checkpoints"
+    },
+    "US-0405": {
+      "id": "APL-2790",
+      "uuid": "cfdb6ee3-c002-4d8e-8a59-1d9b2901a9d4",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2790/us-0405-cancel-and-enforce-budgets"
+    },
+    "US-0406": {
+      "id": "APL-2791",
+      "uuid": "aa8d26ce-b835-4ca7-9309-7a706194d1fa",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2791/us-0406-isolate-untrusted-content"
+    },
+    "US-0501": {
+      "id": "APL-2792",
+      "uuid": "f6be3ecd-b69c-4fb2-8b27-1fdd2e8e6f06",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2792/us-0501-parse-text-and-documents"
+    },
+    "US-0504": {
+      "id": "APL-2793",
+      "uuid": "3f084c09-e34d-45f0-9975-195cd077d975",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2793/us-0504-build-common-content-record"
+    },
+    "US-0505": {
+      "id": "APL-2794",
+      "uuid": "9a7b05c8-425a-4c28-bd39-0b827230c609",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2794/us-0505-classify-content-type"
+    },
+    "US-0506": {
+      "id": "APL-2795",
+      "uuid": "677ddc94-1367-464e-90bd-43483a6422ed",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2795/us-0506-extract-typed-fields"
+    },
+    "US-0601": {
+      "id": "APL-2796",
+      "uuid": "b0cc3260-f1ea-4cc3-8499-12316abe2f09",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2796/us-0601-search-and-filter-content"
+    },
+    "US-0602": {
+      "id": "APL-2797",
+      "uuid": "d604ebd3-eea5-4f01-96ec-9464ffc59417",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2797/us-0602-inspect-field-evidence"
+    },
+    "US-0603": {
+      "id": "APL-2798",
+      "uuid": "4c9679c9-f84f-4fdf-b68b-454b03e54ab7",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2798/us-0603-track-source-versions"
+    },
+    "US-0604": {
+      "id": "APL-2799",
+      "uuid": "a04b6cfd-8c63-49a1-bc8c-41a5bc045c6d",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2799/us-0604-resolve-duplicate-candidates"
+    },
+    "US-0605": {
+      "id": "APL-2800",
+      "uuid": "5f17342f-88c9-416a-82ed-e856d8edcf54",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2800/us-0605-export-authorised-content"
+    },
+    "US-0701": {
+      "id": "APL-2801",
+      "uuid": "0dbd6147-183c-403d-8a12-98706f8a18e4",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2801/us-0701-browse-schema-registry"
+    },
+    "US-0702": {
+      "id": "APL-2802",
+      "uuid": "85e267ac-6a84-4904-884b-2b2fa4263ffd",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2802/us-0702-define-field-schema"
+    },
+    "US-0704": {
+      "id": "APL-2803",
+      "uuid": "71d6b9ae-6a36-4d4e-ae22-b965b13e3d95",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2803/us-0704-version-and-publish-schema"
+    },
+    "US-0705": {
+      "id": "APL-2804",
+      "uuid": "b2bd4de4-89d2-496d-a388-c68ce8817c6b",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2804/us-0705-retire-schema-safely"
+    },
+    "US-0801": {
+      "id": "APL-2805",
+      "uuid": "6dd7b04f-0dd0-4a7e-8f9e-b1504bbb7f2e",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2805/us-0801-register-a-consuming-system"
+    },
+    "US-0802": {
+      "id": "APL-2806",
+      "uuid": "3022baf7-0a76-46c4-8258-81fecac103ca",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2806/us-0802-select-allowed-sources-and-types"
+    },
+    "US-0803": {
+      "id": "APL-2807",
+      "uuid": "c2ef8cf3-e943-47b7-87c0-7d58a5810024",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2807/us-0803-configure-relevance-logic"
+    },
+    "US-0804": {
+      "id": "APL-2808",
+      "uuid": "35badd6d-02ca-434e-ab6f-36bbcfe74d0f",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2808/us-0804-route-independently-to-multiple-systems"
+    },
+    "US-0805": {
+      "id": "APL-2809",
+      "uuid": "b0854726-01a4-4f38-9eee-148cb191216d",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2809/us-0805-inspect-relevance-decisions"
+    },
+    "US-0806": {
+      "id": "APL-2810",
+      "uuid": "bb4700e0-2e64-4236-838c-34f58d4aab3a",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2810/us-0806-pause-or-retire-a-system"
+    },
+    "US-0901": {
+      "id": "APL-2811",
+      "uuid": "a2c451c4-1242-4e8a-8712-f3ed3593d999",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2811/us-0901-extract-system-specific-fields"
+    },
+    "US-0902": {
+      "id": "APL-2812",
+      "uuid": "0b2ec47a-cb5f-4038-a871-1ab14eb91c2c",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2812/us-0902-build-qualification-rules"
+    },
+    "US-0903": {
+      "id": "APL-2813",
+      "uuid": "b4063727-28cb-402f-8fc5-aed8a3a0cf9c",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2813/us-0903-evaluate-pass-fail-and-review"
+    },
+    "US-0904": {
+      "id": "APL-2814",
+      "uuid": "0107bc2c-5d47-4a52-8cd4-669f8b9781f2",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2814/us-0904-handle-deadlines-and-units"
+    },
+    "US-1001": {
+      "id": "APL-2815",
+      "uuid": "7f9d4d4c-3f5f-43dc-b2dd-bdbd34dbf6de",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2815/us-1001-triage-the-review-queue"
+    },
+    "US-1002": {
+      "id": "APL-2816",
+      "uuid": "22be4ae2-9db0-428d-8af8-a4eb3f075477",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2816/us-1002-correct-fields-with-evidence"
+    },
+    "US-1003": {
+      "id": "APL-2817",
+      "uuid": "0a4223c9-9bdb-4ec0-a4b1-27b47d897393",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2817/us-1003-override-a-system-decision"
+    },
+    "US-1004": {
+      "id": "APL-2818",
+      "uuid": "1dc29bd6-890f-4212-bb4e-441c8e5bf986",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2818/us-1004-defer-or-escalate-review"
+    },
+    "US-1005": {
+      "id": "APL-2819",
+      "uuid": "4ffb3235-7b8c-4403-8d18-fd163ff563cf",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2819/us-1005-protect-concurrent-edits"
+    },
+    "US-1101": {
+      "id": "APL-2820",
+      "uuid": "fa354f34-70e9-4662-83a3-22c0523cb6df",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2820/us-1101-configure-enrichment-policy"
+    },
+    "US-1102": {
+      "id": "APL-2821",
+      "uuid": "5fa2df95-c4df-4483-aa9c-d3f9a855a651",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2821/us-1102-follow-permitted-evidence-links"
+    },
+    "US-1103": {
+      "id": "APL-2822",
+      "uuid": "d8cfc77a-2228-4b97-b4f1-e3d7a63269ce",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2822/us-1103-requalify-enriched-records"
+    },
+    "US-1104": {
+      "id": "APL-2823",
+      "uuid": "9be39ebe-b961-487b-bad8-583b715b6971",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2823/us-1104-inspect-enrichment-coverage"
+    },
+    "US-1201": {
+      "id": "APL-2824",
+      "uuid": "da646ab7-95f9-4b5c-9f4b-e39a0d5c368f",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2824/us-1201-connect-a-destination"
+    },
+    "US-1202": {
+      "id": "APL-2825",
+      "uuid": "c8ef8bdb-1186-478e-8eef-2419195184da",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2825/us-1202-map-fields-to-destination"
+    },
+    "US-1203": {
+      "id": "APL-2826",
+      "uuid": "299db2f8-d0df-470e-921f-0f9b4fc43a19",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2826/us-1203-store-validated-system-result"
+    },
+    "US-1204": {
+      "id": "APL-2827",
+      "uuid": "55b5be0b-113c-439b-9dbb-67d646c4be71",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2827/us-1204-deliver-idempotently"
+    },
+    "US-1205": {
+      "id": "APL-2828",
+      "uuid": "b97cb05c-f55e-44d1-9ad4-17102487c140",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2828/us-1205-manage-delivery-failures"
+    },
+    "US-1206": {
+      "id": "APL-2829",
+      "uuid": "72f187f5-83c9-45da-ad4e-cd466a3573f1",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2829/us-1206-apply-updates-and-withdrawals"
+    },
+    "US-1301": {
+      "id": "APL-2830",
+      "uuid": "c5c882a1-44bf-4fed-8997-3d8b1854fe6a",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2830/us-1301-maintain-labelled-evaluation-samples"
+    },
+    "US-1302": {
+      "id": "APL-2831",
+      "uuid": "0c0f2e46-db75-4f15-9827-e5cb9168da68",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2831/us-1302-compare-configuration-drafts"
+    },
+    "US-1303": {
+      "id": "APL-2832",
+      "uuid": "1ce879f0-f705-43c1-a0b9-75c9d097616b",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2832/us-1303-publish-and-roll-back-configuration"
+    },
+    "US-1304": {
+      "id": "APL-2833",
+      "uuid": "e6f728ed-b4c8-4f1c-bf3f-255d73764edb",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2833/us-1304-preview-and-execute-replay"
+    },
+    "US-1305": {
+      "id": "APL-2834",
+      "uuid": "f3ade6f5-8ca8-4d60-b300-8ae1fd15cf54",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2834/us-1305-sample-rejects-for-missed-matches"
+    },
+    "US-1401": {
+      "id": "APL-2835",
+      "uuid": "bdd0e0c3-d9c9-4936-ac47-8fabfa433919",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2835/us-1401-inspect-audit-history"
+    },
+    "US-1402": {
+      "id": "APL-2836",
+      "uuid": "e151ff89-9bb8-4f20-ab04-da12117ab134",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2836/us-1402-monitor-stages-and-cost"
+    },
+    "US-1403": {
+      "id": "APL-2837",
+      "uuid": "dd4103fd-950a-41e1-9f16-c19290efe874",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2837/us-1403-configure-alerts"
+    },
+    "US-1404": {
+      "id": "APL-2838",
+      "uuid": "863cd6df-d106-4686-86ec-c08bc164fd0d",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2838/us-1404-enforce-retention-and-deletion"
+    },
+    "US-1405": {
+      "id": "APL-2839",
+      "uuid": "3a303e38-ee7a-4543-be64-e524277a7682",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2839/us-1405-restore-durable-processing-state"
+    },
+    "US-1406": {
+      "id": "APL-2841",
+      "uuid": "34071f4a-9753-4041-8404-5ad2c497b9c5",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2841/us-1406-use-keyboard-and-small-screen-review"
+    },
+    "US-1407": {
+      "id": "APL-2842",
+      "uuid": "11538153-827d-4c39-b466-5c82d1d92d9f",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2842/us-1407-preserve-drafts-and-recover-ui-errors"
+    },
+    "US-1501": {
+      "id": "APL-2843",
+      "uuid": "0ecd2359-6329-42d3-bd8e-55e20009c190",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2843/us-1501-guided-source-setup"
+    },
+    "US-1502": {
+      "id": "APL-2844",
+      "uuid": "ce00b88b-5335-42a7-8225-844d418ac604",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2844/us-1502-resume-system-setup"
+    },
+    "US-1503": {
+      "id": "APL-2845",
+      "uuid": "f2a7980c-2b21-4712-a2ce-9bc2e8750959",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2845/us-1503-understand-the-next-required-action"
+    },
+    "US-1504": {
+      "id": "APL-2846",
+      "uuid": "66b07608-70f1-4bc9-abb7-61fcc69e16e9",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2846/us-1504-review-one-issue-with-evidence"
+    },
+    "US-1505": {
+      "id": "APL-2847",
+      "uuid": "5a96f9f2-7d50-48a5-b2ab-b59ad7f0ef2a",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2847/us-1505-review-on-a-narrow-screen"
+    },
+    "US-1506": {
+      "id": "APL-2848",
+      "uuid": "720d3e66-0f0b-4f2c-96c2-074410d0e8a8",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2848/us-1506-keep-distinct-empty-and-error-states"
+    },
+    "US-1507": {
+      "id": "APL-2849",
+      "uuid": "6f5f87de-9c2a-45f3-8fc4-3271d9b209b1",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2849/us-1507-explain-incomplete-collection"
+    },
+    "US-1508": {
+      "id": "APL-2850",
+      "uuid": "d0e085fd-48a2-4790-866b-ec34a84d1e16",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2850/us-1508-recover-concurrent-changes"
+    },
+    "US-1509": {
+      "id": "APL-2851",
+      "uuid": "62845aa2-8ca2-4128-90fb-3a5b5b877b49",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2851/us-1509-explain-delivery-recovery"
+    },
+    "US-1510": {
+      "id": "APL-2852",
+      "uuid": "03dea61b-7ada-41cf-b125-511e5f14d155",
+      "url": "https://linear.app/aplyd-sandbox/issue/APL-2852/us-1510-preview-change-impact"
+    }
+  }
+}

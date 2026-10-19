@@ -1,0 +1,56 @@
+{
+  "schema_version": 2,
+  "package_version": "2.1.0",
+  "package_path": ".aplyd/engineering/2.1.0",
+  "repository_name": "nakul175/the-insight-job",
+  "adoption_state": "draft",
+  "maturity": "prototype",
+  "owners": {
+    "product": null,
+    "engineering": null,
+    "security": null,
+    "operations": null
+  },
+  "approval_ref": null,
+  "design_depth": null,
+  "components": [
+    "web",
+    "workspaces"
+  ],
+  "languages": [
+    "Python",
+    "HTML",
+    "CSS"
+  ],
+  "product_docs": {
+    "index": "docs/product/Planning-View.json",
+    "baseline": "docs/product/Native-Product-Plan.json",
+    "bindings": []
+  },
+  "required_paths": [
+    "README.md",
+    "AGENTS.md",
+    "docs/engineering/README.md"
+  ],
+  "default_branch": "main",
+  "branch_policy_evidence_ref": null,
+  "toolchain": [],
+  "tracker": {
+    "system": "linear",
+    "namespace": "APL",
+    "reference": "https://linear.app/aplyd-sandbox/project/the-insight-job-ef0144c22162"
+  },
+  "team_dod_ref": null,
+  "exception_register": {
+    "path": ".governance/exceptions.json",
+    "format": "json",
+    "field_map": {},
+    "status_map": {},
+    "list_separator": ";"
+  },
+  "evidence_root": ".aplyd/evidence",
+  "integration_mode": "combined",
+  "component_mode_approval_ref": null,
+  "integration_manifest": ".aplyd/integration.json",
+  "executable_code": true
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": 2,
+  "review_ref": null,
+  "setup_commands": [],
+  "checks": [
+    {
+      "id": "format",
+      "state": "unconfigured",
+      "commands": [],
+      "rationale": null,
+      "approval_ref": null
+    },
+    {
+      "id": "lint",
+      "state": "unconfigured",
+      "commands": [],
+      "rationale": null,
+      "approval_ref": null
+    },
+    {
+      "id": "types",
+      "state": "unconfigured",
+      "commands": [],
+      "rationale": null,
+      "approval_ref": null
+    },
+    {
+      "id": "build",
+      "state": "unconfigured",
+      "commands": [],
+      "rationale": null,
+      "approval_ref": null
+    },
+    {
+      "id": "dependencies",
+      "state": "unconfigured",
+      "commands": [],
+      "rationale": null,
+      "approval_ref": null
+    },
+    {
+      "id": "secrets",
+      "state": "unconfigured",
+      "commands": [],
+      "rationale": null,
+      "approval_ref": null
+    },
+    {
+      "id": "tests",
+      "state": "unconfigured",
+      "commands": [],
+      "rationale": null,
+      "approval_ref": null
+    }
+  ]
+}

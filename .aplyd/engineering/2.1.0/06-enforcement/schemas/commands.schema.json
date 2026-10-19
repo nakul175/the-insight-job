@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "APLYD engineering command configuration",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "enum": [
+        2
+      ]
+    },
+    "review_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "setup_commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "argv": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          },
+          "cwd": {
+            "type": "string",
+            "minLength": 1
+          },
+          "timeout_seconds": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3600
+          }
+        },
+        "required": [
+          "argv",
+          "cwd",
+          "timeout_seconds"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "enum": [
+              "format",
+              "lint",
+              "types",
+              "build",
+              "dependencies",
+              "secrets",
+              "tests"
+            ]
+          },
+          "state": {
+            "enum": [
+              "unconfigured",
+              "configured",
+              "not_applicable"
+            ]
+          },
+          "commands": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "argv": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1
+                },
+                "cwd": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "timeout_seconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 3600
+                }
+              },
+              "required": [
+                "argv",
+                "cwd",
+                "timeout_seconds"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0
+          },
+          "rationale": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "approval_ref": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "test_report": {
+            "type": "object",
+            "properties": {
+              "format": {
+                "enum": [
+                  "junit",
+                  "counts-json"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minimum_executed": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "format",
+              "path",
+              "minimum_executed"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "state",
+          "commands",
+          "rationale",
+          "approval_ref"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 7
+    }
+  },
+  "required": [
+    "schema_version",
+    "review_ref",
+    "setup_commands",
+    "checks"
+  ],
+  "additionalProperties": false
+}

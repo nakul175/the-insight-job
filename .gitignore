@@ -1,0 +1,16 @@
+# Merge with existing rules; do not replace them.
+.engineering/evidence/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+
+# Shared protected execution evidence; retain through an approved evidence store.
+.aplyd/evidence/
+
+*.sqlite3
+staticfiles/
+__pycache__/
+*.pyc
+.venv/

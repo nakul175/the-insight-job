@@ -1,0 +1,9 @@
+# EXAMPLE ONLY. Replace with actual valid users/teams and save as CODEOWNERS
+# after owner review. This example has no active ownership effect.
+# * @your-org/engineering
+# /.engineering/ @your-org/engineering @your-org/security
+# /.aplyd/ @your-org/engineering @your-org/security
+# /.github/ @your-org/engineering @your-org/security
+# /AGENTS.md @your-org/engineering
+# /docs/architecture/ @your-org/architecture
+# Add actual authentication, migration, model and deployment paths.
