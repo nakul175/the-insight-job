@@ -22,6 +22,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "workspaces",
+    "axes",
+    "intelligence",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -33,6 +35,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "workspaces.middleware.PrivateResponseMiddleware",
+    "axes.middleware.AxesMiddleware",
 ]
 ROOT_URLCONF = "config.urls"
 TEMPLATES = [
@@ -105,3 +108,15 @@ CSRF_TRUSTED_ORIGINS = [
 SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 SECURE_HSTS_PRELOAD = False
+
+AUTHENTICATION_BACKENDS = [
+    "axes.backends.AxesStandaloneBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = 1
+AXES_LOCKOUT_PARAMETERS = ["username", "ip_address"]
+AXES_RESET_ON_SUCCESS = True
+AXES_CLIENT_IP_CALLABLE = "workspaces.security.direct_client_ip"
+AXES_LOCKOUT_TEMPLATE = "registration/locked.html"
+AXES_SENSITIVE_PARAMETERS = ["username", "password", "ip_address"]

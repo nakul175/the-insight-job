@@ -1,0 +1,151 @@
+{
+  "authority": "User instruction 2026-10-20: implement sequentially in eight batches; test, fix, merge to main, run CI and fix before next batch.",
+  "scope": "79 R1 stories, dependency order; 7 batches of 10 plus final 9",
+  "production_deployment_authorized": false,
+  "native_governance_approval": "Not inferred from implementation or merge authority",
+  "batches": [
+    {
+      "number": 1,
+      "story_ids": [
+        "US-0101",
+        "US-0102",
+        "US-0103",
+        "US-0104",
+        "US-0105",
+        "US-0201",
+        "US-0203",
+        "US-0206",
+        "US-0301",
+        "US-0205"
+      ],
+      "status": "in_progress",
+      "merged_commit": null,
+      "ci_run": null
+    },
+    {
+      "number": 2,
+      "story_ids": [
+        "US-0302",
+        "US-0303",
+        "US-0304",
+        "US-0401",
+        "US-0402",
+        "US-0403",
+        "US-0404",
+        "US-0405",
+        "US-0406",
+        "US-0501"
+      ],
+      "status": "pending",
+      "merged_commit": null,
+      "ci_run": null
+    },
+    {
+      "number": 3,
+      "story_ids": [
+        "US-0504",
+        "US-0505",
+        "US-0601",
+        "US-0603",
+        "US-0604",
+        "US-0605",
+        "US-0701",
+        "US-0702",
+        "US-0506",
+        "US-0602"
+      ],
+      "status": "pending",
+      "merged_commit": null,
+      "ci_run": null
+    },
+    {
+      "number": 4,
+      "story_ids": [
+        "US-0801",
+        "US-0802",
+        "US-0803",
+        "US-1101",
+        "US-1102",
+        "US-1104",
+        "US-1201",
+        "US-1301",
+        "US-0704",
+        "US-0705"
+      ],
+      "status": "pending",
+      "merged_commit": null,
+      "ci_run": null
+    },
+    {
+      "number": 5,
+      "story_ids": [
+        "US-0804",
+        "US-0805",
+        "US-0806",
+        "US-0901",
+        "US-0902",
+        "US-0903",
+        "US-0904",
+        "US-1001",
+        "US-1002",
+        "US-1003"
+      ],
+      "status": "pending",
+      "merged_commit": null,
+      "ci_run": null
+    },
+    {
+      "number": 6,
+      "story_ids": [
+        "US-1004",
+        "US-1005",
+        "US-1103",
+        "US-1202",
+        "US-1203",
+        "US-1204",
+        "US-1205",
+        "US-1206",
+        "US-1302",
+        "US-1303"
+      ],
+      "status": "pending",
+      "merged_commit": null,
+      "ci_run": null
+    },
+    {
+      "number": 7,
+      "story_ids": [
+        "US-1304",
+        "US-1305",
+        "US-1401",
+        "US-1402",
+        "US-1403",
+        "US-1404",
+        "US-1405",
+        "US-1406",
+        "US-1407",
+        "US-1501"
+      ],
+      "status": "pending",
+      "merged_commit": null,
+      "ci_run": null
+    },
+    {
+      "number": 8,
+      "story_ids": [
+        "US-1502",
+        "US-1503",
+        "US-1504",
+        "US-1505",
+        "US-1506",
+        "US-1507",
+        "US-1508",
+        "US-1509",
+        "US-1510"
+      ],
+      "status": "pending",
+      "merged_commit": null,
+      "ci_run": null
+    }
+  ]
+}

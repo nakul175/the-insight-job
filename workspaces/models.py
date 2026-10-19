@@ -18,6 +18,16 @@ class Workspace(models.Model):
 
 
 class Membership(models.Model):
+    role = models.CharField(
+        max_length=20,
+        choices=[
+            ("administrator", "Administrator"),
+            ("operator", "Operator"),
+            ("reviewer", "Reviewer"),
+            ("viewer", "Viewer"),
+        ],
+        default="viewer",
+    )
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     workspace = models.ForeignKey(
         Workspace, on_delete=models.CASCADE, related_name="memberships"

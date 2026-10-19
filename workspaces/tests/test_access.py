@@ -37,14 +37,18 @@ class WorkspaceAccessTests(TestCase):
         self.assertEqual(list(response.context["workspaces"]), [self.own])
 
     def test_ac_0101_01_selection_enters_workspace_and_audits_actor(self):
-        self.client.force_login(self.user)
+        self.client.force_login(
+            self.user, backend="django.contrib.auth.backends.ModelBackend"
+        )
         response = self.client.post(reverse("select-workspace", args=[self.own.id]))
         self.assertRedirects(response, reverse("workspace", args=[self.own.id]))
         self.assertEqual(self.client.session["active_workspace"], str(self.own.id))
         self.assertEqual(WorkspaceSelection.objects.get().user, self.user)
 
     def test_ac_0101_02_expired_session_does_not_execute_or_replay_post(self):
-        self.client.force_login(self.user)
+        self.client.force_login(
+            self.user, backend="django.contrib.auth.backends.ModelBackend"
+        )
         Session.objects.filter(session_key=self.client.session.session_key).update(
             expire_date=timezone.now() - timedelta(seconds=1)
         )
@@ -62,7 +66,9 @@ class WorkspaceAccessTests(TestCase):
         self.assertFalse(WorkspaceSelection.objects.exists())
 
     def test_ac_0101_02_expired_protected_get_requires_sign_in(self):
-        self.client.force_login(self.user)
+        self.client.force_login(
+            self.user, backend="django.contrib.auth.backends.ModelBackend"
+        )
         Session.objects.filter(session_key=self.client.session.session_key).update(
             expire_date=timezone.now() - timedelta(seconds=1)
         )
@@ -71,7 +77,9 @@ class WorkspaceAccessTests(TestCase):
         self.assertNotContains(response, self.own.name, status_code=302)
 
     def test_ac_0101_03_foreign_and_missing_workspace_are_indistinguishable(self):
-        self.client.force_login(self.user)
+        self.client.force_login(
+            self.user, backend="django.contrib.auth.backends.ModelBackend"
+        )
         for route, method in [
             ("workspace", self.client.get),
             ("select-workspace", self.client.post),
@@ -94,7 +102,9 @@ class WorkspaceAccessTests(TestCase):
         self.assertNotIn("active_workspace", self.client.session)
 
     def test_membership_revocation_takes_effect_on_next_request(self):
-        self.client.force_login(self.user)
+        self.client.force_login(
+            self.user, backend="django.contrib.auth.backends.ModelBackend"
+        )
         self.client.post(reverse("select-workspace", args=[self.own.id]))
         Membership.objects.filter(user=self.user).delete()
         self.assertEqual(
@@ -107,7 +117,9 @@ class WorkspaceAccessTests(TestCase):
         self.user.is_staff = True
         self.user.is_superuser = True
         self.user.save()
-        self.client.force_login(self.user)
+        self.client.force_login(
+            self.user, backend="django.contrib.auth.backends.ModelBackend"
+        )
         self.assertEqual(
             self.client.get(reverse("workspace", args=[self.foreign.id])).status_code,
             404,
@@ -115,7 +127,9 @@ class WorkspaceAccessTests(TestCase):
 
     def test_empty_memberships_show_recovery_guidance(self):
         Membership.objects.filter(user=self.user).delete()
-        self.client.force_login(self.user)
+        self.client.force_login(
+            self.user, backend="django.contrib.auth.backends.ModelBackend"
+        )
         self.assertContains(
             self.client.get(reverse("workspaces")), "No workspace access yet"
         )
@@ -150,16 +164,22 @@ class WorkspaceAccessTests(TestCase):
         self.assertRedirects(response, "/workspaces/")
 
     def test_selection_is_post_only_and_csrf_protected(self):
-        self.client.force_login(self.user)
+        self.client.force_login(
+            self.user, backend="django.contrib.auth.backends.ModelBackend"
+        )
         url = reverse("select-workspace", args=[self.own.id])
         self.assertEqual(self.client.get(url).status_code, 405)
         client = Client(enforce_csrf_checks=True)
-        client.force_login(self.user)
+        client.force_login(
+            self.user, backend="django.contrib.auth.backends.ModelBackend"
+        )
         self.assertEqual(client.post(url).status_code, 403)
         self.assertFalse(WorkspaceSelection.objects.exists())
 
     def test_logout_invalidates_session_and_protected_pages_are_not_cached(self):
-        self.client.force_login(self.user)
+        self.client.force_login(
+            self.user, backend="django.contrib.auth.backends.ModelBackend"
+        )
         response = self.client.get(reverse("workspaces"))
         self.assertIn("no-store", response.headers["Cache-Control"])
         self.assertEqual(self.client.get(reverse("logout")).status_code, 405)
@@ -182,3 +202,14 @@ class WorkspaceAccessTests(TestCase):
             response = self.client.get(reverse("readiness"))
         self.assertEqual(response.status_code, 503)
         self.assertEqual(response.json(), {"status": "unavailable"})
+
+    def test_repeated_invalid_sign_in_is_rate_limited(self):
+        for _ in range(5):
+            self.client.post(
+                reverse("login"), {"username": "analyst", "password": "wrong"}
+            )
+        response = self.client.post(
+            reverse("login"), {"username": "analyst", "password": "test-password"}
+        )
+        self.assertEqual(response.status_code, 429)
+        self.assertNotIn("_auth_user_id", self.client.session)
