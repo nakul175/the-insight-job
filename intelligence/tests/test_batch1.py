@@ -504,3 +504,39 @@ class BatchOneTests(TestCase):
         archive_source(self.admin, self.source, "finish")
         self.assertTrue(check_work_permission(running))
         self.assertFalse(check_work_permission(queued))
+
+    @patch("socket.getaddrinfo", return_value=PUBLIC_DNS)
+    def test_collector_records_out_of_scope_redirect_without_following(self, dns):
+        from unittest.mock import MagicMock
+
+        from intelligence.collector import fetch_public
+
+        response = MagicMock()
+        response.status = 302
+        response.getheader.return_value = "https://outside.example.org/secret"
+        connection = MagicMock()
+        connection.getresponse.return_value = response
+        with patch(
+            "intelligence.collector.http.client.HTTPSConnection",
+            return_value=connection,
+        ):
+            result = fetch_public(
+                "https://example.com/", "https://example.com/", self.version.config
+            )
+        self.assertEqual(result["state"], "partial")
+        self.assertIn("Outside the approved origin", result["missing"][0]["reason"])
+        self.assertEqual(connection.request.call_count, 1)
+
+    def test_collector_rejects_private_resolution_after_initial_public_dns(self):
+        from intelligence.collector import fetch_public
+
+        private = [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("10.0.0.1", 443))]
+        with (
+            patch("socket.getaddrinfo", side_effect=[PUBLIC_DNS, PUBLIC_DNS, private]),
+            patch("intelligence.collector.http.client.HTTPSConnection") as connection,
+            self.assertRaises(ValidationError),
+        ):
+            fetch_public(
+                "https://example.com/", "https://example.com/", self.version.config
+            )
+        connection.assert_not_called()
