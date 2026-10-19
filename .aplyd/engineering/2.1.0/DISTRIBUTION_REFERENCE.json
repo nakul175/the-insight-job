@@ -1,0 +1,244 @@
+{
+  "note": "Resolve unvendored documentation in the original archive by the recorded file hash; no latest-document substitution.",
+  "payload_kind": "core",
+  "source_archive": "APLYD-Coding-Engineering-Package-v2.1.0.zip",
+  "source_manifest_sha256": "7a9fc30ad1bebf699028d51d9c6e59c55fcbadc89d89cce13c811c9e41fd911a",
+  "unvendored_documents": [
+    {
+      "bytes": 2139,
+      "path": "01-governance/coding-principles.md",
+      "sha256": "ad2917921a688cbd2d4613aeffed7d81aa055cca0256202689c4a865ff960115"
+    },
+    {
+      "bytes": 2584,
+      "path": "01-governance/engineering-definition-of-done.md",
+      "sha256": "e2c811cff2f82e1e8cd674b6f03729b6c6e1658292dfef5365a463178ed0ce56"
+    },
+    {
+      "bytes": 916,
+      "path": "01-governance/product-documentation-bridge.md",
+      "sha256": "73db74abe4fa10b8b2e17e1e6dbd4b38be02e228c5a61bf831d10350ad974e02"
+    },
+    {
+      "bytes": 1473,
+      "path": "03-templates/README.md",
+      "sha256": "24299f8dd9175de609b8beccd976941ea16f7d61aae0c7335bc68d06c63a78cd"
+    },
+    {
+      "bytes": 1719,
+      "path": "03-templates/api-change.md",
+      "sha256": "44ae701b7c1b3330ae503a91096711b79285aac5e633d5d3c478d2b9f1c68ad5"
+    },
+    {
+      "bytes": 1656,
+      "path": "03-templates/architecture-decision-record.md",
+      "sha256": "77c818b5a2ac7a529fc5c8679e7d13d2c970eb86c910548d5c309514db026a35"
+    },
+    {
+      "bytes": 2579,
+      "path": "03-templates/code-review.md",
+      "sha256": "6d9949fd65e7a8d99451b19ecd0f0291719e1fc73b85b012c47ab62b1456783e"
+    },
+    {
+      "bytes": 1977,
+      "path": "03-templates/data-migration.md",
+      "sha256": "17b285782a70b609ecd8522564bc96264270deeed2e5747f8b2698ad419450c4"
+    },
+    {
+      "bytes": 1712,
+      "path": "03-templates/dependency-decision.md",
+      "sha256": "555a168100912128bb0d118cdbc9568cf7741ecbb93f7d05e6aa7621e9c05342"
+    },
+    {
+      "bytes": 3607,
+      "path": "03-templates/engineering-handover.md",
+      "sha256": "cb0e25e658a992f85f4fa05dec93d0bc3d33f27c997ece3d21b8bbb4a95440c5"
+    },
+    {
+      "bytes": 1746,
+      "path": "03-templates/exception.md",
+      "sha256": "75d66b533586c592556c87e9af5567d2a49c5267ab29839da943bcd07e9f844d"
+    },
+    {
+      "bytes": 4216,
+      "path": "03-templates/implementation-plan.md",
+      "sha256": "ed8ee0b4a02e5dd49503d515269374cb419815e3bb6d83f51f58fdbdba3d6be1"
+    },
+    {
+      "bytes": 2048,
+      "path": "03-templates/integration-contract.md",
+      "sha256": "56ca54dc96da67c37c549d84c5b2837d84dc42d07f99ef813f6604272d3ee699"
+    },
+    {
+      "bytes": 3198,
+      "path": "03-templates/release-record.md",
+      "sha256": "bce7150c2c398891e549a7e92b8a25b5ed7baf1e9226f529ae067f2fe234d287"
+    },
+    {
+      "bytes": 1802,
+      "path": "03-templates/repository-adoption-record.md",
+      "sha256": "1c86ad678b7aaefce8dd123477ea78a148b26480464ee5be673b7fd3352e1e43"
+    },
+    {
+      "bytes": 1282,
+      "path": "03-templates/technical-debt.md",
+      "sha256": "69a0f4a93fd7fa1365b703d6e6a87a0b4fca1ed5bf5307f85233bc9ce0d5f542"
+    },
+    {
+      "bytes": 2410,
+      "path": "03-templates/technical-design-delta.md",
+      "sha256": "d9e3f2a58c30367ab3adcc4426d4bfffcb130ba7e0bc6c1f44844957f4602cb9"
+    },
+    {
+      "bytes": 1133,
+      "path": "04-agent-instructions/agent-handover.md",
+      "sha256": "23e5ea1b5666855411ab7c79f5ca06e3829acac6899d0ea3637569d50b62b9cb"
+    },
+    {
+      "bytes": 1894,
+      "path": "04-agent-instructions/context-management.md",
+      "sha256": "cb7885d5b9d95d6ddcd625df5684d7064e6a2c5e462f3b5c9581b174578a3a92"
+    },
+    {
+      "bytes": 1633,
+      "path": "04-agent-instructions/prohibited-actions.md",
+      "sha256": "11937cd455b2f6b78ae0bdfeb28e9ffaa77a971c76ad67482f770638ebde9066"
+    },
+    {
+      "bytes": 2817,
+      "path": "04-agent-instructions/task-execution.md",
+      "sha256": "a62d05f9e4125d405fbda270f53a388b349dcf52f8aeb702be46d8046d0fcfa3"
+    },
+    {
+      "bytes": 1452,
+      "path": "04-agent-instructions/tool-adapters.md",
+      "sha256": "1d15b56a35134f9f66e52486a79c644b553bd437774d6e38a84b4b3491016ea6"
+    },
+    {
+      "bytes": 2281,
+      "path": "05-workflows/branching-and-pr.md",
+      "sha256": "734f2f2a6ef521ea91385037d0df3867a6354f752e7e1b113371a51aee8a2526"
+    },
+    {
+      "bytes": 1567,
+      "path": "05-workflows/documentation-sync.md",
+      "sha256": "c75bf0eee8000fa1ed33347699c863987ff4be0b3ebc3fdeb41bf43ab4b4e1ad"
+    },
+    {
+      "bytes": 2105,
+      "path": "05-workflows/legacy-adoption.md",
+      "sha256": "ff6a76e8a245e9ba4d955682ed61a8321f1f48ae2f0ccec48a67f4b73b1635c6"
+    },
+    {
+      "bytes": 1748,
+      "path": "05-workflows/linear-github-workflow.md",
+      "sha256": "1a6d4b8ff3a838d6d753650bb53e9eb69bc6411a9cbc22143b8db0ffb3386989"
+    },
+    {
+      "bytes": 1877,
+      "path": "05-workflows/release-management.md",
+      "sha256": "b3e30988050641fd72482e9b2c7fb928989cae2bcafac289159c219e5ce9ddb7"
+    },
+    {
+      "bytes": 3190,
+      "path": "05-workflows/v1-to-v2-migration.md",
+      "sha256": "2841fbade4455cd79731bca793e6b4830b84992737cccb5caa6569fc79a720b9"
+    },
+    {
+      "bytes": 2141,
+      "path": "05-workflows/v2.0-to-v2.1-migration.md",
+      "sha256": "bda41c76e5c38cb19fda56bd7bf3304014ed939feff7865a3d84aa3625a7e291"
+    },
+    {
+      "bytes": 668,
+      "path": "06-enforcement/pre-commit/README.md",
+      "sha256": "41c9af54a99e2991816167cfdf2897b3037ca1250729ecf1a48ab259c8a829fd"
+    },
+    {
+      "bytes": 2759,
+      "path": "06-enforcement/profiles/README.md",
+      "sha256": "bf3688851bcf2cef9af5c05cafbbf4e74f10289a5b73f7e803acf973a349b4d4"
+    },
+    {
+      "bytes": 1500,
+      "path": "06-enforcement/repository-audit.md",
+      "sha256": "045fe74ef59216f6b722b5dcb2ed1dbf74ed76afc5037cc5dbea1cbbbff23182"
+    },
+    {
+      "bytes": 1733,
+      "path": "07-starter-kit/adoption-checklist.md",
+      "sha256": "304688403622ddecdd24a93f4b691f4ccc2060658b1a439f942b3c0904987243"
+    },
+    {
+      "bytes": 2169,
+      "path": "07-starter-kit/agent-bootstrap.md",
+      "sha256": "648069f492be695c7029d3788ac0ef12d2f0ff76a8adf9237481d244747ec2a6"
+    },
+    {
+      "bytes": 810,
+      "path": "07-starter-kit/repository-template/CONTRIBUTING.md",
+      "sha256": "d372c521d1506ffe05b651ad1825ca6323cffa764db4c9014d0773dc1c1c0b51"
+    },
+    {
+      "bytes": 660,
+      "path": "07-starter-kit/repository-template/README.md",
+      "sha256": "c6c35e3a81725375dd13e246a5adff44a592d6be7f2db388ae1b0c5afe554122"
+    },
+    {
+      "bytes": 1003,
+      "path": "07-starter-kit/repository-template/docs/engineering/README.md",
+      "sha256": "563f0c1d24ed9f9b3cfb75801107c03bc79a181d3e51883a43b8c8b38da67248"
+    },
+    {
+      "bytes": 3266,
+      "path": "07-starter-kit/worked-example.md",
+      "sha256": "c0a136e4970448e6bbd1e00e74d7c5246771ba64301134d0709f61f10c73e76b"
+    },
+    {
+      "bytes": 1332,
+      "path": "08-package-tests/README.md",
+      "sha256": "a1c611c9ac40ebea85a8bb1306cae7d2a9faa9d8e2e49c39a1c780a0fc373556"
+    },
+    {
+      "bytes": 3543,
+      "path": "AGENTS.md",
+      "sha256": "a6f8893de65bce6a509b23f4d09874b4ef4d4cbed548bd18e68a77786773e4ee"
+    },
+    {
+      "bytes": 1214,
+      "path": "CHANGELOG.md",
+      "sha256": "2c1ec585f7c03a8c4b05f287e79dc602e60c0a6746ced46bbe0397864272e470"
+    },
+    {
+      "bytes": 6112,
+      "path": "ENGINEERING_HANDBOOK.md",
+      "sha256": "31640fec1e8fc8d0abc7dd5b111a533c60b01fe232abba01434d76210fe3aac9"
+    },
+    {
+      "bytes": 13550,
+      "path": "PACKAGE_INDEX.md",
+      "sha256": "1e790de0b38f6ab5983b08b2514c0a98d28d2fb6bca99dc40ee12e34e533f0f2"
+    },
+    {
+      "bytes": 3430,
+      "path": "PACKAGE_VALIDATION.md",
+      "sha256": "3e3539c8273bd8ab3aa8fdf05430be40fb4a1f0183b6639315c890d52a81382f"
+    },
+    {
+      "bytes": 4294,
+      "path": "PR_CHECKLIST.md",
+      "sha256": "9534adf250b6f87156547f7b1e30b3ca5e8e009d6eacf878a4fa8327b2f99a09"
+    },
+    {
+      "bytes": 2898,
+      "path": "README.md",
+      "sha256": "a143042b77ba61ef6729150d93cd16a5744bb5d1df1e15a78d286a3b5117db9e"
+    },
+    {
+      "bytes": 3221,
+      "path": "REVIEW_DISPOSITION.md",
+      "sha256": "a54e621d8259c3e755a08679e0317a51c2841c08fb6c0cd491ba2022f52d2dd0"
+    }
+  ],
+  "version": "2.1.0"
+}

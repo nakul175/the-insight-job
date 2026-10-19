@@ -1,0 +1,16 @@
+{
+  "schema_version": 2,
+  "state": "draft",
+  "approval_ref": null,
+  "sources": [],
+  "entities": [],
+  "gates": [],
+  "pm_catalogue_source_id": null,
+  "qa_catalogue_source_id": null,
+  "team_dod_ref": null,
+  "workflow_ref": null,
+  "release_record_ref": null,
+  "exception_register_path": null,
+  "root_agent_file": "AGENTS.md",
+  "root_agent_sha256": null
+}

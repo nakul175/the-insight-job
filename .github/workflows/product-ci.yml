@@ -1,0 +1,46 @@
+name: Product CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: product-ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: insight_test
+          POSTGRES_PASSWORD: local-ci-only
+          POSTGRES_DB: insight_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 10s
+          --health-timeout 5s --health-retries 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - run: python -m pip check
+      - run: ruff check config workspaces intelligence manage.py --extend-select E4,E7,E9,F
+      - run: ruff format --check config workspaces intelligence manage.py
+      - run: python manage.py makemigrations --check --dry-run --settings=config.test_settings
+      - run: python manage.py test --settings=config.test_settings
+      - name: PostgreSQL integration tests
+        run: python manage.py test --settings=config.ci_settings
+        env:
+          DATABASE_URL: postgres://insight_test:local-ci-only@localhost:5432/insight_test
+      - run: pip-audit -r requirements.txt --no-deps --disable-pip
+      - name: Build runtime container
+        run: docker build -t insight-job:${{ github.sha }} .

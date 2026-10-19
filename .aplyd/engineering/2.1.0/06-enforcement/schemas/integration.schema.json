@@ -1,0 +1,485 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "APLYD cross-bundle binding contract (not a native PM/QA schema)",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "enum": [
+        2
+      ]
+    },
+    "state": {
+      "enum": [
+        "draft",
+        "approved"
+      ]
+    },
+    "approval_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/#-]{0,199}$"
+          },
+          "domain": {
+            "enum": [
+              "product",
+              "qa"
+            ]
+          },
+          "kind": {
+            "enum": [
+              "catalogue",
+              "records",
+              "rules",
+              "checker"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "domain",
+          "kind",
+          "path",
+          "sha256",
+          "version"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "enum": [
+              "story",
+              "acceptance_criterion",
+              "task",
+              "qa_case",
+              "qa_run"
+            ]
+          },
+          "source_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/#-]{0,199}$"
+          },
+          "format": {
+            "enum": [
+              "json",
+              "csv"
+            ]
+          },
+          "selector": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "object"
+          },
+          "list_separator": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value_maps": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "kind",
+          "source_id",
+          "format",
+          "selector",
+          "fields",
+          "list_separator"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "enum": [
+              "qa_lint",
+              "qa_release"
+            ]
+          },
+          "checker_source_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/#-]{0,199}$"
+          },
+          "command": {
+            "type": "object",
+            "properties": {
+              "argv": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1
+              },
+              "cwd": {
+                "type": "string",
+                "minLength": 1
+              },
+              "timeout_seconds": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 3600
+              }
+            },
+            "required": [
+              "argv",
+              "cwd",
+              "timeout_seconds"
+            ],
+            "additionalProperties": false
+          },
+          "approval_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "checker_source_id",
+          "command",
+          "approval_ref"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "pm_catalogue_source_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "qa_catalogue_source_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "team_dod_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "workflow_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "release_record_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "exception_register_path": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "root_agent_file": {
+      "type": "string",
+      "minLength": 1
+    },
+    "root_agent_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "native_bindings": {
+      "type": "object",
+      "properties": {
+        "pm": {
+          "type": "object",
+          "properties": {
+            "source_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "selector": {
+              "type": "string",
+              "minLength": 1
+            },
+            "fields": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "type": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "parent": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "version": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "type",
+                "parent",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            "types": {
+              "type": "object",
+              "properties": {
+                "story": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1
+                },
+                "acceptance_criterion": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1
+                },
+                "task": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1
+                }
+              },
+              "required": [
+                "story",
+                "acceptance_criterion",
+                "task"
+              ],
+              "additionalProperties": false
+            },
+            "task_criteria_field": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "task_links_source_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "version_default": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "required": [
+            "source_id",
+            "selector",
+            "fields",
+            "types",
+            "task_criteria_field",
+            "task_links_source_id",
+            "version_default"
+          ],
+          "additionalProperties": false
+        },
+        "qa": {
+          "type": "object",
+          "properties": {
+            "cases_source_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "links_source_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "runs_source_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "case_fields": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "version": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            "link_fields": {
+              "type": "object",
+              "properties": {
+                "case_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "case_version": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "criterion_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "criterion_version": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "case_id",
+                "case_version",
+                "criterion_id",
+                "criterion_version"
+              ],
+              "additionalProperties": false
+            },
+            "run_fields": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "case_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "case_version": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "source_revision": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "outcome": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "case_id",
+                "case_version",
+                "source_revision",
+                "outcome"
+              ],
+              "additionalProperties": false
+            },
+            "outcome_map": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "cases_source_id",
+            "links_source_id",
+            "runs_source_id",
+            "case_fields",
+            "link_fields",
+            "run_fields",
+            "outcome_map"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "pm",
+        "qa"
+      ],
+      "additionalProperties": false,
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "Native PM elements / QA relational CSV bindings"
+    }
+  },
+  "required": [
+    "schema_version",
+    "state",
+    "approval_ref",
+    "sources",
+    "entities",
+    "gates",
+    "pm_catalogue_source_id",
+    "qa_catalogue_source_id",
+    "team_dod_ref",
+    "workflow_ref",
+    "release_record_ref",
+    "exception_register_path",
+    "root_agent_file",
+    "root_agent_sha256"
+  ],
+  "additionalProperties": false
+}

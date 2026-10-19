@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "APLYD exception register",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "enum": [
+        2
+      ]
+    },
+    "exceptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/#-]{0,199}$"
+          },
+          "control_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          },
+          "status": {
+            "enum": [
+              "proposed",
+              "approved",
+              "rejected",
+              "expired",
+              "revoked",
+              "closed"
+            ]
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "risk": {
+            "type": "string",
+            "minLength": 1
+          },
+          "mitigation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approver": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "approval_ref": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "expires_on": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "remediation_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "domains": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "product",
+                "engineering",
+                "qa",
+                "security",
+                "operations"
+              ]
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "id",
+          "control_ids",
+          "status",
+          "scope",
+          "reason",
+          "risk",
+          "mitigation",
+          "owner",
+          "approver",
+          "approval_ref",
+          "expires_on",
+          "remediation_ref",
+          "domains"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schema_version",
+    "exceptions"
+  ],
+  "additionalProperties": false
+}

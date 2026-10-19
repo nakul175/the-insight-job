@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% load i18n %}{% block content %}<section class="card empty"><p class="eyebrow">404</p><h1>{% translate "This page isn’t available" %}</h1><p>{% translate "Check the link or return to your workspaces." %}</p><a href="{% url 'workspaces' %}">{% translate "Go to workspaces" %}</a></section>{% endblock %}

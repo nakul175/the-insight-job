@@ -1,0 +1,1 @@
+{% extends "intelligence/layout.html" %}{% block app %}<h1>{{ record.title }}</h1><section class="card"><pre>{{ record.body }}</pre>{% for derivative in derivatives %}<h2>{{ derivative.kind }}</h2><pre>{{ derivative.value }}</pre>{% endfor %}</section>{% endblock %}

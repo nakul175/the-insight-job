@@ -1,0 +1,1 @@
+{% extends "intelligence/layout.html" %}{% block app %}<h1>{{ title }}</h1><p>{{ help }}</p><form class="card" method="post">{% csrf_token %}{{ form.as_p }}<button class="primary" type="submit">Save draft</button></form>{% endblock %}

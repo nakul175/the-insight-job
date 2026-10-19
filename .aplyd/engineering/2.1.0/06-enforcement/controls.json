@@ -1,0 +1,1067 @@
+{
+  "standard_id": "APLYD-ENG-001",
+  "version": "2.1.0",
+  "authority": "Normative detail is in linked Markdown; this catalogue is an evidence/review index, not an automated compliance claim.",
+  "controls": [
+    {
+      "id": "ENG-GOV-001",
+      "level": "MUST",
+      "title": "Pin the applicable baseline",
+      "document": "01-governance/governance-and-exceptions.md",
+      "anchor": "eng-gov-001",
+      "review": "hybrid",
+      "evidence": "Approved repository profile",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-GOV-002",
+      "level": "MUST",
+      "title": "Resolve conflicting instructions",
+      "document": "01-governance/governance-and-exceptions.md",
+      "anchor": "eng-gov-002",
+      "review": "human",
+      "evidence": "Decision or blocking issue",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-GOV-003",
+      "level": "MUST",
+      "title": "Bind exceptions to scope and time",
+      "document": "01-governance/governance-and-exceptions.md",
+      "anchor": "eng-gov-003",
+      "review": "hybrid",
+      "evidence": "Exception register and linked decision",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-GOV-004",
+      "level": "MUST NOT",
+      "title": "Waive the safety floor",
+      "document": "01-governance/governance-and-exceptions.md",
+      "anchor": "eng-gov-004",
+      "review": "human",
+      "evidence": "Scope decision and PR",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-GOV-005",
+      "level": "MUST",
+      "title": "Make technical debt actionable",
+      "document": "01-governance/governance-and-exceptions.md",
+      "anchor": "eng-gov-005",
+      "review": "human",
+      "evidence": "Debt register / Linear issue",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-GOV-006",
+      "level": "MUST",
+      "title": "Protect the policy control plane",
+      "document": "01-governance/governance-and-exceptions.md",
+      "anchor": "eng-gov-006",
+      "review": "human",
+      "evidence": "Server setting evidence and independent review",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-GOV-007",
+      "level": "SHOULD",
+      "title": "Ratchet legacy quality",
+      "document": "01-governance/governance-and-exceptions.md",
+      "anchor": "eng-gov-007",
+      "review": "human",
+      "evidence": "Adoption inventory and tracked remediation",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-GOV-008",
+      "level": "MUST",
+      "title": "Distinguish document and delivery states",
+      "document": "01-governance/governance-and-exceptions.md",
+      "anchor": "eng-gov-008",
+      "review": "hybrid",
+      "evidence": "Traceability and release record",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-SEC-001",
+      "level": "MUST",
+      "title": "Enforce identity and authority at every boundary",
+      "document": "01-governance/security-and-privacy.md",
+      "anchor": "eng-sec-001",
+      "review": "human",
+      "evidence": "Access model, service/worker code and review",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-SEC-002",
+      "level": "MUST",
+      "title": "Preserve tenant isolation throughout the system",
+      "document": "01-governance/security-and-privacy.md",
+      "anchor": "eng-sec-002",
+      "review": "human",
+      "evidence": "Trust-boundary design and code review",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-SEC-003",
+      "level": "MUST",
+      "title": "Keep secrets outside source and diagnostics",
+      "document": "01-governance/security-and-privacy.md",
+      "anchor": "eng-sec-003",
+      "review": "hybrid",
+      "evidence": "Secret configuration, scanner evidence and incident reference",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-SEC-004",
+      "level": "MUST",
+      "title": "Validate untrusted inputs and encode outputs",
+      "document": "01-governance/security-and-privacy.md",
+      "anchor": "eng-sec-004",
+      "review": "human",
+      "evidence": "Boundary contracts and implementation",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-SEC-005",
+      "level": "MUST",
+      "title": "Constrain outbound connections and uploads",
+      "document": "01-governance/security-and-privacy.md",
+      "anchor": "eng-sec-005",
+      "review": "human",
+      "evidence": "Integration and upload design",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-SEC-006",
+      "level": "MUST",
+      "title": "Protect sessions and cryptographic operations",
+      "document": "01-governance/security-and-privacy.md",
+      "anchor": "eng-sec-006",
+      "review": "human",
+      "evidence": "Identity design and configuration",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-SEC-007",
+      "level": "MUST",
+      "title": "Minimise and govern sensitive data",
+      "document": "01-governance/security-and-privacy.md",
+      "anchor": "eng-sec-007",
+      "review": "human",
+      "evidence": "Data-flow/retention record and permission reference",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-SEC-008",
+      "level": "MUST",
+      "title": "Keep audit evidence separate from operational noise",
+      "document": "01-governance/security-and-privacy.md",
+      "anchor": "eng-sec-008",
+      "review": "human",
+      "evidence": "Audit contract and implementation",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-SEC-009",
+      "level": "MUST",
+      "title": "Review changed attack surfaces",
+      "document": "01-governance/security-and-privacy.md",
+      "anchor": "eng-sec-009",
+      "review": "human",
+      "evidence": "Technical design delta and security review",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-SEC-010",
+      "level": "MUST",
+      "title": "Make administrative access bounded",
+      "document": "01-governance/security-and-privacy.md",
+      "anchor": "eng-sec-010",
+      "review": "human",
+      "evidence": "Admin design and deployment configuration",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-ARCH-001",
+      "level": "MUST",
+      "title": "Map responsibilities before material change",
+      "document": "02-architecture/architecture-standard.md",
+      "anchor": "eng-arch-001",
+      "review": "human",
+      "evidence": "Design delta and upstream references",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-ARCH-002",
+      "level": "SHOULD",
+      "title": "Prefer a modular simple deployment",
+      "document": "02-architecture/architecture-standard.md",
+      "anchor": "eng-arch-002",
+      "review": "human",
+      "evidence": "ADR",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-ARCH-003",
+      "level": "MUST",
+      "title": "Separate responsibilities without dogmatic layers",
+      "document": "02-architecture/architecture-standard.md",
+      "anchor": "eng-arch-003",
+      "review": "human",
+      "evidence": "Module map and code review",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-ARCH-004",
+      "level": "MUST",
+      "title": "Control module dependencies",
+      "document": "02-architecture/architecture-standard.md",
+      "anchor": "eng-arch-004",
+      "review": "human",
+      "evidence": "Module contracts and import review",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-ARCH-005",
+      "level": "MUST",
+      "title": "Record consequential decisions",
+      "document": "02-architecture/architecture-standard.md",
+      "anchor": "eng-arch-005",
+      "review": "human",
+      "evidence": "ADR",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-ARCH-006",
+      "level": "MUST",
+      "title": "Plan compatibility and reversibility",
+      "document": "02-architecture/architecture-standard.md",
+      "anchor": "eng-arch-006",
+      "review": "human",
+      "evidence": "Design delta and release/migration record",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-CODE-001",
+      "level": "MUST",
+      "title": "Use consistent automated style",
+      "document": "02-architecture/code-conventions.md",
+      "anchor": "eng-code-001",
+      "review": "hybrid",
+      "evidence": "Formatter/linter configuration and command evidence",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-CODE-002",
+      "level": "MUST",
+      "title": "Name for domain meaning",
+      "document": "02-architecture/code-conventions.md",
+      "anchor": "eng-code-002",
+      "review": "human",
+      "evidence": "Code review",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-CODE-003",
+      "level": "MUST",
+      "title": "Validate at runtime and preserve type guarantees",
+      "document": "02-architecture/code-conventions.md",
+      "anchor": "eng-code-003",
+      "review": "hybrid",
+      "evidence": "Schemas, type configuration and command evidence",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-CODE-004",
+      "level": "MUST",
+      "title": "Keep failures explicit and actionable",
+      "document": "02-architecture/code-conventions.md",
+      "anchor": "eng-code-004",
+      "review": "human",
+      "evidence": "Error contract and review",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-CODE-005",
+      "level": "SHOULD",
+      "title": "Keep functions cohesive",
+      "document": "02-architecture/code-conventions.md",
+      "anchor": "eng-code-005",
+      "review": "human",
+      "evidence": "PR rationale and maintainability review",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-CODE-006",
+      "level": "MUST",
+      "title": "Make configuration explicit",
+      "document": "02-architecture/code-conventions.md",
+      "anchor": "eng-code-006",
+      "review": "human",
+      "evidence": "Configuration inventory and startup code",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-CODE-007",
+      "level": "MUST",
+      "title": "Handle numerical and temporal semantics deliberately",
+      "document": "02-architecture/code-conventions.md",
+      "anchor": "eng-code-007",
+      "review": "human",
+      "evidence": "Data dictionary and algorithm reference",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-CODE-008",
+      "level": "MUST",
+      "title": "Keep comments and generated code truthful",
+      "document": "02-architecture/code-conventions.md",
+      "anchor": "eng-code-008",
+      "review": "human",
+      "evidence": "Generator record and code review",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-CODE-009",
+      "level": "MUST",
+      "title": "Keep asynchronous state and resources bounded",
+      "document": "02-architecture/code-conventions.md",
+      "anchor": "eng-code-009",
+      "review": "human",
+      "evidence": "Implementation and operational review",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-CODE-010",
+      "level": "MUST",
+      "title": "Do not fake feature completion",
+      "document": "02-architecture/code-conventions.md",
+      "anchor": "eng-code-010",
+      "review": "human",
+      "evidence": "Feature state, configuration and issue",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-API-001",
+      "level": "MUST",
+      "title": "Maintain an explicit contract",
+      "document": "02-architecture/api-integration-standard.md",
+      "anchor": "eng-api-001",
+      "review": "human",
+      "evidence": "Versioned interface contract",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-API-002",
+      "level": "MUST",
+      "title": "Bound requests and collections",
+      "document": "02-architecture/api-integration-standard.md",
+      "anchor": "eng-api-002",
+      "review": "human",
+      "evidence": "API contract and implementation",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-API-003",
+      "level": "MUST",
+      "title": "Use consistent error semantics",
+      "document": "02-architecture/api-integration-standard.md",
+      "anchor": "eng-api-003",
+      "review": "human",
+      "evidence": "Error schema and mapping",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-API-004",
+      "level": "MUST",
+      "title": "Design duplicate and retry behaviour",
+      "document": "02-architecture/api-integration-standard.md",
+      "anchor": "eng-api-004",
+      "review": "human",
+      "evidence": "Idempotency contract and implementation",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-API-005",
+      "level": "MUST",
+      "title": "Authenticate and reconcile webhooks",
+      "document": "02-architecture/api-integration-standard.md",
+      "anchor": "eng-api-005",
+      "review": "human",
+      "evidence": "Webhook contract and worker design",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-API-006",
+      "level": "MUST",
+      "title": "Make connector limitations visible",
+      "document": "02-architecture/api-integration-standard.md",
+      "anchor": "eng-api-006",
+      "review": "human",
+      "evidence": "Integration contract and operational record",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-API-007",
+      "level": "MUST",
+      "title": "Control breaking changes",
+      "document": "02-architecture/api-integration-standard.md",
+      "anchor": "eng-api-007",
+      "review": "human",
+      "evidence": "API change record and owner review",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-DATA-001",
+      "level": "MUST",
+      "title": "Enforce critical invariants",
+      "document": "02-architecture/database-migration-standard.md",
+      "anchor": "eng-data-001",
+      "review": "human",
+      "evidence": "Schema and invariant mapping",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-DATA-002",
+      "level": "MUST",
+      "title": "Version all schema changes",
+      "document": "02-architecture/database-migration-standard.md",
+      "anchor": "eng-data-002",
+      "review": "human",
+      "evidence": "Migration IDs and applied-state record",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-DATA-003",
+      "level": "MUST",
+      "title": "Plan safe migration sequencing",
+      "document": "02-architecture/database-migration-standard.md",
+      "anchor": "eng-data-003",
+      "review": "human",
+      "evidence": "Migration plan and approved rollout",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-DATA-004",
+      "level": "MUST",
+      "title": "Define recovery without false rollback promises",
+      "document": "02-architecture/database-migration-standard.md",
+      "anchor": "eng-data-004",
+      "review": "human",
+      "evidence": "Migration/release record",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-DATA-005",
+      "level": "MUST",
+      "title": "Handle concurrency and durable side effects",
+      "document": "02-architecture/database-migration-standard.md",
+      "anchor": "eng-data-005",
+      "review": "human",
+      "evidence": "LLD transaction/event contract",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-DATA-006",
+      "level": "MUST",
+      "title": "Prevent uncontrolled data access and growth",
+      "document": "02-architecture/database-migration-standard.md",
+      "anchor": "eng-data-006",
+      "review": "human",
+      "evidence": "Data/query design and retention record",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-DATA-007",
+      "level": "MUST",
+      "title": "Preserve deletion and access state through restore",
+      "document": "02-architecture/database-migration-standard.md",
+      "anchor": "eng-data-007",
+      "review": "human",
+      "evidence": "Recovery and data lifecycle design",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-FE-001",
+      "level": "MUST",
+      "title": "Use coherent shared UI patterns",
+      "document": "02-architecture/frontend-standard.md",
+      "anchor": "eng-fe-001",
+      "review": "human",
+      "evidence": "UI component map and PR",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-FE-002",
+      "level": "MUST",
+      "title": "Implement all relevant interaction states",
+      "document": "02-architecture/frontend-standard.md",
+      "anchor": "eng-fe-002",
+      "review": "human",
+      "evidence": "FSD state mapping and implementation",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-FE-003",
+      "level": "MUST",
+      "title": "Keep authorisation and secrets off the client boundary",
+      "document": "02-architecture/frontend-standard.md",
+      "anchor": "eng-fe-003",
+      "review": "human",
+      "evidence": "Client/server data review",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-FE-004",
+      "level": "MUST",
+      "title": "Implement accessible interaction",
+      "document": "02-architecture/frontend-standard.md",
+      "anchor": "eng-fe-004",
+      "review": "human",
+      "evidence": "Design target and accessibility implementation review",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-FE-005",
+      "level": "MUST",
+      "title": "Separate server and local state",
+      "document": "02-architecture/frontend-standard.md",
+      "anchor": "eng-fe-005",
+      "review": "human",
+      "evidence": "State ownership and implementation",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-FE-006",
+      "level": "MUST",
+      "title": "Respect supported devices and local contexts",
+      "document": "02-architecture/frontend-standard.md",
+      "anchor": "eng-fe-006",
+      "review": "human",
+      "evidence": "FSD/design reference",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-FE-007",
+      "level": "MUST",
+      "title": "Make offline changes explicit and recoverable",
+      "document": "02-architecture/frontend-standard.md",
+      "anchor": "eng-fe-007",
+      "review": "human",
+      "evidence": "Offline contract and data policy",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-BE-001",
+      "level": "MUST",
+      "title": "Centralise consequential workflow rules",
+      "document": "02-architecture/backend-standard.md",
+      "anchor": "eng-be-001",
+      "review": "human",
+      "evidence": "State machine and implementation",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-BE-002",
+      "level": "MUST",
+      "title": "Define transaction scope",
+      "document": "02-architecture/backend-standard.md",
+      "anchor": "eng-be-002",
+      "review": "human",
+      "evidence": "LLD transaction contract",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-BE-003",
+      "level": "MUST",
+      "title": "Design jobs for duplicate delivery",
+      "document": "02-architecture/backend-standard.md",
+      "anchor": "eng-be-003",
+      "review": "human",
+      "evidence": "Job contract and implementation",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-BE-004",
+      "level": "MUST",
+      "title": "Bound work and propagate cancellation",
+      "document": "02-architecture/backend-standard.md",
+      "anchor": "eng-be-004",
+      "review": "human",
+      "evidence": "Workflow budget and code",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-BE-005",
+      "level": "MUST",
+      "title": "Revalidate authority at delayed execution",
+      "document": "02-architecture/backend-standard.md",
+      "anchor": "eng-be-005",
+      "review": "human",
+      "evidence": "Worker permission path",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-BE-006",
+      "level": "MUST",
+      "title": "Use service lifecycle controls",
+      "document": "02-architecture/backend-standard.md",
+      "anchor": "eng-be-006",
+      "review": "human",
+      "evidence": "Runtime configuration and runbook",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-AI-001",
+      "level": "MUST",
+      "title": "Maintain an inference manifest",
+      "document": "02-architecture/ai-engineering-standard.md",
+      "anchor": "eng-ai-001",
+      "review": "human",
+      "evidence": "Model/inference manifest",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-AI-002",
+      "level": "MUST",
+      "title": "Version prompts and transformations",
+      "document": "02-architecture/ai-engineering-standard.md",
+      "anchor": "eng-ai-002",
+      "review": "human",
+      "evidence": "Versioned manifest and PR",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-AI-003",
+      "level": "MUST",
+      "title": "Treat model output as untrusted",
+      "document": "02-architecture/ai-engineering-standard.md",
+      "anchor": "eng-ai-003",
+      "review": "human",
+      "evidence": "Output boundary and failure contract",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-AI-004",
+      "level": "MUST",
+      "title": "Enforce action authority outside the model",
+      "document": "02-architecture/ai-engineering-standard.md",
+      "anchor": "eng-ai-004",
+      "review": "human",
+      "evidence": "Tool gateway and approval binding",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-AI-005",
+      "level": "MUST",
+      "title": "Preserve data policy through retrieval and inference",
+      "document": "02-architecture/ai-engineering-standard.md",
+      "anchor": "eng-ai-005",
+      "review": "human",
+      "evidence": "Data-flow policy and retrieval implementation",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-AI-006",
+      "level": "MUST",
+      "title": "Bound spend and computation",
+      "document": "02-architecture/ai-engineering-standard.md",
+      "anchor": "eng-ai-006",
+      "review": "human",
+      "evidence": "Budget/configuration and runbook",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-AI-007",
+      "level": "MUST",
+      "title": "Be honest about fallback and evidence",
+      "document": "02-architecture/ai-engineering-standard.md",
+      "anchor": "eng-ai-007",
+      "review": "human",
+      "evidence": "Response provenance and intended-use record",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-AI-008",
+      "level": "MUST",
+      "title": "Make inference attributable without oversharing",
+      "document": "02-architecture/ai-engineering-standard.md",
+      "anchor": "eng-ai-008",
+      "review": "human",
+      "evidence": "Observability schema and retention policy",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-AI-009",
+      "level": "MUST",
+      "title": "Protect model artifacts and execution",
+      "document": "02-architecture/ai-engineering-standard.md",
+      "anchor": "eng-ai-009",
+      "review": "human",
+      "evidence": "Artifact/dependency decision and isolation design",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-AI-010",
+      "level": "MUST",
+      "title": "Control model lifecycle changes",
+      "document": "02-architecture/ai-engineering-standard.md",
+      "anchor": "eng-ai-010",
+      "review": "human",
+      "evidence": "Model change record and release decision",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-OPS-001",
+      "level": "MUST",
+      "title": "Define meaningful operational signals",
+      "document": "02-architecture/reliability-operations-standard.md",
+      "anchor": "eng-ops-001",
+      "review": "human",
+      "evidence": "Operational contract and instrumentation",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-OPS-002",
+      "level": "MUST",
+      "title": "Bound external failures",
+      "document": "02-architecture/reliability-operations-standard.md",
+      "anchor": "eng-ops-002",
+      "review": "human",
+      "evidence": "Integration policy and code",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-OPS-003",
+      "level": "MUST",
+      "title": "Implement approved resource and performance budgets",
+      "document": "02-architecture/reliability-operations-standard.md",
+      "anchor": "eng-ops-003",
+      "review": "human",
+      "evidence": "Budget reference and implementation rationale",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-OPS-004",
+      "level": "MUST",
+      "title": "Treat caching as part of correctness",
+      "document": "02-architecture/reliability-operations-standard.md",
+      "anchor": "eng-ops-004",
+      "review": "human",
+      "evidence": "Cache policy and implementation",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-OPS-005",
+      "level": "MUST",
+      "title": "Make deployment attributable",
+      "document": "02-architecture/reliability-operations-standard.md",
+      "anchor": "eng-ops-005",
+      "review": "human",
+      "evidence": "Release/deployment record",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-OPS-006",
+      "level": "MUST",
+      "title": "Define containment and recovery",
+      "document": "02-architecture/reliability-operations-standard.md",
+      "anchor": "eng-ops-006",
+      "review": "human",
+      "evidence": "Runbook and release record",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-OPS-007",
+      "level": "MUST",
+      "title": "Separate environment authority",
+      "document": "02-architecture/reliability-operations-standard.md",
+      "anchor": "eng-ops-007",
+      "review": "human",
+      "evidence": "Environment policy and approval",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-SUP-001",
+      "level": "MUST",
+      "title": "Justify dependencies and rights",
+      "document": "02-architecture/dependency-supply-chain-standard.md",
+      "anchor": "eng-sup-001",
+      "review": "human",
+      "evidence": "Dependency decision",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-SUP-002",
+      "level": "MUST",
+      "title": "Pin reproducible inputs",
+      "document": "02-architecture/dependency-supply-chain-standard.md",
+      "anchor": "eng-sup-002",
+      "review": "hybrid",
+      "evidence": "Lockfiles/toolchain and build evidence",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-SUP-003",
+      "level": "MUST",
+      "title": "Treat scanning failures honestly",
+      "document": "02-architecture/dependency-supply-chain-standard.md",
+      "anchor": "eng-sup-003",
+      "review": "hybrid",
+      "evidence": "Scanner evidence and exception",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-SUP-004",
+      "level": "MUST",
+      "title": "Minimise workflow privileges",
+      "document": "02-architecture/dependency-supply-chain-standard.md",
+      "anchor": "eng-sup-004",
+      "review": "human",
+      "evidence": "Workflow and runner review",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-SUP-005",
+      "level": "MUST",
+      "title": "Pin and review reusable automation",
+      "document": "02-architecture/dependency-supply-chain-standard.md",
+      "anchor": "eng-sup-005",
+      "review": "hybrid",
+      "evidence": "Workflow/action pin references",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-SUP-006",
+      "level": "MUST",
+      "title": "Keep package and command execution explicit",
+      "document": "02-architecture/dependency-supply-chain-standard.md",
+      "anchor": "eng-sup-006",
+      "review": "human",
+      "evidence": "Adoption/command review",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-SUP-007",
+      "level": "SHOULD",
+      "title": "Maintain deployable component inventory",
+      "document": "02-architecture/dependency-supply-chain-standard.md",
+      "anchor": "eng-sup-007",
+      "review": "human",
+      "evidence": "Release inventory / SBOM",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-TRACE-001",
+      "level": "MUST",
+      "title": "Link authorised work to implementation",
+      "document": "01-governance/engineering-workflow-controls.md",
+      "anchor": "eng-trace-001",
+      "review": "hybrid",
+      "evidence": "Traceability ledger and PR",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-TRACE-002",
+      "level": "MUST",
+      "title": "Preserve upstream authority and history",
+      "document": "01-governance/engineering-workflow-controls.md",
+      "anchor": "eng-trace-002",
+      "review": "human",
+      "evidence": "Canonical docs and review",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-TRACE-003",
+      "level": "MUST",
+      "title": "Validate delivery-state transitions",
+      "document": "01-governance/engineering-workflow-controls.md",
+      "anchor": "eng-trace-003",
+      "review": "hybrid",
+      "evidence": "Ledger plus real decision/execution references",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-AGENT-001",
+      "level": "MUST",
+      "title": "Inspect before changing",
+      "document": "01-governance/engineering-workflow-controls.md",
+      "anchor": "eng-agent-001",
+      "review": "human",
+      "evidence": "Plan and handover",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-AGENT-002",
+      "level": "MUST",
+      "title": "Plan proportionately and control scope",
+      "document": "01-governance/engineering-workflow-controls.md",
+      "anchor": "eng-agent-002",
+      "review": "human",
+      "evidence": "Plan, ADR and PR",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-AGENT-003",
+      "level": "MUST",
+      "title": "Record actual execution and limitations",
+      "document": "01-governance/engineering-workflow-controls.md",
+      "anchor": "eng-agent-003",
+      "review": "human",
+      "evidence": "Command evidence, PR and handover",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-AGENT-004",
+      "level": "MUST",
+      "title": "Persist transferable context",
+      "document": "01-governance/engineering-workflow-controls.md",
+      "anchor": "eng-agent-004",
+      "review": "human",
+      "evidence": "Handover record",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-GIT-001",
+      "level": "MUST",
+      "title": "Use focused reviewed changes",
+      "document": "01-governance/engineering-workflow-controls.md",
+      "anchor": "eng-git-001",
+      "review": "human",
+      "evidence": "PR and change record",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-GIT-002",
+      "level": "MUST",
+      "title": "Require accountable independent review",
+      "document": "01-governance/engineering-workflow-controls.md",
+      "anchor": "eng-git-002",
+      "review": "human",
+      "evidence": "Actual review and owner decision",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-GIT-003",
+      "level": "MUST",
+      "title": "Enforce gates outside author-only control",
+      "document": "01-governance/engineering-workflow-controls.md",
+      "anchor": "eng-git-003",
+      "review": "human",
+      "evidence": "Actual server settings and review evidence",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-GIT-004",
+      "level": "MUST",
+      "title": "Separate merge and live-operation permission",
+      "document": "01-governance/engineering-workflow-controls.md",
+      "anchor": "eng-git-004",
+      "review": "human",
+      "evidence": "Actual authorisation and operation record",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-XBD-001",
+      "level": "MUST",
+      "title": "Pin and validate native bundle bindings",
+      "document": "01-governance/cross-bundle-contract.md",
+      "anchor": "eng-xbd-001",
+      "review": "hybrid",
+      "evidence": "Approved binding and relevant package/native gate evidence",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-XBD-002",
+      "level": "MUST",
+      "title": "Reuse canonical task and typed QA references",
+      "document": "01-governance/cross-bundle-contract.md",
+      "anchor": "eng-xbd-002",
+      "review": "hybrid",
+      "evidence": "Approved binding and relevant package/native gate evidence",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-XBD-003",
+      "level": "MUST",
+      "title": "Keep one root composition and one team Done",
+      "document": "01-governance/cross-bundle-contract.md",
+      "anchor": "eng-xbd-003",
+      "review": "human",
+      "evidence": "Approved binding and relevant package/native gate evidence",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-XBD-004",
+      "level": "MUST",
+      "title": "Require real tests and native QA gates",
+      "document": "01-governance/cross-bundle-contract.md",
+      "anchor": "eng-xbd-004",
+      "review": "hybrid",
+      "evidence": "Approved binding and relevant package/native gate evidence",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-XBD-005",
+      "level": "MUST",
+      "title": "Use one selected exception register",
+      "document": "01-governance/cross-bundle-contract.md",
+      "anchor": "eng-xbd-005",
+      "review": "hybrid",
+      "evidence": "Approved binding and relevant package/native gate evidence",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-XBD-006",
+      "level": "MUST",
+      "title": "Preserve repository-owned configuration",
+      "document": "01-governance/cross-bundle-contract.md",
+      "anchor": "eng-xbd-006",
+      "review": "hybrid",
+      "evidence": "Approved binding and relevant package/native gate evidence",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-XBD-007",
+      "level": "MUST",
+      "title": "Normalize native hierarchy without inventing scope",
+      "document": "01-governance/native-bundle-adapters.md",
+      "anchor": "eng-xbd-007",
+      "review": "hybrid",
+      "evidence": "Pinned native bindings, owner decision and relevant regression/adoption evidence",
+      "non_waivable": false
+    },
+    {
+      "id": "ENG-XBD-008",
+      "level": "MUST",
+      "title": "Preserve QA relation and evidence versions",
+      "document": "01-governance/native-bundle-adapters.md",
+      "anchor": "eng-xbd-008",
+      "review": "hybrid",
+      "evidence": "Pinned native bindings, owner decision and relevant regression/adoption evidence",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-XBD-009",
+      "level": "MUST",
+      "title": "Separate proposed connections from approval",
+      "document": "01-governance/native-bundle-adapters.md",
+      "anchor": "eng-xbd-009",
+      "review": "hybrid",
+      "evidence": "Pinned native bindings, owner decision and relevant regression/adoption evidence",
+      "non_waivable": true
+    },
+    {
+      "id": "ENG-XBD-010",
+      "level": "MUST",
+      "title": "Reconcile legacy exceptions without changing authority",
+      "document": "01-governance/native-bundle-adapters.md",
+      "anchor": "eng-xbd-010",
+      "review": "hybrid",
+      "evidence": "Pinned native bindings, owner decision and relevant regression/adoption evidence",
+      "non_waivable": false
+    }
+  ]
+}

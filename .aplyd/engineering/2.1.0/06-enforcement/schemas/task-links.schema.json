@@ -1,0 +1,71 @@
+{
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "enum": [
+        1
+      ]
+    },
+    "pm_source_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "state": {
+      "enum": [
+        "draft",
+        "approved"
+      ]
+    },
+    "owner": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "approval_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "task_criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "acceptance_criterion_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 0
+          }
+        },
+        "required": [
+          "task_id",
+          "acceptance_criterion_ids"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schema_version",
+    "pm_source_sha256",
+    "state",
+    "owner",
+    "approval_ref",
+    "task_criteria"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Product-owned typed task-criteria extension; no task scope duplication"
+}

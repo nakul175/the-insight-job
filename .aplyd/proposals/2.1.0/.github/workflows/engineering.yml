@@ -1,0 +1,133 @@
+name: APLYD combined gates
+
+# STAGED ONLY. Review native bindings, required checks, branches and toolchain
+# provisioning before activation. Protect this workflow/policy outside author-only
+# control. No secrets, privileged PR trigger, or deployment permission is granted.
+on:
+  pull_request:
+  push:
+    branches: [main, 'release/**']
+    tags: ['v*']
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aplyd-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release_scope:
+    name: Determine required release gate
+    runs-on: ubuntu-24.04
+    outputs:
+      required: ${{ steps.scope.outputs.required }}
+    steps:
+      - id: scope
+        shell: bash
+        run: |
+          case "$GITHUB_EVENT_NAME:$GITHUB_REF:${GITHUB_BASE_REF:-}" in
+            merge_group:*|*:refs/heads/main:*|*:refs/heads/release/*:*|*:refs/tags/*:*|*:*:main|*:*:release/*)
+              echo 'required=true' >> "$GITHUB_OUTPUT" ;;
+            *) echo 'required=false' >> "$GITHUB_OUTPUT" ;;
+          esac
+  structure:
+    name: APLYD structure
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout without retained credentials
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Common tooling runtime
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.11'
+      - name: Structural and native-binding audit
+        run: python .aplyd/engineering/2.1.0/06-enforcement/scripts/engctl.py audit --repo .
+  engineering:
+    name: Engineering and actual product tests
+    needs: structure
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout without retained credentials
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Common tooling runtime
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.11'
+      - name: Run the reviewed engineering group
+        run: python .aplyd/engineering/2.1.0/06-enforcement/scripts/engctl.py run --repo . --group engineering --execute-reviewed-commands
+  qa_lint:
+    name: Native QA structural checker
+    needs: structure
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout without retained credentials
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Common tooling runtime
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.11'
+      - name: Run the reviewed qa_lint group
+        run: python .aplyd/engineering/2.1.0/06-enforcement/scripts/engctl.py run --repo . --group qa_lint --execute-reviewed-commands
+  qa_release:
+    name: Native QA release checker
+    needs: [structure, release_scope]
+    if: needs.release_scope.outputs.required == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout without retained credentials
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Common tooling runtime
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.11'
+      - name: Run the reviewed qa_release group
+        run: python .aplyd/engineering/2.1.0/06-enforcement/scripts/engctl.py run --repo . --group qa_release --execute-reviewed-commands
+  required:
+    name: APLYD required gates
+    needs: [release_scope, structure, engineering, qa_lint, qa_release]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fail on any failed or skipped required gate
+        env:
+          SCOPE: ${{ needs.release_scope.result }}
+          RELEASE_REQUIRED: ${{ needs.release_scope.outputs.required }}
+          STRUCTURE: ${{ needs.structure.result }}
+          ENGINEERING: ${{ needs.engineering.result }}
+          QA_LINT: ${{ needs.qa_lint.result }}
+          QA_RELEASE: ${{ needs.qa_release.result }}
+        shell: bash
+        run: |
+          test "$SCOPE" = success
+          test "$STRUCTURE" = success
+          test "$ENGINEERING" = success
+          test "$QA_LINT" = success
+          if [ "$RELEASE_REQUIRED" = true ]; then
+            test "$QA_RELEASE" = success
+          elif [ "$RELEASE_REQUIRED" = false ]; then
+            test "$QA_RELEASE" = skipped
+          else
+            exit 1
+          fi
+# Configure 'APLYD required gates' as a required server-side check separately.
+# Raw logs are deliberately not uploaded. A maintainer-owned evidence exporter
+# may retain reviewed/redacted reports under the common task/revision index.
