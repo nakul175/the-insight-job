@@ -2057,7 +2057,8 @@
         "docs/product/Planning-View.json"
       ],
       "design_refs": [
-        "docs/engineering/batch-07.md"
+        "docs/engineering/batch-07.md",
+        "docs/engineering/ui-refresh.md"
       ],
       "rationale": "Use keyboard and small-screen review",
       "paths": [
@@ -2205,7 +2206,8 @@
         "docs/product/Planning-View.json"
       ],
       "design_refs": [
-        "docs/engineering/batch-08.md"
+        "docs/engineering/batch-08.md",
+        "docs/engineering/ui-refresh.md"
       ],
       "rationale": "Understand the next required action",
       "paths": [
@@ -2279,7 +2281,8 @@
         "docs/product/Planning-View.json"
       ],
       "design_refs": [
-        "docs/engineering/batch-08.md"
+        "docs/engineering/batch-08.md",
+        "docs/engineering/ui-refresh.md"
       ],
       "rationale": "Review on a narrow screen",
       "paths": [
@@ -2501,7 +2504,8 @@
         "docs/product/Planning-View.json"
       ],
       "design_refs": [
-        "docs/engineering/batch-01.md"
+        "docs/engineering/batch-01.md",
+        "docs/engineering/ui-refresh.md"
       ],
       "rationale": "Sign in and select workspace",
       "paths": [
