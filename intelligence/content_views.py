@@ -399,10 +399,15 @@ def schema_edit(request, workspace_id, schema_id=None):
 @login_required
 @require_GET
 def schema_detail(request, workspace_id, schema_id):
+    from .schema_lifecycle import dependencies
+
     schema = get_object_or_404(
         schemas_for(request.user, workspace_id).select_related("owner", "system"),
         pk=schema_id,
     )
+    dependency_ids = {
+        item["id"] for item in dependencies(schema, request.user) if item.get("id")
+    }
     return render(
         request,
         "intelligence/schema.html",
@@ -410,7 +415,9 @@ def schema_detail(request, workspace_id, schema_id):
             **context(request, workspace_id),
             "schema": schema,
             "versions": schema.versions.order_by("-number"),
-            "dependent_system": schema.system if schema.system_id else None,
+            "dependent_systems": systems_for(request.user, workspace_id)
+            .filter(pk__in=dependency_ids)
+            .order_by("name", "pk"),
         },
     )
 

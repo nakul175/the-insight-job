@@ -37,11 +37,11 @@ jobs:
       - run: ruff format --check config workspaces intelligence manage.py
       - run: python manage.py makemigrations --check --dry-run --settings=config.test_settings
       - run: python -m playwright install --with-deps chromium
-      - run: python manage.py test --settings=config.test_settings
+      - run: python manage.py test --settings=config.test_settings --verbosity 2
         env:
           TIJ_BROWSER_TESTS: 'true'
       - name: PostgreSQL integration tests
-        run: python manage.py test --settings=config.ci_settings
+        run: python manage.py test --settings=config.ci_settings --verbosity 2
         env:
           DATABASE_URL: postgres://insight_test:local-ci-only@localhost:5432/insight_test
       - run: pip-audit -r requirements.txt --no-deps --disable-pip
