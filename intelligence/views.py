@@ -13,7 +13,7 @@ from workspaces.models import Membership
 
 from .forms import InviteForm, ScopeForm, SourceForm
 from .models import Schedule, SourceTest, WorkItem
-from .permissions import member, records_for, sources_for, systems_for
+from .permissions import member, records_for, runs_for, sources_for, systems_for
 from .services import (
     accept_invitation,
     archive_source,
@@ -45,13 +45,61 @@ def overview(request, workspace_id):
     now = timezone.now()
     start = now - timedelta(days=7)
     try:
-        sources = sources_for(request.user, workspace_id)
+        sources = list(sources_for(request.user, workspace_id).order_by("name", "pk"))
+        exceptions = []
+        for source in sources:
+            latest = (
+                runs_for(request.user, workspace_id)
+                .filter(source=source)
+                .order_by("-created_at")
+                .first()
+            )
+            if latest and latest.state in {
+                "blocked",
+                "needs_access",
+                "action_required",
+                "failed",
+                "partial",
+            }:
+                exceptions.append(
+                    {
+                        "source": source,
+                        "reason": latest.reason
+                        or "This permitted source needs operator attention.",
+                        "url": reverse(
+                            "connection-setup"
+                            if latest.state == "needs_access"
+                            else "source-detail",
+                            args=[workspace_id, source.pk],
+                        ),
+                        "action": "Reconnect source account"
+                        if latest.state == "needs_access"
+                        else "Inspect scope and recovery",
+                        "run": latest,
+                    }
+                )
+        from .routing import live_access, results_for
+
+        reviews = 0
+        for result in results_for(request.user, workspace_id).filter(
+            created_at__gte=start,
+            review_state="open",
+            decision__in=["review", "enrich", "blocked", "fail"],
+        ):
+            try:
+                live_access(request.user, result, allow_inactive=True)
+            except PermissionDenied:
+                continue
+            reviews += 1
         records = records_for(request.user, workspace_id)
         recent = records.filter(created_at__gte=start)
         ctx.update(
-            source_count=sources.count(),
+            source_count=len(sources),
+            exceptions=exceptions,
+            visible_sources=sources,
             record_count=recent.count(),
             issue_count=recent.filter(status="review").count(),
+            review_count=reviews,
             start=start,
             as_of=now,
         )
@@ -65,7 +113,17 @@ def overview(request, workspace_id):
 @require_GET
 def source_list(request, workspace_id):
     ctx = context(request, workspace_id)
-    ctx["sources"] = sources_for(request.user, workspace_id)
+    try:
+        ctx["sources"] = list(
+            sources_for(request.user, workspace_id).order_by("name", "pk")
+        )
+    except DatabaseError:
+        return render(
+            request,
+            "intelligence/sources.html",
+            {**ctx, "load_error": True},
+            status=503,
+        )
     return render(request, "intelligence/sources.html", ctx)
 
 

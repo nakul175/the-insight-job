@@ -638,3 +638,67 @@ def queue_withdrawals(actor, workspace_id, source_id, system_id=None):
         {"count": len(queued), "external_deletion_claimed": False},
     )
     return queued
+
+
+@transaction.atomic
+def reconcile_delivery(actor, workspace_id, intent_id, reason):
+    """Confirm an existing local receipt; this action never invokes a receiver."""
+    Workspace.objects.select_for_update(no_key=True).get(pk=workspace_id)
+    intent = get_object_or_404(
+        DeliveryIntent.objects.select_for_update(),
+        pk=intent_id,
+        workspace_id=workspace_id,
+    )
+    owned_system(actor, workspace_id, intent.result.system_id)
+    from .permissions import member
+
+    try:
+        live_access(actor, intent.result, allow_inactive=True)
+    except PermissionDenied:
+        if member(actor, workspace_id).role != "administrator":
+            raise
+    if intent.state == "delivered_sandbox":
+        return intent
+    if (
+        intent.state not in {"ambiguous", "retry", "action_required"}
+        or not isinstance(reason, str)
+        or not reason.strip()
+        or len(reason) > 1000
+    ):
+        raise ValidationError(
+            "Choose an uncertain/failed delivery and record a reconciliation reason."
+        )
+    receipt = SandboxReceipt.objects.filter(
+        workspace_id=workspace_id,
+        idempotency_key=intent.idempotency_key,
+        payload_digest=payload_digest(intent),
+        operation=intent.operation,
+        message__workspace_id=workspace_id,
+        message__destination_id=intent.destination_id,
+        message__external_key=intent.external_key,
+    ).first()
+    if receipt:
+        intent.state = "delivered_sandbox"
+        intent.reason = (
+            "Confirmed an existing local sandbox receipt; no second receiver write"
+        )
+        intent.response = {
+            "receipt": str(receipt.pk),
+            "mode": "local_sandbox",
+            "status": "confirmed_existing_receipt",
+        }
+    elif intent.bundle.mapping.contract.safe_upsert:
+        intent.state = "action_required"
+        intent.reason = "No matching local receipt. Owner may authorise a bounded safe-upsert retry after current validation."
+    else:
+        intent.state = "ambiguous"
+        intent.reason = "No confirmed receipt and no safe deduplication. Review required; blind retry is blocked."
+    intent.save(update_fields=["state", "reason", "response"])
+    audit(
+        actor,
+        workspace_id,
+        "delivery.reconciled",
+        intent.pk,
+        {"state": intent.state, "reason": reason, "receiver_called": False},
+    )
+    return intent

@@ -107,7 +107,9 @@ def inventory(record):
             "record_id", flat=True
         )
     } | {str(record.pk)}
-    identifiers = capture_ids | version_ids | set(results) | affected_record_ids
+    identifiers = (
+        capture_ids | version_ids | set(results) | affected_record_ids | set(intents)
+    )
     drafts = []
     for draft in m.UserDraft.objects.filter(workspace_id=record.workspace_id):
         if (
@@ -115,6 +117,8 @@ def inventory(record):
             and str(draft.scope_id) in affected_record_ids
             or draft.scope_kind == "result"
             and str(draft.scope_id) in results
+            or draft.scope_kind == "delivery"
+            and str(draft.scope_id) in intents
             or any(
                 identifier in json.dumps(draft.payload) for identifier in identifiers
             )

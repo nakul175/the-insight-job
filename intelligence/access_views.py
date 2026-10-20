@@ -214,13 +214,67 @@ def run_detail(request, workspace_id, run_id):
         runs_for(request.user, workspace_id),
         pk=run_id,
     )
+    import json
+
+    from django.core.exceptions import PermissionDenied
+
+    from .routing import live_access, results_for
+
+    captures = list(
+        Capture.objects.filter(run=item)
+        .exclude(status="deleted")
+        .select_related("record")
+    )
+    missing = {}
+    for row in list(item.checkpoint.get("skipped", [])) + [
+        gap for capture in captures for gap in capture.missing
+    ]:
+        if isinstance(row, dict):
+            missing[json.dumps(row, sort_keys=True)] = row
+    capture_versions = {
+        (capture.record_id, capture.content_version_id)
+        for capture in captures
+        if capture.record_id and capture.content_version_id
+    }
+    from .models import ContentAnalysis
+
+    run_analysis_ids = set(
+        ContentAnalysis.objects.filter(capture__in=captures).values_list(
+            "pk", flat=True
+        )
+    )
+    evaluations = []
+    for result in (
+        results_for(request.user, workspace_id)
+        .filter(
+            record_id__in=[
+                capture.record_id for capture in captures if capture.record_id
+            ]
+        )
+        .order_by("created_at", "pk")
+    ):
+        if (
+            result.record_id,
+            result.content_version_id,
+        ) not in capture_versions or result.analysis_id not in run_analysis_ids:
+            continue
+        try:
+            live_access(request.user, result, allow_inactive=True)
+        except PermissionDenied:
+            continue
+        evaluations.append(result)
     return render(
         request,
         "intelligence/run.html",
         {
             **context(request, workspace_id),
             "run": item,
-            "captures": Capture.objects.filter(run=item),
+            "captures": captures,
+            "collected_count": len(captures),
+            "missing_items": list(missing.values()),
+            "missing_count": len(missing),
+            "pending_count": len(item.checkpoint.get("pending", [])),
+            "evaluations": evaluations,
         },
     )
 
@@ -247,7 +301,7 @@ def original_file(request, workspace_id, capture_id):
     )
     if capture.status in {"quarantined", "deleted"}:
         return HttpResponse(
-            "This original is quarantined and cannot be downloaded through this viewer.",
+            "Deleted or quarantined originals are unavailable through this viewer.",
             status=403,
         )
     response = HttpResponse(
