@@ -149,6 +149,7 @@ def stop_requested(item):
             reason="Stopped at a safe checkpoint; retained captures are partial",
             lease_until=None,
         )
+        item.refresh_from_db()
         return True
     return False
 
@@ -188,32 +189,56 @@ def cancel_run(actor, item):
     return item
 
 
-def schedule_retry(item):
-    item.refresh_from_db()
-    if stop_requested(item) or item.state == "blocked":
-        return
-    if item.attempts >= item.limits.get("attempts", 3) or budget_reason(item):
-        item.state = "action_required"
-        item.reason = "Retry/time budget exhausted; inspect the failed capture stage"
-    else:
-        item.state = "retry"
-        item.reason = "Transient capture failure; bounded retry scheduled"
-        item.next_attempt = timezone.now() + timedelta(
-            seconds=min(60, 2**item.attempts)
+@transaction.atomic
+def update_owned(item, token, **values):
+    current = WorkItem.objects.select_for_update().get(pk=item.pk)
+    if current.lease_token != token:
+        raise LeaseLost()
+    if current.state != "running":
+        stop_requested(current)
+        return current
+    for key, value in values.items():
+        setattr(current, key, value)
+    current.save(update_fields=list(values))
+    return current
+
+
+@transaction.atomic
+def schedule_retry(item, token):
+    current = WorkItem.objects.select_for_update().get(pk=item.pk)
+    if current.lease_token != token:
+        raise LeaseLost()
+    if stop_requested(current) or current.state != "running":
+        return current
+    if current.attempts >= current.limits.get("attempts", 3) or budget_reason(current):
+        return update_owned(
+            current,
+            token,
+            state="action_required",
+            reason="Retry/time budget exhausted; inspect the failed capture stage",
+            lease_until=None,
         )
-    item.lease_until = None
-    item.save(update_fields=["state", "reason", "next_attempt", "lease_until"])
+    return update_owned(
+        current,
+        token,
+        state="retry",
+        reason="Transient capture failure; bounded retry scheduled",
+        next_attempt=timezone.now() + timedelta(seconds=min(60, 2**current.attempts)),
+        lease_until=None,
+    )
 
 
 @transaction.atomic
 def account_received(item, token, amount):
     current = WorkItem.objects.select_for_update().get(pk=item.pk)
-    if current.lease_token == token:
-        current.usage = {
-            **current.usage,
-            "bytes": current.usage.get("bytes", 0) + amount,
-        }
-        current.save(update_fields=["usage"])
+    if current.lease_token != token:
+        raise LeaseLost()
+    current.usage = {
+        **current.usage,
+        "bytes": current.usage.get("bytes", 0) + amount,
+        "seconds": round((timezone.now() - current.started_at).total_seconds(), 3),
+    }
+    current.save(update_fields=["usage"])
     return current
 
 
@@ -227,11 +252,14 @@ def collect_step(item, fetch=fetch_public):
         return item
     reason = budget_reason(item)
     if reason:
-        item.state = "partial"
-        item.reason = reason
-        item.result = {"cap": reason, "usage": item.usage, "complete": False}
-        item.save(update_fields=["state", "reason", "result"])
-        return item
+        return update_owned(
+            item,
+            token,
+            state="partial",
+            reason=reason,
+            result={"cap": reason, "usage": item.usage, "complete": False},
+            lease_until=None,
+        )
     checkpoint = dict(item.checkpoint)
     pending = list(checkpoint.get("pending", []))
     if not pending:
@@ -243,8 +271,9 @@ def collect_step(item, fetch=fetch_public):
             "downstream_delivery": False,
         }
         item.lease_until = None
-        item.save(update_fields=["state", "result", "lease_until"])
-        return item
+        return update_owned(
+            item, token, state=item.state, result=item.result, lease_until=None
+        )
     target = pending[0]
     url = target["url"]
     config = item.source_version.config
@@ -254,9 +283,7 @@ def collect_step(item, fetch=fetch_public):
             checkpoint.setdefault("skipped", []).append({"url": url, "reason": rule})
             pending.pop(0)
             checkpoint["pending"] = pending
-            item.checkpoint = checkpoint
-            item.save(update_fields=["checkpoint"])
-            return item
+            return update_owned(item, token, checkpoint=checkpoint)
         access_before = connection_for(item.source, item.source_version)
         proof = (
             (access_before.pk, access_before.checked_at, access_before.secret_ref)
@@ -286,10 +313,26 @@ def collect_step(item, fetch=fetch_public):
             item.state = "partial"
             item.reason = "byte limit"
             item.result = {"cap": "byte limit", "complete": False, "usage": item.usage}
-            item.save(update_fields=["state", "reason", "result"])
-            return item
+            return update_owned(
+                item,
+                token,
+                state=item.state,
+                reason=item.reason,
+                result=item.result,
+                lease_until=None,
+            )
         if stop_requested(item) or not check_work_permission(item):
             return item
+        reason = budget_reason(item)
+        if reason:
+            return update_owned(
+                item,
+                token,
+                state="partial",
+                reason=reason,
+                result={"cap": reason, "complete": False, "usage": item.usage},
+                lease_until=None,
+            )
         if item.lease_token != token or item.state != "running":
             return item
         missing = list(capture.get("missing", []))
@@ -307,8 +350,14 @@ def collect_step(item, fetch=fetch_public):
                     "missing": [{"url": url, "reason": item.reason}],
                     "complete": False,
                 }
-                item.save(update_fields=["state", "reason", "result"])
-                return item
+                return update_owned(
+                    item,
+                    token,
+                    state=item.state,
+                    reason=item.reason,
+                    result=item.result,
+                    lease_until=None,
+                )
         quarantined = data.startswith((b"MZ", b"\x7fELF", b"PK\x03\x04", b"#!"))
         if media_type not in {
             "text/html",
@@ -489,15 +538,28 @@ def collect_step(item, fetch=fetch_public):
                 },
             )
     except NeedsAccess:
-        item.state = "needs_access"
-        item.reason = "Source access expired or is unavailable; owner must reconnect"
-        item.lease_until = None
-        item.save(update_fields=["state", "reason", "lease_until"])
+        return update_owned(
+            item,
+            token,
+            state="needs_access",
+            reason="Source access expired or is unavailable; owner must reconnect",
+            lease_until=None,
+        )
     except ValidationError:
-        item.state = "action_required"
-        item.reason = "Source scope, safety or capture limits rejected this item"
-        item.lease_until = None
-        item.save(update_fields=["state", "reason", "lease_until"])
+        audit(
+            item.actor,
+            item.workspace_id,
+            "capture.blocked",
+            item.pk,
+            {"source_version": item.source_version.version},
+        )
+        return update_owned(
+            item,
+            token,
+            state="action_required",
+            reason="Source scope, safety or capture limits rejected this item",
+            lease_until=None,
+        )
     except (OSError, TimeoutError, HTTPException):
-        schedule_retry(item)
+        return schedule_retry(item, token)
     return item

@@ -756,3 +756,52 @@ class BatchTwoTests(TestCase):
         result = collect_step(item, fetch=fetch)
         self.assertEqual(result.state, "needs_access")
         self.assertFalse(Capture.objects.filter(run=item).exists())
+
+    def test_us0404_error_from_replaced_worker_cannot_overwrite_new_lease(self):
+        import uuid
+
+        from intelligence.runs import LeaseLost
+
+        start_run(self.admin, self.source, "late-error")
+        item = claim_next()
+        new_token = uuid.uuid4()
+
+        def fetch(*args, **kwargs):
+            WorkItem.objects.filter(pk=item.pk).update(lease_token=new_token)
+            raise OSError("old worker failed")
+
+        with self.assertRaises(LeaseLost):
+            collect_step(item, fetch=fetch)
+        item.refresh_from_db()
+        self.assertEqual(item.state, "running")
+        self.assertEqual(item.lease_token, new_token)
+
+    def test_us0405_cancel_during_failed_fetch_is_not_retried(self):
+        start_run(self.admin, self.source, "cancel-error")
+        item = claim_next()
+
+        def fetch(*args, **kwargs):
+            cancel_run(self.admin, item)
+            raise OSError("cancelled in flight")
+
+        result = collect_step(item, fetch=fetch)
+        self.assertEqual(result.state, "cancelled")
+        self.assertIsNone(result.lease_until)
+        self.assertFalse(Capture.objects.filter(run=item).exists())
+
+    def test_us0405_inflight_time_is_accounted_and_stops_capture_commit(self):
+        start_run(self.admin, self.source, "time-budget")
+        item = claim_next()
+
+        def fetch(*args, **kwargs):
+            WorkItem.objects.filter(pk=item.pk).update(
+                started_at=timezone.now() - timedelta(seconds=200)
+            )
+            return self.capture()
+
+        result = collect_step(item, fetch=fetch)
+        self.assertEqual(result.state, "partial")
+        self.assertEqual(result.reason, "time limit")
+        self.assertGreater(result.usage["seconds"], 180)
+        self.assertGreater(result.usage["bytes"], 0)
+        self.assertFalse(Capture.objects.filter(run=item).exists())
