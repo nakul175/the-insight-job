@@ -11,6 +11,8 @@ from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 
+from workspaces.models import Workspace
+
 from .access import NeedsAccess
 from .models import EnrichmentAttempt, EnrichmentPolicy, WorkItem
 from .permissions import records_for, sources_for, system_can_read
@@ -157,6 +159,8 @@ def permitted_source(actor, system, url):
 
 @transaction.atomic
 def enrichment_step(actor, workspace_id, attempt_id):
+    # Global mutation lock order: workspace, then system/attempt/jobs.
+    Workspace.objects.select_for_update().get(pk=workspace_id)
     attempt = get_object_or_404(
         EnrichmentAttempt.objects.select_for_update().select_related(
             "policy__system", "record"
@@ -331,6 +335,7 @@ def enrichment_step(actor, workspace_id, attempt_id):
 
 @transaction.atomic
 def resume_enrichment(actor, workspace_id, attempt_id, reason):
+    Workspace.objects.select_for_update().get(pk=workspace_id)
     previous = get_object_or_404(
         EnrichmentAttempt.objects.select_for_update(),
         pk=attempt_id,
