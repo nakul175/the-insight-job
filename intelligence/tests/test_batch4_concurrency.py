@@ -3,7 +3,9 @@
 import threading
 from unittest.mock import patch
 
-from django.db import close_old_connections, connection, transaction
+from django.core.exceptions import PermissionDenied, ValidationError
+from django.db import DatabaseError, close_old_connections, connection, transaction
+from django.http import Http404
 from django.test import TransactionTestCase, skipUnlessDBFeature
 
 from intelligence.enrichment import enrichment_step, start_enrichment
@@ -57,7 +59,13 @@ class EnrichmentLockTests(TransactionTestCase):
                     save_configuration(
                         self.admin, self.workspace.pk, system.pk, 1, self.config()
                     )
-            except Exception as exc:
+            except (
+                DatabaseError,
+                ValidationError,
+                PermissionDenied,
+                Http404,
+                AssertionError,
+            ) as exc:
                 errors.append(exc)
             finally:
                 close_old_connections()
@@ -71,7 +79,13 @@ class EnrichmentLockTests(TransactionTestCase):
                     with connection.cursor() as cursor:
                         cursor.execute("SET LOCAL lock_timeout = '3s'")
                     enrichment_step(self.admin, self.workspace.pk, attempt.pk)
-            except Exception as exc:
+            except (
+                DatabaseError,
+                ValidationError,
+                PermissionDenied,
+                Http404,
+                AssertionError,
+            ) as exc:
                 errors.append(exc)
             finally:
                 close_old_connections()
