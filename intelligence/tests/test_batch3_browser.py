@@ -121,7 +121,7 @@ class ContentBrowserTests(StaticLiveServerTestCase):
                 await page.get_by_role(
                     "button", name="Run explicit preview", exact=True
                 ).click()
-                await page.wait_for_load_state("networkidle")
+                await page.get_by_role("link", name="budget", exact=True).wait_for()
                 self.assertIn("budget", await page.locator("body").inner_text())
                 await page.get_by_role("link", name="budget", exact=True).click()
                 self.assertTrue(

@@ -177,9 +177,20 @@
         "US-1509",
         "US-1510"
       ],
-      "status": "in_progress",
-      "merged_commit": null,
-      "ci_run": null
+      "status": "coding_complete_merged_ci_passed",
+      "merged_commit": "ad03681cb742f7d9f748c21a76ef38ba3baa5763",
+      "ci_run": 39394110673,
+      "pr": 8,
+      "reviewed_commit": "660cb57297974b6de0513620e4a9ad44d983ed1c",
+      "pr_ci_run": 39393520364,
+      "tests_discovered": 196,
+      "tests_executed_sqlite": 190,
+      "tests_executed_postgresql": 189,
+      "review": "Separate exact-head AI review cleared; explicit user standing authority for such prototype merges. Not human/native approval or product acceptance.",
+      "main_ci_attempts": {
+        "1": "failed: Batch3 browser networkidle timeout after load",
+        "2": "success; deterministic visible-element wait also verified for follow-up PR"
+      }
     }
   ]
 }
