@@ -1242,8 +1242,7 @@
           "id": "AC-0902-01",
           "expected": "When I build a rule, then field, operator, comparison value, grouping and unknown behaviour are visible.",
           "probe_ids": [
-            "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac0902_incompatible_rule_types_and_semantic_operator_fail_closed",
-            "intelligence.tests.test_batch5.BatchFiveTests.test_units_timezone_and_inclusive_boundary"
+            "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac0902_rule_builder_exposes_field_operator_value_group_unknown"
           ],
           "scope": "Isolated synthetic prototype; real source, receiver and hosted end-to-end qualification are separate."
         },
@@ -1928,7 +1927,7 @@
           "id": "AC-1305-01",
           "expected": "When I configure sampling, then only authorised rejects within the declared interval are selected.",
           "probe_ids": [
-            "intelligence.tests.test_batch7.BatchSevenTests.test_reject_sampling_labels_new_version_and_alerts_without_rule_changes"
+            "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1305_sampling_excludes_outside_interval_and_unpermitted_sources"
           ],
           "scope": "Isolated synthetic prototype; real source, receiver and hosted end-to-end qualification are separate."
         },
@@ -2038,7 +2037,8 @@
           "id": "AC-1403-03",
           "expected": "Given an unauthorised recipient, then neither record details nor evidence are included in alerts.",
           "probe_ids": [
-            "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1403_nonmember_cannot_receive_workspace_incident"
+            "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1403_nonmember_cannot_receive_workspace_incident",
+            "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1403_restricted_recipient_receives_only_generic_incident"
           ],
           "scope": "Isolated synthetic prototype; real source, receiver and hosted end-to-end qualification are separate."
         }
@@ -2386,6 +2386,7 @@
           "id": "AC-1507-03",
           "expected": "Given resumed capture, when missing evidence arrives, then a new traceable evaluation is created.",
           "probe_ids": [
+            "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1507_resumed_missing_evidence_creates_new_traceable_evaluation",
             "intelligence.tests.test_batch8.BatchEightTests.test_new_collection_run_does_not_claim_old_evaluation",
             "intelligence.tests.test_batch8.BatchEightTests.test_same_bytes_new_processing_does_not_claim_prior_analysis"
           ],
@@ -2908,7 +2909,7 @@
       "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac0105_visible_interval_drilldown_and_timestamped_failure",
       "path": "intelligence/tests/test_acceptance_audit.py",
       "line": 56,
-      "sha256": "6967f3ac00e1c342370cd88091b26494f599d34c29ad99d1f45bf07f717b5c90",
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
       "assertions": [
         {
           "line": 60,
@@ -3012,7 +3013,7 @@
       "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac0203_scope_preview_reports_each_matching_rule",
       "path": "intelligence/tests/test_acceptance_audit.py",
       "line": 75,
-      "sha256": "6967f3ac00e1c342370cd88091b26494f599d34c29ad99d1f45bf07f717b5c90",
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
       "assertions": [
         {
           "line": 84,
@@ -3135,35 +3136,35 @@
     "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac0205_sample_report_exposes_format_missing_scope_and_partial_policy": {
       "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac0205_sample_report_exposes_format_missing_scope_and_partial_policy",
       "path": "intelligence/tests/test_acceptance_audit.py",
-      "line": 394,
-      "sha256": "6967f3ac00e1c342370cd88091b26494f599d34c29ad99d1f45bf07f717b5c90",
+      "line": 423,
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
       "assertions": [
         {
-          "line": 405,
+          "line": 434,
           "expression": "self.assertEqual(sampled.state, 'partial')"
         },
         {
-          "line": 406,
+          "line": 435,
           "expression": "self.assertEqual(sampled.report['formats'], ['text/html'])"
         },
         {
-          "line": 407,
+          "line": 436,
           "expression": "self.assertTrue(sampled.report['missing'])"
         },
         {
-          "line": 408,
+          "line": 437,
           "expression": "self.assertFalse(sampled.report['downstream_delivery'])"
         },
         {
-          "line": 415,
+          "line": 444,
           "expression": "self.assertContains(screen, 'Embedded media')"
         },
         {
-          "line": 416,
+          "line": 445,
           "expression": "self.assertContains(screen, 'text/html')"
         },
         {
-          "line": 409,
+          "line": 438,
           "expression": "self.assertRaises(ValidationError)"
         }
       ]
@@ -3220,7 +3221,7 @@
       "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac0206_archive_preview_lists_runs_schedules_and_dependencies",
       "path": "intelligence/tests/test_acceptance_audit.py",
       "line": 88,
-      "sha256": "6967f3ac00e1c342370cd88091b26494f599d34c29ad99d1f45bf07f717b5c90",
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
       "assertions": [
         {
           "line": 104,
@@ -3768,7 +3769,7 @@
       "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac0504_common_envelope_pins_capture_format_and_identity",
       "path": "intelligence/tests/test_acceptance_audit.py",
       "line": 109,
-      "sha256": "6967f3ac00e1c342370cd88091b26494f599d34c29ad99d1f45bf07f717b5c90",
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
       "assertions": [
         {
           "line": 111,
@@ -4774,7 +4775,7 @@
       "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac0701_type_schema_lists_permitted_dependent_systems",
       "path": "intelligence/tests/test_acceptance_audit.py",
       "line": 159,
-      "sha256": "6967f3ac00e1c342370cd88091b26494f599d34c29ad99d1f45bf07f717b5c90",
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
       "assertions": [
         {
           "line": 165,
@@ -5106,7 +5107,7 @@
       "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac0804_two_successful_consumers_share_source_not_decision_identity",
       "path": "intelligence/tests/test_acceptance_audit.py",
       "line": 169,
-      "sha256": "6967f3ac00e1c342370cd88091b26494f599d34c29ad99d1f45bf07f717b5c90",
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
       "assertions": [
         {
           "line": 177,
@@ -5193,47 +5194,47 @@
     "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac0805_uncertain_relevance_is_reviewable_and_exclusion_can_be_overturned": {
       "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac0805_uncertain_relevance_is_reviewable_and_exclusion_can_be_overturned",
       "path": "intelligence/tests/test_acceptance_audit.py",
-      "line": 300,
-      "sha256": "6967f3ac00e1c342370cd88091b26494f599d34c29ad99d1f45bf07f717b5c90",
+      "line": 329,
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
       "assertions": [
         {
-          "line": 308,
+          "line": 337,
           "expression": "self.assertEqual(uncertain.relevance['decision'], 'review')"
         },
         {
-          "line": 309,
+          "line": 338,
           "expression": "self.assertEqual(uncertain.decision, 'review')"
         },
         {
-          "line": 312,
+          "line": 341,
           "expression": "self.assertIn(uncertain.pk, [r.pk for r in queue.context['rows']])"
         },
         {
-          "line": 317,
+          "line": 346,
           "expression": "self.assertEqual(excluded.decision, 'excluded')"
         },
         {
-          "line": 329,
+          "line": 358,
           "expression": "self.assertEqual(changed.decision, 'pass')"
         },
         {
-          "line": 331,
+          "line": 360,
           "expression": "self.assertEqual(event.actor_id, self.admin.pk)"
         },
         {
-          "line": 332,
+          "line": 361,
           "expression": "self.assertEqual(event.original['relevance']['decision'], 'exclude')"
         },
         {
-          "line": 333,
+          "line": 362,
           "expression": "self.assertEqual(event.replacement['relevance']['decision'], 'include')"
         },
         {
-          "line": 334,
+          "line": 363,
           "expression": "self.assertEqual(event.reason, 'Authorised sample review confirms relevance')"
         },
         {
-          "line": 336,
+          "line": 365,
           "expression": "self.assertEqual(old.version, 1)"
         }
       ]
@@ -5298,7 +5299,7 @@
       "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac0806_retirement_retains_results_and_blocks_new_routing",
       "path": "intelligence/tests/test_acceptance_audit.py",
       "line": 183,
-      "sha256": "6967f3ac00e1c342370cd88091b26494f599d34c29ad99d1f45bf07f717b5c90",
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
       "assertions": [
         {
           "line": 188,
@@ -5378,46 +5379,42 @@
         }
       ]
     },
+    "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac0902_rule_builder_exposes_field_operator_value_group_unknown": {
+      "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac0902_rule_builder_exposes_field_operator_value_group_unknown",
+      "path": "intelligence/tests/test_acceptance_audit.py",
+      "line": 618,
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
+      "assertions": [
+        {
+          "line": 624,
+          "expression": "self.assertContains(response, 'Rules')"
+        },
+        {
+          "line": 625,
+          "expression": "self.assertContains(response, 'No semantic inference or unit conversion')"
+        },
+        {
+          "line": 641,
+          "expression": "self.assertContains(response, 'for=\"id_rules\"')"
+        },
+        {
+          "line": 642,
+          "expression": "self.assertContains(response, 'id=\"id_rules\"')"
+        },
+        {
+          "line": 640,
+          "expression": "self.assertContains(response, component)"
+        }
+      ]
+    },
     "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac0902_incompatible_rule_types_and_semantic_operator_fail_closed": {
       "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac0902_incompatible_rule_types_and_semantic_operator_fail_closed",
       "path": "intelligence/tests/test_acceptance_audit.py",
       "line": 197,
-      "sha256": "6967f3ac00e1c342370cd88091b26494f599d34c29ad99d1f45bf07f717b5c90",
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
       "assertions": [
         {
           "line": 201,
-          "expression": "self.assertRaises(ValidationError)"
-        }
-      ]
-    },
-    "intelligence.tests.test_batch5.BatchFiveTests.test_units_timezone_and_inclusive_boundary": {
-      "id": "intelligence.tests.test_batch5.BatchFiveTests.test_units_timezone_and_inclusive_boundary",
-      "path": "intelligence/tests/test_batch5.py",
-      "line": 137,
-      "sha256": "4a7d88d25c896bede0f89e279ab82bc6199f25329c09c62eff76bcb229b95375",
-      "assertions": [
-        {
-          "line": 160,
-          "expression": "self.assertEqual(result['decision'], 'pass')"
-        },
-        {
-          "line": 161,
-          "expression": "self.assertEqual(result['rules'][0]['source_timezone'], 'UTC+05:30')"
-        },
-        {
-          "line": 163,
-          "expression": "self.assertEqual(evaluate_rules(fact, definitions, config, 1)['decision'], 'fail')"
-        },
-        {
-          "line": 167,
-          "expression": "self.assertEqual(evaluate_rules(fact, definitions, config, 1)['decision'], 'review')"
-        },
-        {
-          "line": 170,
-          "expression": "self.assertEqual(evaluate_rules({'budget': {'status': 'known', 'value': 12, 'unit': 'USD'}}, [field()], rules(), 1)['decision'], 'review')"
-        },
-        {
-          "line": 179,
           "expression": "self.assertRaises(ValidationError)"
         }
       ]
@@ -5478,6 +5475,38 @@
         }
       ]
     },
+    "intelligence.tests.test_batch5.BatchFiveTests.test_units_timezone_and_inclusive_boundary": {
+      "id": "intelligence.tests.test_batch5.BatchFiveTests.test_units_timezone_and_inclusive_boundary",
+      "path": "intelligence/tests/test_batch5.py",
+      "line": 137,
+      "sha256": "4a7d88d25c896bede0f89e279ab82bc6199f25329c09c62eff76bcb229b95375",
+      "assertions": [
+        {
+          "line": 160,
+          "expression": "self.assertEqual(result['decision'], 'pass')"
+        },
+        {
+          "line": 161,
+          "expression": "self.assertEqual(result['rules'][0]['source_timezone'], 'UTC+05:30')"
+        },
+        {
+          "line": 163,
+          "expression": "self.assertEqual(evaluate_rules(fact, definitions, config, 1)['decision'], 'fail')"
+        },
+        {
+          "line": 167,
+          "expression": "self.assertEqual(evaluate_rules(fact, definitions, config, 1)['decision'], 'review')"
+        },
+        {
+          "line": 170,
+          "expression": "self.assertEqual(evaluate_rules({'budget': {'status': 'known', 'value': 12, 'unit': 'USD'}}, [field()], rules(), 1)['decision'], 'review')"
+        },
+        {
+          "line": 179,
+          "expression": "self.assertRaises(ValidationError)"
+        }
+      ]
+    },
     "intelligence.tests.test_batch5.BatchFiveTests.test_review_date_extraction_and_equality_compare_aware_instants": {
       "id": "intelligence.tests.test_batch5.BatchFiveTests.test_review_date_extraction_and_equality_compare_aware_instants",
       "path": "intelligence/tests/test_batch5.py",
@@ -5501,27 +5530,27 @@
     "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1001_combined_reason_system_age_owner_filters_and_foreign_scope": {
       "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1001_combined_reason_system_age_owner_filters_and_foreign_scope",
       "path": "intelligence/tests/test_acceptance_audit.py",
-      "line": 338,
-      "sha256": "6967f3ac00e1c342370cd88091b26494f599d34c29ad99d1f45bf07f717b5c90",
+      "line": 367,
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
       "assertions": [
         {
-          "line": 353,
+          "line": 382,
           "expression": "self.assertEqual([r.pk for r in response.context['rows']], [result.pk])"
         },
         {
-          "line": 354,
+          "line": 383,
           "expression": "self.assertEqual(list(self.client.get(url, {**params, 'age_hours': 4}).context['rows']), [])"
         },
         {
-          "line": 357,
+          "line": 386,
           "expression": "self.assertEqual(list(self.client.get(url, {**params, 'reason': 'different'}).context['rows']), [])"
         },
         {
-          "line": 365,
+          "line": 394,
           "expression": "self.assertEqual(rejected.status_code, 400)"
         },
         {
-          "line": 366,
+          "line": 395,
           "expression": "self.assertNotContains(rejected, record.title, status_code=400)"
         }
       ]
@@ -5609,19 +5638,19 @@
     "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1002_missing_reason_and_evidence_cannot_change_reviewed_value": {
       "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1002_missing_reason_and_evidence_cannot_change_reviewed_value",
       "path": "intelligence/tests/test_acceptance_audit.py",
-      "line": 368,
-      "sha256": "6967f3ac00e1c342370cd88091b26494f599d34c29ad99d1f45bf07f717b5c90",
+      "line": 397,
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
       "assertions": [
         {
-          "line": 391,
+          "line": 420,
           "expression": "self.assertEqual(claimed.fields['budget']['value'], 12)"
         },
         {
-          "line": 392,
+          "line": 421,
           "expression": "self.assertFalse(claimed.changes.filter(kind='field').exists())"
         },
         {
-          "line": 379,
+          "line": 408,
           "expression": "self.assertRaises(ValidationError)"
         }
       ]
@@ -5630,7 +5659,7 @@
       "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1004_defer_requires_reason_owner_date_and_retains_audit_version",
       "path": "intelligence/tests/test_acceptance_audit.py",
       "line": 207,
-      "sha256": "6967f3ac00e1c342370cd88091b26494f599d34c29ad99d1f45bf07f717b5c90",
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
       "assertions": [
         {
           "line": 238,
@@ -5813,19 +5842,19 @@
     "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1102_cyclic_enrichment_link_does_not_enqueue_a_second_capture": {
       "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1102_cyclic_enrichment_link_does_not_enqueue_a_second_capture",
       "path": "intelligence/tests/test_acceptance_audit.py",
-      "line": 418,
-      "sha256": "6967f3ac00e1c342370cd88091b26494f599d34c29ad99d1f45bf07f717b5c90",
+      "line": 447,
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
       "assertions": [
         {
-          "line": 456,
+          "line": 485,
           "expression": "self.assertEqual(finished.pending, [])"
         },
         {
-          "line": 457,
+          "line": 486,
           "expression": "self.assertEqual(finished.visited, [url])"
         },
         {
-          "line": 458,
+          "line": 487,
           "expression": "self.assertEqual(WorkItem.objects.filter(request_key__startswith=f'enrichment:{attempt.pk}:').count(), 1)"
         }
       ]
@@ -6342,6 +6371,26 @@
         }
       ]
     },
+    "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1305_sampling_excludes_outside_interval_and_unpermitted_sources": {
+      "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1305_sampling_excludes_outside_interval_and_unpermitted_sources",
+      "path": "intelligence/tests/test_acceptance_audit.py",
+      "line": 534,
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
+      "assertions": [
+        {
+          "line": 574,
+          "expression": "self.assertEqual(sampled.result_ids, [str(in_scope.pk)])"
+        },
+        {
+          "line": 575,
+          "expression": "self.assertNotIn(str(restricted.pk), sampled.result_ids)"
+        },
+        {
+          "line": 576,
+          "expression": "self.assertNotIn(str(earlier.pk), sampled.result_ids)"
+        }
+      ]
+    },
     "intelligence.tests.test_batch7.BatchSevenTests.test_reject_sampling_labels_new_version_and_alerts_without_rule_changes": {
       "id": "intelligence.tests.test_batch7.BatchSevenTests.test_reject_sampling_labels_new_version_and_alerts_without_rule_changes",
       "path": "intelligence/tests/test_batch7.py",
@@ -6402,14 +6451,26 @@
       "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1401_correction_appends_audit_without_mutating_prior_event",
       "path": "intelligence/tests/test_acceptance_audit.py",
       "line": 244,
-      "sha256": "6967f3ac00e1c342370cd88091b26494f599d34c29ad99d1f45bf07f717b5c90",
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
       "assertions": [
         {
-          "line": 262,
-          "expression": "self.assertEqual(list(AuditEvent.objects.filter(pk__in=[r['id'] for r in before]).values()), before)"
+          "line": 261,
+          "expression": "self.assertEqual(list(AuditEvent.objects.filter(pk__in=[r['id'] for r in before]).order_by('pk').values()), before)"
         },
         {
-          "line": 266,
+          "line": 272,
+          "expression": "self.assertEqual(event.actor_id, self.admin.pk)"
+        },
+        {
+          "line": 273,
+          "expression": "self.assertEqual(event.details['version'], corrected.version)"
+        },
+        {
+          "line": 274,
+          "expression": "self.assertEqual(event.details['field'], 'budget')"
+        },
+        {
+          "line": 275,
           "expression": "self.assertEqual(AuditEvent.objects.count(), len(before) + 1)"
         }
       ]
@@ -6417,28 +6478,44 @@
     "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1402_monitor_filters_usage_timestamp_and_correlation": {
       "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1402_monitor_filters_usage_timestamp_and_correlation",
       "path": "intelligence/tests/test_acceptance_audit.py",
-      "line": 268,
-      "sha256": "6967f3ac00e1c342370cd88091b26494f599d34c29ad99d1f45bf07f717b5c90",
+      "line": 277,
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
       "assertions": [
         {
-          "line": 287,
+          "line": 303,
+          "expression": "self.assertEqual(failed.state, 'action_required')"
+        },
+        {
+          "line": 312,
           "expression": "self.assertEqual(metrics['total_matching'], 1)"
         },
         {
-          "line": 288,
-          "expression": "self.assertEqual(metrics['runs'][0]['correlation_id'], str(run.pk))"
+          "line": 314,
+          "expression": "self.assertEqual(row['correlation_id'], str(run.pk))"
         },
         {
-          "line": 289,
-          "expression": "self.assertEqual(metrics['runs'][0]['usage_as_of'], run.usage['as_of'])"
+          "line": 315,
+          "expression": "self.assertEqual(row['record_ids'], [str(record.pk)])"
         },
         {
-          "line": 290,
+          "line": 316,
+          "expression": "self.assertEqual(row['delivery_ids'], [str(intent.pk)])"
+        },
+        {
+          "line": 317,
+          "expression": "self.assertEqual(row['state'], 'action_required')"
+        },
+        {
+          "line": 318,
+          "expression": "self.assertEqual(row['usage_as_of'], run.usage['as_of'])"
+        },
+        {
+          "line": 319,
           "expression": "self.assertEqual(sum(metrics['counts'].values()), len(metrics['runs']))"
         },
         {
-          "line": 291,
-          "expression": "self.assertEqual(metrics['runs'][0]['limits'], run.limits)"
+          "line": 320,
+          "expression": "self.assertEqual(row['limits'], run.limits)"
         }
       ]
     },
@@ -6501,16 +6578,44 @@
     "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1403_nonmember_cannot_receive_workspace_incident": {
       "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1403_nonmember_cannot_receive_workspace_incident",
       "path": "intelligence/tests/test_acceptance_audit.py",
-      "line": 293,
-      "sha256": "6967f3ac00e1c342370cd88091b26494f599d34c29ad99d1f45bf07f717b5c90",
+      "line": 322,
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
       "assertions": [
         {
-          "line": 298,
+          "line": 327,
           "expression": "self.assertFalse(Incident.objects.exists())"
         },
         {
-          "line": 294,
+          "line": 323,
           "expression": "self.assertRaises(Http404)"
+        }
+      ]
+    },
+    "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1403_restricted_recipient_receives_only_generic_incident": {
+      "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1403_restricted_recipient_receives_only_generic_incident",
+      "path": "intelligence/tests/test_acceptance_audit.py",
+      "line": 578,
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
+      "assertions": [
+        {
+          "line": 603,
+          "expression": "self.assertEqual(len(incidents), 1)"
+        },
+        {
+          "line": 604,
+          "expression": "self.assertEqual(incidents[0].recipient_id, self.reviewer.pk)"
+        },
+        {
+          "line": 607,
+          "expression": "self.assertContains(response, str(incidents[0].pk))"
+        },
+        {
+          "line": 608,
+          "expression": "self.assertContains(response, 'failure')"
+        },
+        {
+          "line": 616,
+          "expression": "self.assertNotContains(response, withheld)"
         }
       ]
     },
@@ -6893,6 +6998,58 @@
         {
           "line": 141,
           "expression": "self.assertEqual(response.context['collected_count'], 1)"
+        }
+      ]
+    },
+    "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1507_resumed_missing_evidence_creates_new_traceable_evaluation": {
+      "id": "intelligence.tests.test_acceptance_audit.AcceptanceAuditTests.test_ac1507_resumed_missing_evidence_creates_new_traceable_evaluation",
+      "path": "intelligence/tests/test_acceptance_audit.py",
+      "line": 494,
+      "sha256": "d7940a3f8cc928ecdf9f5f1a0a84b786cb0b457caf9c58dab16be4988e80b461",
+      "assertions": [
+        {
+          "line": 501,
+          "expression": "self.assertEqual(old.decision, 'review')"
+        },
+        {
+          "line": 502,
+          "expression": "self.assertEqual(old.fields['budget']['status'], 'unknown')"
+        },
+        {
+          "line": 519,
+          "expression": "self.assertTrue(created)"
+        },
+        {
+          "line": 520,
+          "expression": "self.assertNotEqual(current.pk, old.pk)"
+        },
+        {
+          "line": 521,
+          "expression": "self.assertEqual(current.content_version_id, version.pk)"
+        },
+        {
+          "line": 522,
+          "expression": "self.assertEqual(current.analysis_id, resumed.contentanalysis_set.get().pk)"
+        },
+        {
+          "line": 523,
+          "expression": "self.assertEqual(current.fields['budget']['value'], 24)"
+        },
+        {
+          "line": 524,
+          "expression": "self.assertEqual(current.decision, 'pass')"
+        },
+        {
+          "line": 526,
+          "expression": "self.assertEqual(old.decision, 'review')"
+        },
+        {
+          "line": 527,
+          "expression": "self.assertEqual(old.fields['budget']['status'], 'unknown')"
+        },
+        {
+          "line": 532,
+          "expression": "self.assertEqual([r.pk for r in response.context['evaluations']], [current.pk])"
         }
       ]
     },

@@ -242,40 +242,65 @@ class AcceptanceAuditTests(TestCase):
         self.assertEqual(event.reason, "Need evidence")
 
     def test_ac1401_correction_appends_audit_without_mutating_prior_event(self):
-        from intelligence.services import audit
+        from intelligence.routing import correct_field
 
-        audit(
+        record, _, system = self.pipeline()
+        result, _ = route_one(self.admin, self.workspace.pk, record.pk, system.pk)
+        claimed = claim_review(self.admin, self.workspace.pk, result.pk, result.version)
+        before = list(AuditEvent.objects.order_by("pk").values())
+        corrected = correct_field(
             self.admin,
             self.workspace.pk,
-            "diagnostic.first",
-            self.source.pk,
-            {"version": 1},
-        )
-        before = list(AuditEvent.objects.values())
-        audit(
-            self.admin,
-            self.workspace.pk,
-            "diagnostic.corrected",
-            self.source.pk,
-            {"version": 2},
+            claimed.pk,
+            claimed.version,
+            "budget",
+            15,
+            0,
+            "Business correction supported by passage",
         )
         self.assertEqual(
-            list(AuditEvent.objects.filter(pk__in=[r["id"] for r in before]).values()),
+            list(
+                AuditEvent.objects.filter(pk__in=[r["id"] for r in before])
+                .order_by("pk")
+                .values()
+            ),
             before,
         )
+        event = AuditEvent.objects.get(
+            action="review.field_corrected", object_id=str(result.pk)
+        )
+        self.assertEqual(event.actor_id, self.admin.pk)
+        self.assertEqual(event.details["version"], corrected.version)
+        self.assertEqual(event.details["field"], "budget")
         self.assertEqual(AuditEvent.objects.count(), len(before) + 1)
 
     def test_ac1402_monitor_filters_usage_timestamp_and_correlation(self):
-        _record, _, system = self.pipeline()
-        run = WorkItem.objects.create(
-            workspace=self.workspace,
-            source=self.source,
-            source_version=self.version,
-            actor=self.admin,
-            system=system,
-            state="action_required",
-            usage={"pages": 2, "as_of": "2026-10-20T12:00:00Z"},
+        from intelligence.delivery import deliver, store_result
+        from intelligence.models import Capture, DeliveryIntent
+
+        record, system, *_prefix, result = self.published()
+        capture = Capture.objects.get(
+            record=record,
+            content_version=result.content_version,
+            contentanalysis=result.analysis,
         )
+        run = capture.run
+        run.system, run.state = system, "action_required"
+        run.usage = {"pages": 2, "as_of": "2026-10-20T12:00:00Z"}
+        run.save()
+        intent, _ = store_result(
+            self.admin, self.workspace.pk, result.pk, result.version
+        )
+
+        def unavailable(_intent):
+            raise OSError("Synthetic receiver unavailable")
+
+        for _ in range(3):
+            DeliveryIntent.objects.filter(pk=intent.pk).update(
+                next_attempt=timezone.now() - timedelta(seconds=1)
+            )
+            failed = deliver(intent.pk, transport=unavailable)
+        self.assertEqual(failed.state, "action_required")
         metrics = monitor(
             self.admin,
             self.workspace.pk,
@@ -285,10 +310,14 @@ class AcceptanceAuditTests(TestCase):
             system.pk,
         )
         self.assertEqual(metrics["total_matching"], 1)
-        self.assertEqual(metrics["runs"][0]["correlation_id"], str(run.pk))
-        self.assertEqual(metrics["runs"][0]["usage_as_of"], run.usage["as_of"])
+        row = metrics["runs"][0]
+        self.assertEqual(row["correlation_id"], str(run.pk))
+        self.assertEqual(row["record_ids"], [str(record.pk)])
+        self.assertEqual(row["delivery_ids"], [str(intent.pk)])
+        self.assertEqual(row["state"], "action_required")
+        self.assertEqual(row["usage_as_of"], run.usage["as_of"])
         self.assertEqual(sum(metrics["counts"].values()), len(metrics["runs"]))
-        self.assertEqual(metrics["runs"][0]["limits"], run.limits)
+        self.assertEqual(row["limits"], run.limits)
 
     def test_ac1403_nonmember_cannot_receive_workspace_incident(self):
         with self.assertRaises(Http404):
@@ -461,3 +490,153 @@ class AcceptanceAuditTests(TestCase):
             ).count(),
             1,
         )
+
+    def test_ac1507_resumed_missing_evidence_creates_new_traceable_evaluation(self):
+        from intelligence.models import Capture
+
+        record, _, system = self.pipeline(
+            text="Tender\nRequired attachment unavailable"
+        )
+        old, _ = route_one(self.admin, self.workspace.pk, record.pk, system.pk)
+        self.assertEqual(old.decision, "review")
+        self.assertEqual(old.fields["budget"]["status"], "unknown")
+        first_capture = Capture.objects.get(
+            record=record, content_version=old.content_version
+        )
+        first_capture.missing = [
+            {
+                "url": "https://example.com/budget.pdf",
+                "reason": "Required attachment unavailable",
+            }
+        ]
+        first_capture.save(update_fields=["missing"])
+        updated, version, resumed, _ = content.BatchThreeTests.captured(
+            self, text="Tender\nBudget: 24"
+        )
+        current, created = route_one(
+            self.admin, self.workspace.pk, updated.pk, system.pk
+        )
+        self.assertTrue(created)
+        self.assertNotEqual(current.pk, old.pk)
+        self.assertEqual(current.content_version_id, version.pk)
+        self.assertEqual(current.analysis_id, resumed.contentanalysis_set.get().pk)
+        self.assertEqual(current.fields["budget"]["value"], 24)
+        self.assertEqual(current.decision, "pass")
+        old.refresh_from_db()
+        self.assertEqual(old.decision, "review")
+        self.assertEqual(old.fields["budget"]["status"], "unknown")
+        self.login()
+        response = self.client.get(
+            reverse("run-detail", args=[self.workspace.pk, resumed.run_id])
+        )
+        self.assertEqual([r.pk for r in response.context["evaluations"]], [current.pk])
+
+    def test_ac1305_sampling_excludes_outside_interval_and_unpermitted_sources(self):
+        from intelligence.models import SourceVersion
+        from intelligence.observability import sample_rejects
+        from intelligence.systems import current_config
+
+        record, _, system = self.pipeline(text="Unrelated notice\nBudget: 2")
+        in_scope, _ = route_one(self.admin, self.workspace.pk, record.pk, system.pk)
+        other, _, _, _ = content.BatchThreeTests.captured(
+            self, text="Earlier unrelated\nBudget: 2", url="https://example.com/earlier"
+        )
+        earlier, _ = route_one(self.admin, self.workspace.pk, other.pk, system.pk)
+        earlier.created_at = timezone.now() - timedelta(days=5)
+        earlier.save(update_fields=["created_at"])
+        system.refresh_from_db()
+        config = current_config(system)
+        config["source_ids"].append(str(self.secret.pk))
+        system.refresh_from_db()
+        save_configuration(
+            self.admin, self.workspace.pk, system.pk, system.config_version, config
+        )
+        self.version = SourceVersion.objects.create(
+            source=self.secret, version=1, config={"access": "public", "include": ["/"]}
+        )
+        hidden, _, _, _ = content.BatchThreeTests.captured(
+            self, text="PRIVATE unrelated\nBudget: 2", source=self.secret
+        )
+        restricted, _ = route_one(self.admin, self.workspace.pk, hidden.pk, system.pk)
+        self.rm.role = "operator"
+        self.rm.save(update_fields=["role"])
+        system.owner = self.reviewer
+        system.save(update_fields=["owner"])
+        sampled = sample_rejects(
+            self.reviewer,
+            self.workspace.pk,
+            system.pk,
+            timezone.now() - timedelta(days=1),
+            timezone.now() + timedelta(seconds=1),
+            10,
+            0,
+        )
+        self.assertEqual(sampled.result_ids, [str(in_scope.pk)])
+        self.assertNotIn(str(restricted.pk), sampled.result_ids)
+        self.assertNotIn(str(earlier.pk), sampled.result_ids)
+
+    def test_ac1403_restricted_recipient_receives_only_generic_incident(self):
+        from intelligence.models import SourceVersion
+        from intelligence.observability import evaluate_alerts
+
+        version = SourceVersion.objects.create(
+            source=self.secret, version=1, config={"access": "public"}
+        )
+        job = WorkItem.objects.create(
+            workspace=self.workspace,
+            actor=self.admin,
+            source=self.secret,
+            source_version=version,
+            state="action_required",
+            reason="PRIVATE incident evidence excerpt",
+        )
+        save_alert_rule(
+            self.admin,
+            self.workspace.pk,
+            "failure",
+            1,
+            60,
+            self.reviewer.pk,
+            source_id=self.secret.pk,
+        )
+        incidents = evaluate_alerts(self.admin, self.workspace.pk)
+        self.assertEqual(len(incidents), 1)
+        self.assertEqual(incidents[0].recipient_id, self.reviewer.pk)
+        self.login(self.reviewer)
+        response = self.client.get(reverse("governance", args=[self.workspace.pk]))
+        self.assertContains(response, str(incidents[0].pk))
+        self.assertContains(response, "failure")
+        for withheld in [
+            self.secret.name,
+            str(self.secret.pk),
+            str(job.pk),
+            job.reason,
+            self.hidden.title,
+        ]:
+            self.assertNotContains(response, withheld)
+
+    def test_ac0902_rule_builder_exposes_field_operator_value_group_unknown(self):
+        _record, _, system = self.pipeline()
+        self.login()
+        response = self.client.get(
+            reverse("qualification", args=[self.workspace.pk, system.pk])
+        )
+        self.assertContains(response, "Rules")
+        self.assertContains(response, "No semantic inference or unit conversion")
+        # The declared prototype builder is a labelled JSON field. Its visible
+        # example must expose every required rule component, not hide defaults.
+        for component in [
+            "group",
+            "all",
+            "unknown",
+            "review",
+            "field",
+            "budget",
+            "operator",
+            "gte",
+            "value",
+            "unit",
+        ]:
+            self.assertContains(response, component)
+        self.assertContains(response, 'for="id_rules"')
+        self.assertContains(response, 'id="id_rules"')
