@@ -21,7 +21,7 @@ from .services import audit
 
 
 def writable_schema(actor, workspace_id, schema_id):
-    Workspace.objects.select_for_update().get(pk=workspace_id)
+    Workspace.objects.select_for_update(no_key=True).get(pk=workspace_id)
     membership = member(actor, workspace_id, write=True)
     schema = get_object_or_404(
         schemas_for(actor, workspace_id).select_for_update(), pk=schema_id
@@ -101,7 +101,7 @@ def save_samples(
             raise ValidationError("Expected fields must be a bounded object.")
         if item["routing"] not in {"include", "exclude", "review"} or item[
             "qualification"
-        ] not in {"pass", "fail", "review"}:
+        ] not in {"pass", "fail", "review", "enrich"}:
             raise ValidationError(
                 "Explicit expected routing and qualification labels are required."
             )
@@ -233,9 +233,13 @@ def dependencies(schema, actor):
         latest = SystemConfiguration.objects.filter(
             system=system, number=system.config_version
         ).first()
-        if latest and (
-            latest.config.get("schema_id") == str(schema.pk)
-            or schema.key in latest.config.get("type_keys", [])
+        configurations = [latest.config] if latest else []
+        if system.active_bundle_id:
+            configurations.append(system.active_bundle.configuration.config)
+        if any(
+            config.get("schema_id") == str(schema.pk)
+            or schema.key in config.get("type_keys", [])
+            for config in configurations
         ):
             dependencies.append(
                 {

@@ -1430,6 +1430,366 @@
       ],
       "qa_case_ids": [],
       "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-06.md"
+      ],
+      "rationale": "Defer or escalate review",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/06",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Batch 6 prototype implementation; separate AI review and Linux CI pending. Local sandbox delivery only. No independent product acceptance or deployment.",
+      "task_id": "TASK-1004-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2818/us-1004-defer-or-escalate-review",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1004"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1004-01",
+        "AC-1004-02",
+        "AC-1004-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-06.md"
+      ],
+      "rationale": "Protect concurrent edits",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/06",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Batch 6 prototype implementation; separate AI review and Linux CI pending. Local sandbox delivery only. No independent product acceptance or deployment.",
+      "task_id": "TASK-1005-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2819/us-1005-protect-concurrent-edits",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1005"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1005-01",
+        "AC-1005-02",
+        "AC-1005-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-06.md"
+      ],
+      "rationale": "Requalify enriched records",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/06",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Batch 6 prototype implementation; separate AI review and Linux CI pending. Local sandbox delivery only. No independent product acceptance or deployment.",
+      "task_id": "TASK-1103-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2822/us-1103-requalify-enriched-records",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1103"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1103-01",
+        "AC-1103-02",
+        "AC-1103-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-06.md"
+      ],
+      "rationale": "Map fields to destination",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/06",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Batch 6 prototype implementation; separate AI review and Linux CI pending. Local sandbox delivery only. No independent product acceptance or deployment.",
+      "task_id": "TASK-1202-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2825/us-1202-map-fields-to-destination",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1202"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1202-01",
+        "AC-1202-02",
+        "AC-1202-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-06.md"
+      ],
+      "rationale": "Store validated system result",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/06",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Batch 6 prototype implementation; separate AI review and Linux CI pending. Local sandbox delivery only. No independent product acceptance or deployment.",
+      "task_id": "TASK-1203-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2826/us-1203-store-validated-system-result",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1203"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1203-01",
+        "AC-1203-02",
+        "AC-1203-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-06.md"
+      ],
+      "rationale": "Deliver idempotently",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/06",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Batch 6 prototype implementation; separate AI review and Linux CI pending. Local sandbox delivery only. No independent product acceptance or deployment.",
+      "task_id": "TASK-1204-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2827/us-1204-deliver-idempotently",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1204"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1204-01",
+        "AC-1204-02",
+        "AC-1204-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-06.md"
+      ],
+      "rationale": "Manage delivery failures",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/06",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Batch 6 prototype implementation; separate AI review and Linux CI pending. Local sandbox delivery only. No independent product acceptance or deployment.",
+      "task_id": "TASK-1205-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2828/us-1205-manage-delivery-failures",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1205"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1205-01",
+        "AC-1205-02",
+        "AC-1205-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-06.md"
+      ],
+      "rationale": "Apply updates and withdrawals",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/06",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Batch 6 prototype implementation; separate AI review and Linux CI pending. Local sandbox delivery only. No independent product acceptance or deployment.",
+      "task_id": "TASK-1206-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2829/us-1206-apply-updates-and-withdrawals",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1206"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1206-01",
+        "AC-1206-02",
+        "AC-1206-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-06.md"
+      ],
+      "rationale": "Compare configuration drafts",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/06",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Batch 6 prototype implementation; separate AI review and Linux CI pending. Local sandbox delivery only. No independent product acceptance or deployment.",
+      "task_id": "TASK-1302-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2831/us-1302-compare-configuration-drafts",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1302"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1302-01",
+        "AC-1302-02",
+        "AC-1302-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-06.md"
+      ],
+      "rationale": "Publish and roll back configuration",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/06",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Batch 6 prototype implementation; separate AI review and Linux CI pending. Local sandbox delivery only. No independent product acceptance or deployment.",
+      "task_id": "TASK-1303-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2832/us-1303-publish-and-roll-back-configuration",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1303"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1303-01",
+        "AC-1303-02",
+        "AC-1303-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
     }
   ]
 }

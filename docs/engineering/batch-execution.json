@@ -105,9 +105,15 @@
         "US-1002",
         "US-1003"
       ],
-      "status": "in_progress",
-      "merged_commit": null,
-      "ci_run": null
+      "status": "coding_complete_merged_ci_passed",
+      "merged_commit": "a179a2fd5e5b7599b12aa951f8cf647b478a3829",
+      "ci_run": 39381010528,
+      "pr": 5,
+      "reviewed_commit": "8852ad3c3048e958d8b4ed1b88cdf87189777cbf",
+      "tests_discovered": 140,
+      "tests_executed_sqlite": 138,
+      "tests_executed_postgresql": 136,
+      "review": "Separate AI review cleared; explicit user authority for future such prototype AI-reviewed merges"
     },
     {
       "number": 6,
@@ -123,7 +129,7 @@
         "US-1302",
         "US-1303"
       ],
-      "status": "pending",
+      "status": "in_progress",
       "merged_commit": null,
       "ci_run": null
     },

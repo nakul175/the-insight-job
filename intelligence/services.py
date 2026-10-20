@@ -47,7 +47,7 @@ def scoped_ids(model, workspace_id, ids):
 def invite(
     actor, workspace_id, email, role, source_ids=(), system_ids=(), can_export=False
 ):
-    Workspace.objects.select_for_update().get(pk=workspace_id)
+    Workspace.objects.select_for_update(no_key=True).get(pk=workspace_id)
     member(actor, workspace_id, admin=True)
     if role not in {"administrator", "operator", "reviewer", "viewer"}:
         raise ValidationError("Choose a supported role.")
@@ -120,7 +120,7 @@ def accept_invitation(user, token):
 
 @transaction.atomic
 def change_role(actor, workspace_id, membership_id, role):
-    Workspace.objects.select_for_update().get(pk=workspace_id)
+    Workspace.objects.select_for_update(no_key=True).get(pk=workspace_id)
     member(actor, workspace_id, admin=True)
     target = Membership.objects.select_for_update().get(
         pk=membership_id, workspace_id=workspace_id
@@ -151,7 +151,7 @@ def change_role(actor, workspace_id, membership_id, role):
 
 @transaction.atomic
 def revoke_membership(actor, workspace_id, membership_id):
-    Workspace.objects.select_for_update().get(pk=workspace_id)
+    Workspace.objects.select_for_update(no_key=True).get(pk=workspace_id)
     member(actor, workspace_id, admin=True)
     target = Membership.objects.select_for_update().get(
         pk=membership_id, workspace_id=workspace_id
@@ -198,7 +198,7 @@ def check_work_permission(item):
 
 @transaction.atomic
 def revoke_source(actor, workspace_id, source_id, system_id):
-    Workspace.objects.select_for_update().get(pk=workspace_id)
+    Workspace.objects.select_for_update(no_key=True).get(pk=workspace_id)
     member(actor, workspace_id, admin=True)
     source = Source.objects.get(pk=source_id, workspace_id=workspace_id)
     system = ConsumerSystem.objects.get(pk=system_id, workspace_id=workspace_id)
@@ -219,6 +219,9 @@ def revoke_source(actor, workspace_id, source_id, system_id):
                 "reason": "Source permission revoked",
             },
         )
+    from .delivery import queue_withdrawals
+
+    queue_withdrawals(actor, workspace_id, source_id, system_id)
     audit(
         actor,
         workspace_id,

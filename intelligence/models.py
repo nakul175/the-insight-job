@@ -27,6 +27,12 @@ class AuditEvent(Entity):
 
 
 class ConsumerSystem(Entity):
+    active_bundle = models.ForeignKey(
+        "PublishedBundle",
+        null=True,
+        on_delete=models.PROTECT,
+        related_name="active_systems",
+    )
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, on_delete=models.PROTECT
     )
@@ -535,6 +541,11 @@ class EnrichmentAttempt(Entity):
 
 
 class SystemResult(Entity):
+    stored_version = models.PositiveIntegerField(null=True)
+    bundle = models.ForeignKey("PublishedBundle", null=True, on_delete=models.PROTECT)
+    bundle_number = models.PositiveIntegerField(default=0)
+    review_state = models.CharField(max_length=20, default="open")
+    next_review_at = models.DateTimeField(null=True)
     processing_number = models.PositiveIntegerField(default=0)
     system = models.ForeignKey(
         ConsumerSystem, on_delete=models.PROTECT, related_name="results"
@@ -567,6 +578,7 @@ class SystemResult(Entity):
                     "configuration",
                     "processing_number",
                     "classification_version",
+                    "bundle_number",
                 ],
                 name="system_content_config_unique",
             )
@@ -584,3 +596,135 @@ class ReviewChange(Entity):
     evidence = models.JSONField(default=dict)
     reason = models.CharField(max_length=1000)
     result_version = models.PositiveIntegerField()
+
+
+class DestinationContract(models.Model):
+    destination = models.ForeignKey(
+        Destination, on_delete=models.PROTECT, related_name="contracts"
+    )
+    number = models.PositiveIntegerField()
+    fields = models.JSONField(default=list)
+    safe_upsert = models.BooleanField(default=True)
+    supports_withdrawal = models.BooleanField(default=False)
+    update_policy = models.CharField(max_length=20, default="upsert")
+    mode = models.CharField(max_length=30, default="local_sandbox")
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["destination", "number"],
+                name="destination_contract_version_unique",
+            )
+        ]
+
+
+class DestinationMapping(Entity):
+    system = models.ForeignKey(ConsumerSystem, on_delete=models.PROTECT)
+    schema_version = models.ForeignKey(SchemaVersion, on_delete=models.PROTECT)
+    contract = models.ForeignKey(DestinationContract, on_delete=models.PROTECT)
+    entries = models.JSONField(default=list)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+
+
+class ConfigurationComparison(Entity):
+    system = models.ForeignKey(ConsumerSystem, on_delete=models.PROTECT)
+    left = models.ForeignKey(
+        SystemConfiguration, on_delete=models.PROTECT, related_name="left_comparisons"
+    )
+    right = models.ForeignKey(
+        SystemConfiguration, on_delete=models.PROTECT, related_name="right_comparisons"
+    )
+    evaluation_version = models.ForeignKey(EvaluationVersion, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    state = models.CharField(max_length=20, default="pending")
+    passed = models.BooleanField(default=False)
+    results = models.JSONField(default=list)
+
+
+class PublishedBundle(Entity):
+    system = models.ForeignKey(
+        ConsumerSystem, on_delete=models.PROTECT, related_name="bundles"
+    )
+    number = models.PositiveIntegerField()
+    configuration = models.ForeignKey(SystemConfiguration, on_delete=models.PROTECT)
+    mapping = models.ForeignKey(DestinationMapping, on_delete=models.PROTECT)
+    comparison = models.ForeignKey(ConfigurationComparison, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["system", "number"], name="published_bundle_version_unique"
+            )
+        ]
+
+
+class ReviewTask(Entity):
+    result = models.ForeignKey(SystemResult, on_delete=models.PROTECT)
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    state = models.CharField(max_length=20, default="open")
+    due_at = models.DateTimeField(null=True)
+
+
+class EnrichedFieldEvent(Entity):
+    result = models.ForeignKey(
+        SystemResult, on_delete=models.PROTECT, related_name="enriched_events"
+    )
+    attempt = models.ForeignKey(EnrichmentAttempt, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    original = models.JSONField(default=dict)
+    merged = models.JSONField(default=dict)
+    result_version = models.PositiveIntegerField()
+
+
+class DeliveryIntent(Entity):
+    snapshot = models.JSONField(default=dict)
+    attempt_budget = models.PositiveIntegerField(default=3)
+    result = models.ForeignKey(
+        SystemResult, on_delete=models.PROTECT, related_name="delivery_intents"
+    )
+    result_version = models.PositiveIntegerField()
+    bundle = models.ForeignKey(PublishedBundle, on_delete=models.PROTECT)
+    destination = models.ForeignKey(Destination, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    payload = models.JSONField(default=dict)
+    idempotency_key = models.CharField(max_length=64, unique=True)
+    external_key = models.CharField(max_length=64)
+    operation = models.CharField(max_length=20, default="upsert")
+    state = models.CharField(max_length=30, default="pending")
+    attempts = models.PositiveIntegerField(default=0)
+    next_attempt = models.DateTimeField(default=timezone.now)
+    reason = models.CharField(max_length=300, blank=True)
+    response = models.JSONField(default=dict)
+
+
+class SandboxMessage(Entity):
+    destination = models.ForeignKey(Destination, on_delete=models.PROTECT)
+    external_key = models.CharField(max_length=64)
+    payload = models.JSONField(default=dict)
+    withdrawn = models.BooleanField(default=False)
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["destination", "external_key"],
+                name="sandbox_external_key_unique",
+            )
+        ]
+
+
+class SandboxReceipt(Entity):
+    message = models.ForeignKey(SandboxMessage, on_delete=models.PROTECT)
+    idempotency_key = models.CharField(max_length=64)
+    payload_digest = models.CharField(max_length=64, default="")
+    operation = models.CharField(max_length=20)
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["idempotency_key", "payload_digest"],
+                name="sandbox_key_payload_unique",
+            )
+        ]

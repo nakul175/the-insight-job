@@ -20,7 +20,7 @@ from .models import (
     SystemResult,
     WorkItem,
 )
-from .permissions import member, records_for, system_can_read, systems_for
+from .permissions import member, records_for, sources_for, system_can_read, systems_for
 from .qualification import evaluate_rules, valid_value, validate_rules
 from .services import audit
 from .systems import (
@@ -69,7 +69,7 @@ def configure_qualification(
     return save_configuration(actor, workspace_id, system.pk, expected_version, config)
 
 
-def live_access(actor, result, review=False):
+def live_access(actor, result, review=False, allow_inactive=False):
     membership = member(actor, result.workspace_id)
     if review and membership.role not in {"administrator", "operator", "reviewer"}:
         raise PermissionDenied("Scoped review authority required.")
@@ -78,11 +78,42 @@ def live_access(actor, result, review=False):
         or not records_for(actor, result.workspace_id)
         .filter(pk=result.record_id)
         .exists()
-        or not system_can_read(result.system, result.record.source)
+        or not (
+            result.record.source.systemsourcegrant_set.filter(
+                system=result.system, active=True
+            ).exists()
+            if allow_inactive
+            else system_can_read(result.system, result.record.source)
+        )
     ):
         raise PermissionDenied(
             "Current system/source access does not permit this result."
         )
+    from .models import Capture
+
+    capture_ids = {
+        candidate["capture"]
+        for field in result.fields.values()
+        for candidate in field.get("candidates", [])
+        if candidate.get("capture")
+    }
+    for capture_id in capture_ids:
+        capture = (
+            Capture.objects.filter(
+                pk=capture_id,
+                workspace_id=result.workspace_id,
+                source__in=sources_for(actor, result.workspace_id),
+            )
+            .select_related("source")
+            .first()
+        )
+        if (
+            not capture
+            or not capture.source.systemsourcegrant_set.filter(
+                system=result.system, active=True
+            ).exists()
+        ):
+            raise PermissionDenied("Enriched evidence access is no longer permitted.")
     if (
         result.content_version.record_id != result.record_id
         or result.configuration.system_id != result.system_id
@@ -102,6 +133,12 @@ def result_is_current(result):
 
 
 def qualify_result(result):
+    if (result.analysis or result.content_version).status not in {"parsed", "partial"}:
+        return {
+            "decision": "blocked",
+            "reason": "Immutable base source security/parsing gate failed",
+            "rules": [],
+        }
     config = result.configuration.config
     if not result.schema_version or not config.get("qualification"):
         return {
@@ -141,7 +178,12 @@ def route_one(actor, workspace_id, record_id, system_id):
         raise PermissionDenied(
             "System routing is paused, retired or lacks source access."
         )
-    config_row = system.configurations.filter(number=system.config_version).first()
+    bundle = system.active_bundle if system.state == "active" else None
+    config_row = (
+        bundle.configuration
+        if bundle
+        else system.configurations.filter(number=system.config_version).first()
+    )
     if not config_row:
         raise ValidationError("Save a system configuration first.")
     config = config_row.config
@@ -158,6 +200,7 @@ def route_one(actor, workspace_id, record_id, system_id):
         configuration=config_row,
         processing_number=processing_number,
         classification_version=record.classification_version,
+        bundle_number=bundle.number if bundle else 0,
     ).first()
     if existing:
         return existing, False
@@ -254,6 +297,9 @@ def route_one(actor, workspace_id, record_id, system_id):
         content_version=revision,
         analysis=analysis,
         configuration=config_row,
+        bundle=bundle,
+        bundle_number=bundle.number if bundle else 0,
+        preview=bundle is None,
         schema_version=schema_version,
         classification_version=record.classification_version,
         processing_number=processing_number,
@@ -333,11 +379,15 @@ def route_independently(actor, workspace_id, record_id, system_ids):
 
 @transaction.atomic
 def claim_review(actor, workspace_id, result_id, expected_version):
-    Workspace.objects.select_for_update().get(pk=workspace_id)
+    Workspace.objects.select_for_update(no_key=True).get(pk=workspace_id)
     result = get_object_or_404(
         results_for(actor, workspace_id).select_for_update(), pk=result_id
     )
     live_access(actor, result, review=True)
+    if result.review_state == "resolved":
+        raise ValidationError(
+            "Review is already resolved; inspect its immutable completion event."
+        )
     if result.version != expected_version or result.assigned_to_id not in {
         None,
         actor.pk,
@@ -360,20 +410,26 @@ def claim_review(actor, workspace_id, result_id, expected_version):
 def correct_field(
     actor, workspace_id, result_id, expected_version, key, value, segment, reason
 ):
-    Workspace.objects.select_for_update().get(pk=workspace_id)
+    Workspace.objects.select_for_update(no_key=True).get(pk=workspace_id)
     result = get_object_or_404(
         results_for(actor, workspace_id).select_for_update(), pk=result_id
     )
     live_access(actor, result, review=True)
     if (
-        result.version != expected_version
+        result.review_state != "open"
+        or result.version != expected_version
         or result.assigned_to_id != actor.pk
         or not result_is_current(result)
     ):
         raise ValidationError(
             "Claim the current, unchanged review before correcting a field."
         )
-    if result.decision == "blocked" or not result.schema_version:
+    if (
+        result.decision == "blocked"
+        or (result.analysis or result.content_version).status
+        not in {"parsed", "partial"}
+        or not result.schema_version
+    ):
         raise ValidationError(
             "Security/schema failures cannot be corrected as business fields."
         )
@@ -446,19 +502,22 @@ def correct_field(
 def override_decision(
     actor, workspace_id, result_id, expected_version, decision, reason
 ):
-    Workspace.objects.select_for_update().get(pk=workspace_id)
+    Workspace.objects.select_for_update(no_key=True).get(pk=workspace_id)
     result = get_object_or_404(
         results_for(actor, workspace_id).select_for_update(), pk=result_id
     )
     live_access(actor, result, review=True)
     if (
-        result.version != expected_version
+        result.review_state != "open"
+        or result.version != expected_version
         or result.assigned_to_id != actor.pk
         or not result_is_current(result)
     ):
         raise ValidationError("Claim the current review before overriding.")
     if (
         result.decision == "blocked"
+        or (result.analysis or result.content_version).status
+        not in {"parsed", "partial"}
         or decision not in {"include", "exclude", "pass", "fail", "review"}
         or not isinstance(reason, str)
         or not reason.strip()

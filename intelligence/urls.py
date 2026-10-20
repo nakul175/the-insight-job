@@ -3,7 +3,9 @@ from django.urls import path
 from . import (
     access_views,
     content_views,
+    followup_views,
     operations_views,
+    release_views,
     review_views,
     schema_views,
     system_views,
@@ -11,6 +13,19 @@ from . import (
 )
 
 urlpatterns = [
+    path(
+        "<uuid:workspace_id>/review-tasks/", followup_views.tasks, name="review-tasks"
+    ),
+    path(
+        "<uuid:workspace_id>/reviews/<uuid:result_id>/followup/",
+        followup_views.followup,
+        name="review-followup",
+    ),
+    path(
+        "<uuid:workspace_id>/systems/<uuid:system_id>/release/",
+        release_views.release,
+        name="system-release",
+    ),
     path("<uuid:workspace_id>/process/", review_views.process, name="process-systems"),
     path("<uuid:workspace_id>/reviews/", review_views.queue, name="review-queue"),
     path(

@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from django import forms
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import DatabaseError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -16,6 +16,7 @@ from .routing import (
     claim_review,
     configure_qualification,
     correct_field,
+    live_access,
     override_decision,
     result_is_current,
     results_for,
@@ -163,14 +164,20 @@ def queue(request, workspace_id):
             rows = rows.filter(assigned_to__isnull=True)
         elif values["owner"]:
             rows = rows.filter(assigned_to__username=values["owner"])
-        data.update(
-            rows=list(
-                rows.select_related("system", "record", "assigned_to").order_by(
-                    "created_at", "pk"
-                )[:100]
-            ),
-            load_failed=False,
-        )
+        visible = []
+        for result in (
+            rows.select_related("system", "record", "assigned_to")
+            .order_by("created_at", "pk")
+            .iterator(chunk_size=100)
+        ):
+            try:
+                live_access(request.user, result, allow_inactive=True)
+            except PermissionDenied:
+                continue
+            visible.append(result)
+            if len(visible) == 100:
+                break
+        data.update(rows=visible, load_failed=False)
     except DatabaseError:
         data["load_failed"] = True
         return render(request, "intelligence/review_queue.html", data, status=503)
@@ -214,6 +221,9 @@ def detail(request, workspace_id, result_id):
         ),
         pk=result_id,
     )
+    from .review_workflow import evidence_for
+
+    enriched_evidence = evidence_for(request.user, result)
     form = ReviewForm(
         request.POST or None,
         initial={"expected_version": result.version, "action": "claim"},
@@ -256,6 +266,7 @@ def detail(request, workspace_id, result_id):
             "result": result,
             "form": form,
             "current": result_is_current(result),
+            "enriched_evidence": enriched_evidence,
             "relevance": json.dumps(result.relevance, indent=2),
             "qualification": json.dumps(result.qualification, indent=2),
             "fields": json.dumps(result.fields, indent=2),
