@@ -365,14 +365,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/03",
-      "commit": null,
-      "pr": null,
+      "commit": "5759d254b7a786b4d7cae7143260d70aeb55e477",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/3",
       "review_ref": null,
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype code; local engineering checks passed. Linux CI, review and merge pending; no acceptance/deployment claimed.",
+      "notes": "Main CI39376738854 passed. Separate AI review; explicit user approval covers PR3 and future such prototype merges despite ENG-GIT-002. No native acceptance or deployment.",
       "task_id": "TASK-0504-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2793/us-0504-build-common-content-record",
       "legacy_ids": [],
@@ -401,14 +401,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/03",
-      "commit": null,
-      "pr": null,
+      "commit": "5759d254b7a786b4d7cae7143260d70aeb55e477",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/3",
       "review_ref": null,
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype code; local engineering checks passed. Linux CI, review and merge pending; no acceptance/deployment claimed.",
+      "notes": "Main CI39376738854 passed. Separate AI review; explicit user approval covers PR3 and future such prototype merges despite ENG-GIT-002. No native acceptance or deployment.",
       "task_id": "TASK-0505-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2794/us-0505-classify-content-type",
       "legacy_ids": [],
@@ -437,14 +437,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/03",
-      "commit": null,
-      "pr": null,
+      "commit": "5759d254b7a786b4d7cae7143260d70aeb55e477",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/3",
       "review_ref": null,
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype code; local engineering checks passed. Linux CI, review and merge pending; no acceptance/deployment claimed.",
+      "notes": "Main CI39376738854 passed. Separate AI review; explicit user approval covers PR3 and future such prototype merges despite ENG-GIT-002. No native acceptance or deployment.",
       "task_id": "TASK-0601-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2796/us-0601-search-and-filter-content",
       "legacy_ids": [],
@@ -473,14 +473,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/03",
-      "commit": null,
-      "pr": null,
+      "commit": "5759d254b7a786b4d7cae7143260d70aeb55e477",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/3",
       "review_ref": null,
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype code; local engineering checks passed. Linux CI, review and merge pending; no acceptance/deployment claimed.",
+      "notes": "Main CI39376738854 passed. Separate AI review; explicit user approval covers PR3 and future such prototype merges despite ENG-GIT-002. No native acceptance or deployment.",
       "task_id": "TASK-0603-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2798/us-0603-track-source-versions",
       "legacy_ids": [],
@@ -509,14 +509,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/03",
-      "commit": null,
-      "pr": null,
+      "commit": "5759d254b7a786b4d7cae7143260d70aeb55e477",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/3",
       "review_ref": null,
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype code; local engineering checks passed. Linux CI, review and merge pending; no acceptance/deployment claimed.",
+      "notes": "Main CI39376738854 passed. Separate AI review; explicit user approval covers PR3 and future such prototype merges despite ENG-GIT-002. No native acceptance or deployment.",
       "task_id": "TASK-0604-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2799/us-0604-resolve-duplicate-candidates",
       "legacy_ids": [],
@@ -545,14 +545,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/03",
-      "commit": null,
-      "pr": null,
+      "commit": "5759d254b7a786b4d7cae7143260d70aeb55e477",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/3",
       "review_ref": null,
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype code; local engineering checks passed. Linux CI, review and merge pending; no acceptance/deployment claimed.",
+      "notes": "Main CI39376738854 passed. Separate AI review; explicit user approval covers PR3 and future such prototype merges despite ENG-GIT-002. No native acceptance or deployment.",
       "task_id": "TASK-0605-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2800/us-0605-export-authorised-content",
       "legacy_ids": [],
@@ -581,14 +581,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/03",
-      "commit": null,
-      "pr": null,
+      "commit": "5759d254b7a786b4d7cae7143260d70aeb55e477",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/3",
       "review_ref": null,
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype code; local engineering checks passed. Linux CI, review and merge pending; no acceptance/deployment claimed.",
+      "notes": "Main CI39376738854 passed. Separate AI review; explicit user approval covers PR3 and future such prototype merges despite ENG-GIT-002. No native acceptance or deployment.",
       "task_id": "TASK-0701-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2801/us-0701-browse-schema-registry",
       "legacy_ids": [],
@@ -617,14 +617,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/03",
-      "commit": null,
-      "pr": null,
+      "commit": "5759d254b7a786b4d7cae7143260d70aeb55e477",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/3",
       "review_ref": null,
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype code; local engineering checks passed. Linux CI, review and merge pending; no acceptance/deployment claimed.",
+      "notes": "Main CI39376738854 passed. Separate AI review; explicit user approval covers PR3 and future such prototype merges despite ENG-GIT-002. No native acceptance or deployment.",
       "task_id": "TASK-0702-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2802/us-0702-define-field-schema",
       "legacy_ids": [],
@@ -653,14 +653,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/03",
-      "commit": null,
-      "pr": null,
+      "commit": "5759d254b7a786b4d7cae7143260d70aeb55e477",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/3",
       "review_ref": null,
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype code; local engineering checks passed. Linux CI, review and merge pending; no acceptance/deployment claimed.",
+      "notes": "Main CI39376738854 passed. Separate AI review; explicit user approval covers PR3 and future such prototype merges despite ENG-GIT-002. No native acceptance or deployment.",
       "task_id": "TASK-0506-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2795/us-0506-extract-typed-fields",
       "legacy_ids": [],
@@ -689,14 +689,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/03",
-      "commit": null,
-      "pr": null,
+      "commit": "5759d254b7a786b4d7cae7143260d70aeb55e477",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/3",
       "review_ref": null,
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype code; local engineering checks passed. Linux CI, review and merge pending; no acceptance/deployment claimed.",
+      "notes": "Main CI39376738854 passed. Separate AI review; explicit user approval covers PR3 and future such prototype merges despite ENG-GIT-002. No native acceptance or deployment.",
       "task_id": "TASK-0602-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2797/us-0602-inspect-field-evidence",
       "legacy_ids": [],
@@ -707,6 +707,366 @@
         "AC-0602-01",
         "AC-0602-02",
         "AC-0602-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-04.md"
+      ],
+      "rationale": "Register a consuming system",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/04",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Prototype implementation and local checks; final exact-revision review/CI required. Native acceptance and deployment unverified.",
+      "task_id": "TASK-0801-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2805/us-0801-register-a-consuming-system",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0801"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0801-01",
+        "AC-0801-02",
+        "AC-0801-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-04.md"
+      ],
+      "rationale": "Select allowed sources and types",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/04",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Prototype implementation and local checks; final exact-revision review/CI required. Native acceptance and deployment unverified.",
+      "task_id": "TASK-0802-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2806/us-0802-select-allowed-sources-and-types",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0802"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0802-01",
+        "AC-0802-02",
+        "AC-0802-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-04.md"
+      ],
+      "rationale": "Configure relevance logic",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/04",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Prototype implementation and local checks; final exact-revision review/CI required. Native acceptance and deployment unverified.",
+      "task_id": "TASK-0803-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2807/us-0803-configure-relevance-logic",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0803"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0803-01",
+        "AC-0803-02",
+        "AC-0803-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-04.md"
+      ],
+      "rationale": "Configure enrichment policy",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/04",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Prototype implementation and local checks; final exact-revision review/CI required. Native acceptance and deployment unverified.",
+      "task_id": "TASK-1101-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2820/us-1101-configure-enrichment-policy",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1101"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1101-01",
+        "AC-1101-02",
+        "AC-1101-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-04.md"
+      ],
+      "rationale": "Follow permitted evidence links",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/04",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Prototype implementation and local checks; final exact-revision review/CI required. Native acceptance and deployment unverified.",
+      "task_id": "TASK-1102-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2821/us-1102-follow-permitted-evidence-links",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1102"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1102-01",
+        "AC-1102-02",
+        "AC-1102-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-04.md"
+      ],
+      "rationale": "Inspect enrichment coverage",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/04",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Prototype implementation and local checks; final exact-revision review/CI required. Native acceptance and deployment unverified.",
+      "task_id": "TASK-1104-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2823/us-1104-inspect-enrichment-coverage",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1104"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1104-01",
+        "AC-1104-02",
+        "AC-1104-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-04.md"
+      ],
+      "rationale": "Connect a destination",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/04",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Prototype implementation and local checks; final exact-revision review/CI required. Native acceptance and deployment unverified.",
+      "task_id": "TASK-1201-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2824/us-1201-connect-a-destination",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1201"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1201-01",
+        "AC-1201-02",
+        "AC-1201-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-04.md"
+      ],
+      "rationale": "Maintain labelled evaluation samples",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/04",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Prototype implementation and local checks; final exact-revision review/CI required. Native acceptance and deployment unverified.",
+      "task_id": "TASK-1301-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2830/us-1301-maintain-labelled-evaluation-samples",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1301"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1301-01",
+        "AC-1301-02",
+        "AC-1301-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-04.md"
+      ],
+      "rationale": "Version and publish schema",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/04",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Prototype implementation and local checks; final exact-revision review/CI required. Native acceptance and deployment unverified.",
+      "task_id": "TASK-0704-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2803/us-0704-version-and-publish-schema",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0704"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0704-01",
+        "AC-0704-02",
+        "AC-0704-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-04.md"
+      ],
+      "rationale": "Retire schema safely",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/04",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Prototype implementation and local checks; final exact-revision review/CI required. Native acceptance and deployment unverified.",
+      "task_id": "TASK-0705-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2804/us-0705-retire-schema-safely",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0705"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0705-01",
+        "AC-0705-02",
+        "AC-0705-03"
       ],
       "qa_case_ids": [],
       "qa_run_ids": []

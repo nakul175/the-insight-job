@@ -287,6 +287,8 @@ def save_schema(
         schema = get_object_or_404(
             schemas_for(actor, workspace_id).select_for_update(), pk=schema_id
         )
+        if schema.state == "retired":
+            raise ValidationError("Retired schemas cannot accept new drafts.")
         if (schema.key, schema.scope, schema.system_id) != (
             key,
             scope,

@@ -16,7 +16,10 @@ MAX_BYTES = 2_000_000
 
 def fetch_public(url, base, config, headers=None):
     skipped = []
-    deadline = time.monotonic() + 30
+    budgets = config.get("fetch_limits", {})
+    seconds = min(30, max(0.001, float(budgets.get("seconds", 30))))
+    byte_limit = min(MAX_BYTES, max(0, int(budgets.get("bytes", MAX_BYTES))))
+    deadline = time.monotonic() + seconds
     for _ in range(4):
         if time.monotonic() >= deadline:
             raise ValidationError("Sample time budget exhausted.")
@@ -39,10 +42,13 @@ def fetch_public(url, base, config, headers=None):
         address = addresses[0][4][0]
         connection = (
             http.client.HTTPSConnection(
-                p.hostname, port, timeout=10, context=ssl.create_default_context()
+                p.hostname,
+                port,
+                timeout=min(10, seconds),
+                context=ssl.create_default_context(),
             )
             if p.scheme == "https"
-            else http.client.HTTPConnection(p.hostname, port, timeout=10)
+            else http.client.HTTPConnection(p.hostname, port, timeout=min(10, seconds))
         )
         # Pin the validated address while retaining hostname/SNI and certificate checks.
         connection._create_connection = (
@@ -91,20 +97,20 @@ def fetch_public(url, base, config, headers=None):
                 )
             chunks = []
             total = 0
-            while total <= MAX_BYTES:
+            while total <= byte_limit:
                 remaining = deadline - time.monotonic()
                 if remaining <= 0:
                     raise ValidationError("Sample time budget exhausted.")
                 if connection.sock:
                     connection.sock.settimeout(min(10, remaining))
-                chunk = response.read1(min(65536, MAX_BYTES + 1 - total))
+                chunk = response.read1(min(65536, byte_limit + 1 - total))
                 if not chunk:
                     break
                 chunks.append(chunk)
                 total += len(chunk)
             data = b"".join(chunks)
-            if len(data) > MAX_BYTES:
-                raise ValidationError("Sample exceeds the 2 MB byte limit.")
+            if len(data) > byte_limit:
+                raise ValidationError("Sample exceeds the remaining byte budget.")
             kind = (
                 response.getheader("Content-Type", "application/octet-stream")
                 .split(";")[0]

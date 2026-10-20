@@ -27,6 +27,11 @@ class AuditEvent(Entity):
 
 
 class ConsumerSystem(Entity):
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, on_delete=models.PROTECT
+    )
+    purpose = models.CharField(max_length=500, blank=True)
+    config_version = models.PositiveIntegerField(default=0)
     name = models.CharField(max_length=120)
     state = models.CharField(max_length=30, default="draft")
 
@@ -421,3 +426,109 @@ class ContentAnalysis(Entity):
                 fields=["content_version", "number"], name="content_analysis_unique"
             )
         ]
+
+
+class SystemConfiguration(models.Model):
+    system = models.ForeignKey(
+        ConsumerSystem, related_name="configurations", on_delete=models.PROTECT
+    )
+    number = models.PositiveIntegerField()
+    config = models.JSONField(default=dict)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["system", "number"], name="system_config_number_unique"
+            )
+        ]
+
+
+class EvaluationSet(Entity):
+    schema = models.ForeignKey(
+        ContentSchema, on_delete=models.PROTECT, related_name="evaluation_sets"
+    )
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    name = models.CharField(max_length=120)
+    version = models.PositiveIntegerField(default=0)
+
+
+class EvaluationVersion(models.Model):
+    sample_set = models.ForeignKey(
+        EvaluationSet, on_delete=models.PROTECT, related_name="versions"
+    )
+    number = models.PositiveIntegerField()
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["sample_set", "number"], name="evaluation_version_unique"
+            )
+        ]
+
+
+class EvaluationSample(models.Model):
+    version = models.ForeignKey(
+        EvaluationVersion, on_delete=models.PROTECT, related_name="samples"
+    )
+    content_version = models.ForeignKey(ContentVersion, on_delete=models.PROTECT)
+    analysis = models.ForeignKey(ContentAnalysis, null=True, on_delete=models.PROTECT)
+    expected_fields = models.JSONField(default=dict)
+    expected_routing = models.CharField(max_length=20)
+    expected_qualification = models.CharField(max_length=20)
+
+
+class SchemaCheck(Entity):
+    schema_version = models.ForeignKey(SchemaVersion, on_delete=models.PROTECT)
+    evaluation_version = models.ForeignKey(EvaluationVersion, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    passed = models.BooleanField(default=False)
+    results = models.JSONField(default=list)
+
+
+class Destination(Entity):
+    system = models.ForeignKey(
+        ConsumerSystem, on_delete=models.PROTECT, related_name="destinations"
+    )
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    kind = models.CharField(max_length=30, default="sandbox_http")
+    endpoint = models.URLField(max_length=2000)
+    secret_ref = models.CharField(max_length=120, blank=True)
+    state = models.CharField(max_length=30, default="draft")
+    version = models.PositiveIntegerField(default=1)
+    test_report = models.JSONField(default=dict)
+
+
+class EnrichmentPolicy(models.Model):
+    system = models.ForeignKey(
+        ConsumerSystem, on_delete=models.PROTECT, related_name="enrichment_policies"
+    )
+    number = models.PositiveIntegerField()
+    config = models.JSONField(default=dict)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["system", "number"], name="enrichment_policy_number_unique"
+            )
+        ]
+
+
+class EnrichmentAttempt(Entity):
+    policy = models.ForeignKey(EnrichmentPolicy, on_delete=models.PROTECT)
+    record = models.ForeignKey(ContentRecord, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    trigger = models.CharField(max_length=500)
+    unresolved_fields = models.JSONField(default=list)
+    pending = models.JSONField(default=list)
+    visited = models.JSONField(default=list)
+    coverage = models.JSONField(default=list)
+    usage = models.JSONField(default=dict)
+    state = models.CharField(max_length=30, default="queued")
+    reason = models.CharField(max_length=200, blank=True)
+    previous = models.ForeignKey("self", null=True, on_delete=models.PROTECT)

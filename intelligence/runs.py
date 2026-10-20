@@ -277,7 +277,21 @@ def collect_step(item, fetch=fetch_public):
         )
     target = pending[0]
     url = target["url"]
-    config = item.source_version.config
+    config = {
+        **item.source_version.config,
+        "fetch_limits": {
+            "seconds": max(
+                0.001,
+                item.limits["seconds"]
+                - (
+                    (timezone.now() - item.started_at).total_seconds()
+                    if item.started_at
+                    else 0
+                ),
+            ),
+            "bytes": max(0, item.limits["bytes"] - item.usage.get("bytes", 0)),
+        },
+    }
     try:
         allowed, rule = scope_decision(item.source.url, url, config)
         if not allowed:
@@ -526,6 +540,7 @@ def collect_step(item, fetch=fetch_public):
             item.usage = {
                 **item.usage,
                 "bytes": item.usage.get("bytes", 0),
+                "seconds": round((timezone.now() - item.started_at).total_seconds(), 3),
                 "provider_cost_microunits": 0,
             }
             item.lease_until = timezone.now() + timedelta(seconds=60)
@@ -542,6 +557,7 @@ def collect_step(item, fetch=fetch_public):
                 },
             )
     except NeedsAccess:
+        item = account_received(item, token, 0)
         return update_owned(
             item,
             token,
@@ -550,6 +566,7 @@ def collect_step(item, fetch=fetch_public):
             lease_until=None,
         )
     except ValidationError:
+        item = account_received(item, token, 0)
         audit(
             item.actor,
             item.workspace_id,
@@ -565,5 +582,6 @@ def collect_step(item, fetch=fetch_public):
             lease_until=None,
         )
     except (OSError, TimeoutError, HTTPException):
+        item = account_received(item, token, 0)
         return schedule_retry(item, token)
     return item
