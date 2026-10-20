@@ -8,7 +8,9 @@
   status.setAttribute('role', 'status');
   status.setAttribute('aria-live', 'polite');
   status.textContent = 'Unsaved changes will warn before navigation. Recoverable drafts require current permissions.';
-  context.prepend(status);
+  status.className = 'draft-status';
+  const firstForm = context.querySelector('form[method="post"]');
+  if (firstForm) firstForm.before(status);
   document.querySelectorAll('main form[method="post"]').forEach((form, index) => {
     const controls = Array.from(form.elements).filter(el => el.name && el.name !== 'csrfmiddlewaretoken' && !/password|secret|token|cookie|ciphertext|connection/i.test(el.name) && el.type !== 'file');
     if (!controls.length || Array.from(form.elements).some(el => el.type === 'password' || /password|secret|cookie|ciphertext/i.test(el.name))) return;
