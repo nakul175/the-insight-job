@@ -1,4 +1,355 @@
 {
   "schema_version": 2,
-  "records": []
+  "records": [
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-02.md"
+      ],
+      "rationale": "Complete interactive login",
+      "paths": [
+        "intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/02",
+      "commit": "31543f10bc4b507bdc86240a713f9ff4419bfb47",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/2",
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Implemented prototype at recorded code revision; pending final Linux CI and independent accountable owner review under ENG-GIT-002. No acceptance or production deployment.",
+      "task_id": "TASK-0302-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2783/us-0302-complete-interactive-login",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0302"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0302-01",
+        "AC-0302-02",
+        "AC-0302-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-02.md"
+      ],
+      "rationale": "Recover expired session",
+      "paths": [
+        "intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/02",
+      "commit": "31543f10bc4b507bdc86240a713f9ff4419bfb47",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/2",
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Implemented prototype at recorded code revision; pending final Linux CI and independent accountable owner review under ENG-GIT-002. No acceptance or production deployment.",
+      "task_id": "TASK-0303-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2784/us-0303-recover-expired-session",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0303"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0303-01",
+        "AC-0303-02",
+        "AC-0303-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-02.md"
+      ],
+      "rationale": "Rotate or disconnect secrets",
+      "paths": [
+        "intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/02",
+      "commit": "31543f10bc4b507bdc86240a713f9ff4419bfb47",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/2",
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Implemented prototype at recorded code revision; pending final Linux CI and independent accountable owner review under ENG-GIT-002. No acceptance or production deployment.",
+      "task_id": "TASK-0304-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2785/us-0304-rotate-or-disconnect-secrets",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0304"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0304-01",
+        "AC-0304-02",
+        "AC-0304-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-02.md"
+      ],
+      "rationale": "Start a collection run",
+      "paths": [
+        "intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/02",
+      "commit": "31543f10bc4b507bdc86240a713f9ff4419bfb47",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/2",
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Implemented prototype at recorded code revision; pending final Linux CI and independent accountable owner review under ENG-GIT-002. No acceptance or production deployment.",
+      "task_id": "TASK-0401-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2786/us-0401-start-a-collection-run",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0401"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0401-01",
+        "AC-0401-02",
+        "AC-0401-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-02.md"
+      ],
+      "rationale": "Navigate supported pages",
+      "paths": [
+        "intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/02",
+      "commit": "31543f10bc4b507bdc86240a713f9ff4419bfb47",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/2",
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Implemented prototype at recorded code revision; pending final Linux CI and independent accountable owner review under ENG-GIT-002. No acceptance or production deployment.",
+      "task_id": "TASK-0402-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2787/us-0402-navigate-supported-pages",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0402"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0402-01",
+        "AC-0402-02",
+        "AC-0402-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-02.md"
+      ],
+      "rationale": "Preserve original captures",
+      "paths": [
+        "intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/02",
+      "commit": "31543f10bc4b507bdc86240a713f9ff4419bfb47",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/2",
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Implemented prototype at recorded code revision; pending final Linux CI and independent accountable owner review under ENG-GIT-002. No acceptance or production deployment.",
+      "task_id": "TASK-0403-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2788/us-0403-preserve-original-captures",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0403"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0403-01",
+        "AC-0403-02",
+        "AC-0403-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-02.md"
+      ],
+      "rationale": "Retry from checkpoints",
+      "paths": [
+        "intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/02",
+      "commit": "31543f10bc4b507bdc86240a713f9ff4419bfb47",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/2",
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Implemented prototype at recorded code revision; pending final Linux CI and independent accountable owner review under ENG-GIT-002. No acceptance or production deployment.",
+      "task_id": "TASK-0404-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2789/us-0404-retry-from-checkpoints",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0404"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0404-01",
+        "AC-0404-02",
+        "AC-0404-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-02.md"
+      ],
+      "rationale": "Cancel and enforce budgets",
+      "paths": [
+        "intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/02",
+      "commit": "31543f10bc4b507bdc86240a713f9ff4419bfb47",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/2",
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Implemented prototype at recorded code revision; pending final Linux CI and independent accountable owner review under ENG-GIT-002. No acceptance or production deployment.",
+      "task_id": "TASK-0405-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2790/us-0405-cancel-and-enforce-budgets",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0405"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0405-01",
+        "AC-0405-02",
+        "AC-0405-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-02.md"
+      ],
+      "rationale": "Isolate untrusted content",
+      "paths": [
+        "intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/02",
+      "commit": "31543f10bc4b507bdc86240a713f9ff4419bfb47",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/2",
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Implemented prototype at recorded code revision; pending final Linux CI and independent accountable owner review under ENG-GIT-002. No acceptance or production deployment.",
+      "task_id": "TASK-0406-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2791/us-0406-isolate-untrusted-content",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0406"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0406-01",
+        "AC-0406-02",
+        "AC-0406-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-02.md"
+      ],
+      "rationale": "Parse text and documents",
+      "paths": [
+        "intelligence/"
+      ],
+      "status": "implemented",
+      "branch": "batch/02",
+      "commit": "31543f10bc4b507bdc86240a713f9ff4419bfb47",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/2",
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Implemented prototype at recorded code revision; pending final Linux CI and independent accountable owner review under ENG-GIT-002. No acceptance or production deployment.",
+      "task_id": "TASK-0501-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2792/us-0501-parse-text-and-documents",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0501"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0501-01",
+        "AC-0501-02",
+        "AC-0501-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    }
+  ]
 }

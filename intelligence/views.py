@@ -109,11 +109,17 @@ def source_detail(request, workspace_id, source_id):
     version = source.versions.get(version=source.config_version)
     initial = {
         **version.config,
+        "page_limit": version.config.get("limits", {}).get("pages", 10),
+        "depth_limit": version.config.get("limits", {}).get("depth", 2),
+        "time_limit_seconds": version.config.get("limits", {}).get("seconds", 180),
+        "byte_limit": version.config.get("limits", {}).get("bytes", 10000000),
         "include": "\n".join(version.config.get("include", [])),
         "exclude": "\n".join(version.config.get("exclude", [])),
         "connection": version.config.get("connection_id"),
     }
-    form = ScopeForm(request.POST or None, initial=initial, workspace=ctx["workspace"])
+    form = ScopeForm(
+        request.POST or None, initial=initial, workspace=ctx["workspace"], source=source
+    )
     if request.method == "POST":
         member(request.user, workspace_id, write=True)
         if form.is_valid():
@@ -131,6 +137,14 @@ def source_detail(request, workspace_id, source_id):
                         else None,
                         "partial_policy": d["partial_policy"],
                         "partial_reason": d["partial_reason"],
+                        "limits": {
+                            "pages": d["page_limit"],
+                            "depth": d["depth_limit"],
+                            "seconds": d["time_limit_seconds"],
+                            "bytes": d["byte_limit"],
+                            "attempts": 3,
+                            "provider_cost_microunits": 0,
+                        },
                     },
                 )
                 return redirect(

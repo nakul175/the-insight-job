@@ -288,6 +288,10 @@ def update_source_config(actor, source, changes):
             raise ValidationError(
                 "Scope rules must be up to 30 absolute path prefixes."
             )
+    if "limits" in config:
+        from .runs import validated_limits
+
+        validated_limits(config)
     if config.get("access") not in {"public", "api", "session"}:
         raise ValidationError("Unsupported access method.")
     if config["access"] != "public":
@@ -298,6 +302,7 @@ def update_source_config(actor, source, changes):
         connection = Connection.objects.filter(
             pk=config.get("connection_id"),
             workspace=source.workspace,
+            bound_source=source,
             method=config["access"],
             domain=urlsplit(source.url).hostname,
         ).first()

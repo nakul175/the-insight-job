@@ -7,6 +7,8 @@ from django.core.exceptions import ValidationError
 
 def canonical_url(value, resolve=True):
     try:
+        if not isinstance(value, str) or len(value) > 2000:
+            raise ValueError()
         p = urlsplit(value.strip())
         if (
             p.scheme not in {"http", "https"}

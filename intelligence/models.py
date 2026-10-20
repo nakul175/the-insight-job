@@ -32,6 +32,15 @@ class ConsumerSystem(Entity):
 
 
 class Connection(Entity):
+    current_handoff_id = models.UUIDField(null=True, editable=False)
+    bound_source = models.ForeignKey("Source", null=True, on_delete=models.PROTECT)
+    session_ciphertext = models.TextField(blank=True)
+    pending_ciphertext = models.TextField(blank=True)
+    login_url = models.URLField(max_length=2000, blank=True)
+    identity_selector = models.CharField(max_length=300, blank=True)
+    expected_identity = models.CharField(max_length=200, blank=True)
+    allowed_login_hosts = models.JSONField(default=list)
+
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     name = models.CharField(max_length=120)
     domain = models.CharField(max_length=253)
@@ -141,6 +150,16 @@ class Derivative(models.Model):
 
 
 class WorkItem(Entity):
+    checkpoint = models.JSONField(default=dict)
+    limits = models.JSONField(default=dict)
+    usage = models.JSONField(default=dict)
+    attempts = models.PositiveIntegerField(default=0)
+    next_attempt = models.DateTimeField(default=timezone.now)
+    started_at = models.DateTimeField(null=True)
+    lease_token = models.UUIDField(null=True)
+    lease_until = models.DateTimeField(null=True)
+    result = models.JSONField(default=dict)
+
     source = models.ForeignKey(Source, on_delete=models.PROTECT)
     system = models.ForeignKey(ConsumerSystem, null=True, on_delete=models.PROTECT)
     actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
@@ -183,3 +202,47 @@ class SourceTest(Entity):
 class Schedule(Entity):
     source = models.ForeignKey(Source, on_delete=models.CASCADE)
     enabled = models.BooleanField(default=False)
+
+
+class BrowserHandoff(Entity):
+    connection = models.ForeignKey(Connection, on_delete=models.CASCADE)
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    state = models.CharField(max_length=30, default="pending")
+    expires_at = models.DateTimeField()
+    frame_ciphertext = models.TextField(blank=True)
+    reason = models.CharField(max_length=200, blank=True)
+
+
+class BrowserAction(models.Model):
+    handoff = models.ForeignKey(BrowserHandoff, on_delete=models.CASCADE)
+    kind = models.CharField(max_length=20)
+    payload_ciphertext = models.TextField()
+    created_at = models.DateTimeField(default=timezone.now)
+
+
+class Capture(Entity):
+    final_url = models.URLField(max_length=2000, blank=True)
+    run = models.ForeignKey(WorkItem, on_delete=models.PROTECT)
+    source = models.ForeignKey(Source, on_delete=models.PROTECT)
+    url = models.URLField(max_length=2000)
+    digest = models.CharField(max_length=64)
+    media_type = models.CharField(max_length=100)
+    original = models.BinaryField(default=bytes)
+    status = models.CharField(max_length=30)
+    missing = models.JSONField(default=list)
+    record = models.OneToOneField(ContentRecord, null=True, on_delete=models.SET_NULL)
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["run", "url"], name="capture_run_url_unique"
+            )
+        ]
+
+
+class ParseResult(models.Model):
+    capture = models.OneToOneField(Capture, on_delete=models.CASCADE)
+    status = models.CharField(max_length=30)
+    segments = models.JSONField(default=list)
+    reason = models.CharField(max_length=200, blank=True)

@@ -1,8 +1,58 @@
 from django.urls import path
 
-from . import views
+from . import access_views, views
 
 urlpatterns = [
+    path(
+        "<uuid:workspace_id>/sources/<uuid:source_id>/connect/",
+        access_views.connection_setup,
+        name="connection-setup",
+    ),
+    path(
+        "<uuid:workspace_id>/connections/<uuid:connection_id>/<str:action>/",
+        access_views.connection_action,
+        name="connection-action",
+    ),
+    path(
+        "<uuid:workspace_id>/login/<uuid:handoff_id>/",
+        access_views.handoff_view,
+        name="browser-handoff",
+    ),
+    path(
+        "<uuid:workspace_id>/login/<uuid:handoff_id>/state/",
+        access_views.handoff_state,
+        name="handoff-state",
+    ),
+    path(
+        "<uuid:workspace_id>/login/<uuid:handoff_id>/frame/",
+        access_views.handoff_frame,
+        name="handoff-frame",
+    ),
+    path(
+        "<uuid:workspace_id>/login/<uuid:handoff_id>/action/",
+        access_views.handoff_action,
+        name="handoff-action",
+    ),
+    path(
+        "<uuid:workspace_id>/sources/<uuid:source_id>/collect/",
+        access_views.run_start,
+        name="run-start",
+    ),
+    path(
+        "<uuid:workspace_id>/runs/<uuid:run_id>/",
+        access_views.run_detail,
+        name="run-detail",
+    ),
+    path(
+        "<uuid:workspace_id>/runs/<uuid:run_id>/cancel/",
+        access_views.run_cancel,
+        name="run-cancel",
+    ),
+    path(
+        "<uuid:workspace_id>/captures/<uuid:capture_id>/original/",
+        access_views.original_file,
+        name="original-file",
+    ),
     path(
         "<uuid:workspace_id>/api/systems/<uuid:system_id>/records/",
         views.system_records,

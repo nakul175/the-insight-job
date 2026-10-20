@@ -36,11 +36,16 @@ jobs:
       - run: ruff check config workspaces intelligence manage.py --extend-select E4,E7,E9,F
       - run: ruff format --check config workspaces intelligence manage.py
       - run: python manage.py makemigrations --check --dry-run --settings=config.test_settings
+      - run: python -m playwright install --with-deps chromium
       - run: python manage.py test --settings=config.test_settings
+        env:
+          TIJ_BROWSER_TESTS: 'true'
       - name: PostgreSQL integration tests
         run: python manage.py test --settings=config.ci_settings
         env:
           DATABASE_URL: postgres://insight_test:local-ci-only@localhost:5432/insight_test
       - run: pip-audit -r requirements.txt --no-deps --disable-pip
+      - name: Build isolated browser worker
+        run: docker build --target browser-worker -t insight-job-browser:${{ github.sha }} .
       - name: Build runtime container
         run: docker build -t insight-job:${{ github.sha }} .
