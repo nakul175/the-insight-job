@@ -503,7 +503,9 @@ class ExternalDeliveryTests(TransactionTestCase):
         if not connection.features.has_select_for_update:
             self.skipTest("Requires PostgreSQL row locks")
         import threading
-        from django.db import close_old_connections
+
+        from django.db import DatabaseError, close_old_connections
+
         from intelligence.delivery import queue_withdrawals
 
         self.activate()
@@ -522,7 +524,12 @@ class ExternalDeliveryTests(TransactionTestCase):
             close_old_connections()
             try:
                 service.send(self.admin, self.workspace.pk, item.pk)
-            except Exception as exc:
+            except (
+                DatabaseError,
+                RuntimeError,
+                ValidationError,
+                PermissionDenied,
+            ) as exc:
                 failures.append(type(exc).__name__)
             finally:
                 connection.close()
