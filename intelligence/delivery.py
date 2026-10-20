@@ -637,6 +637,9 @@ def queue_withdrawals(actor, workspace_id, source_id, system_id=None):
         source_id,
         {"count": len(queued), "external_deletion_claimed": False},
     )
+    from .external_delivery import revoke_source
+
+    revoke_source(actor, workspace_id, source_id=source_id, system_id=system_id)
     return queued
 
 
