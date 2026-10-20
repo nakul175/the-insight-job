@@ -1,6 +1,6 @@
-# The Insight Job
+# Source Almighty
 
-Evidence-backed content intelligence. First increment: **US-0101 / APL-2773 — Sign in and select workspace**.
+Evidence-backed content intelligence, formerly **The Insight Job**. The user selected the Source Almighty name and crooked-halo document mascot on20October2026. Historical product baselines, canonical story IDs, repository identity and deployment address remain stable.
 
 [Linear project](https://linear.app/aplyd-sandbox/project/the-insight-job-ef0144c22162)
 
@@ -22,10 +22,10 @@ python manage.py test --settings=config.test_settings
 python manage.py makemigrations --check --dry-run --settings=config.test_settings
 ```
 
-`config.test_settings` uses in-memory SQLite and a deliberately fast test-only hasher. Never deploy that settings module. Production settings require a secret and database URL, enforce HTTPS and secure cookies, and use Django's normal password hashers. The first migration is additive; apply it once as a release job, not concurrently from every web worker.
+`config.test_settings` uses SQLite (a disposable file database for explicit browser suites) and a deliberately fast test-only hasher. Never deploy that settings module. Production settings require a secret and database URL, enforce HTTPS and secure cookies, and use Django's normal password hashers. The first migration is additive; apply it once as a release job, not concurrently from every web worker.
 
 ## Delivery status
 
-Draft implementation, not approved, merged, deployed or accepted. Product and QA approval bindings remain draft. See `docs/engineering/US-0101.md` for scope, invariants and gates. All 79 R1 stories are tracked in Linear with canonical IDs. Sources, extraction, distillation and delivery are future stories.
+All79original mapped R1 stories are implemented and merged in eight batches. PR11 mainCI39406731586 passed SQLite/PostgreSQL tests, audit and both builds at sourcea040812388e703e6acfc0e4f12d641ddb0503a6c. A sign-in-protected public prototype is hosted on the existing APLYD droplet at https://insightjob.aplyd.org/ under explicit user-approved prototype exceptions. Native QA/product acceptance and formal production release remain unverified; see the batch ledger and engineering evidence.
 
-DigitalOcean deployment is not activated. No paid resources have been created. Confirm account, region, resource budget and release authority before provisioning. Public deployment is also gated on login throttling, password recovery policy, native QA review, dependency/security review and PostgreSQL verification.
+The Source Almighty visual rebrand is a subsequent user-requested presentation change; its own review, CI and deployment evidence are recorded separately. Four external-delivery stories APL-2938–APL-2941 remain Low-priority Backlog, outside the79-story denominator; they are not implemented. Current delivery remains the local sandbox contract.
