@@ -642,6 +642,16 @@ def decide_duplicate(actor, left, right, decision, reason):
         raise ValidationError(
             "Other retained links or exact-byte identity still connect these records; resolve those links first."
         )
+    for separated_left, separated_right in DuplicateDecision.objects.filter(
+        workspace_id=left.workspace_id,
+        left_id__in=ids,
+        right_id__in=ids,
+        decision="separate",
+    ).values_list("left_id", "right_id"):
+        if root(separated_left) == root(separated_right):
+            raise ValidationError(
+                "This link would contradict a retained separation decision; explicitly review that decision first."
+            )
     groups = {}
     for pk in ids:
         groups.setdefault(root(pk), []).append(pk)

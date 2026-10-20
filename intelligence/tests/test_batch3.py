@@ -676,3 +676,29 @@ class BatchThreeTests(TestCase):
             set(response.json()["records"][0]), {"id", "title", "body", "version"}
         )
         self.assertEqual(response.json()["records"][0]["body"], self.visible.body)
+
+    def test_review_retained_separation_cannot_be_undone_by_indirect_link(self):
+        left, _, _, _ = self.captured("Tender alpha")
+        middle, _, _, _ = self.captured("Tender beta", url="https://example.com/b")
+        right, _, _, _ = self.captured("Tender gamma", url="https://example.com/c")
+        decide_duplicate(
+            self.admin, left, right, "separate", "Different opportunities."
+        )
+        decide_duplicate(self.admin, left, middle, "link", "Same opportunity.")
+        with self.assertRaises(ValidationError):
+            decide_duplicate(
+                self.admin,
+                middle,
+                right,
+                "link",
+                "Would silently contradict the retained separation.",
+            )
+        for record in [left, middle, right]:
+            record.refresh_from_db()
+        self.assertEqual(left.identity_id, middle.identity_id)
+        self.assertNotEqual(left.identity_id, right.identity_id)
+        self.assertEqual(
+            left.duplicate_left.filter(decision="link").count()
+            + left.duplicate_right.filter(decision="link").count(),
+            1,
+        )
