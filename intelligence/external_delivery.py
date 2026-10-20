@@ -197,13 +197,15 @@ def evidence_package(actor, intent, destination):
         "result_version": result.version,
         "source": str(result.record.source_id),
         "content_version": str(result.content_version_id),
-        "capture_versions": [
-            str(pk)
-            for pk in Capture.objects.filter(
-                content_version_id=result.content_version_id,
-                workspace_id=intent.workspace_id,
-            ).values_list("pk", flat=True)[:100]
-        ],
+        "capture_versions": sorted(
+            {
+                str(c["capture"])
+                for key in selected
+                for c in result.fields.get(key, {}).get("candidates", [])
+                if isinstance(c, dict) and c.get("capture")
+            }
+            | ({str(result.analysis.capture_id)} if result.analysis_id else set())
+        ),
         "analysis_number": result.analysis.number if result.analysis_id else None,
         "analysis_version": str(result.analysis_id) if result.analysis_id else None,
         "configuration": str(result.configuration_id),

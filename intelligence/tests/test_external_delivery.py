@@ -592,3 +592,22 @@ class ExternalDeliveryTests(TransactionTestCase):
             with self.assertRaises(ValidationError):
                 external_http.request(self.target, item)
             conn.assert_not_called()
+
+    def test_unchanged_recapture_does_not_change_pinned_package(self):
+        from intelligence.models import Capture
+
+        self.activate()
+        item = self.queued()
+        original = Capture.objects.filter(
+            content_version=self.result.content_version
+        ).first()
+        duplicate = Capture.objects.get(pk=original.pk)
+        duplicate.pk = None
+        duplicate.url = original.url + "?later=same-bytes"
+        duplicate.save()
+        with patch(
+            "intelligence.external_http.request", return_value=self.receipt(item)
+        ):
+            outcome = service.send(self.admin, self.workspace.pk, item.pk)
+        self.assertEqual(outcome.state, "acknowledged")
+        self.assertEqual(self.queued().pk, item.pk)
