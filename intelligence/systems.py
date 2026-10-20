@@ -109,6 +109,7 @@ def validate_config(actor, workspace_id, config):
         "unknown_type",
         "relevance",
         "schema_id",
+        "schema_version",
         "qualification",
         "destination_id",
     }:
@@ -156,11 +157,43 @@ def validate_config(actor, workspace_id, config):
         )
     if "relevance" in config:
         validate_relevance(config["relevance"])
-    # Later qualification/destination stories own these contracts; don't accept unchecked draft IDs.
-    if any(config.get(key) for key in ("schema_id", "qualification", "destination_id")):
-        raise ValidationError(
-            "Use validated schema, qualification and destination setup before attaching these dependencies."
+    if config.get("schema_id"):
+        from .models import SchemaVersion
+        from .qualification import validate_rules
+
+        schema = ContentSchema.objects.filter(
+            pk=config["schema_id"],
+            workspace_id=workspace_id,
+            scope="system",
+            state="published",
+        ).first()
+        if (
+            not schema
+            or schema.system_id is None
+            or not systems_for(actor, workspace_id).filter(pk=schema.system_id).exists()
+            or schema.published_version != config.get("schema_version")
+        ):
+            raise ValidationError(
+                "Select the current published, permitted system schema."
+            )
+        definition = SchemaVersion.objects.get(
+            schema=schema, number=config["schema_version"]
         )
+        validate_rules(config.get("qualification"), definition.fields)
+    elif config.get("qualification") or config.get("schema_version"):
+        raise ValidationError("Qualification requires a published schema version.")
+    if config.get("destination_id"):
+        from .models import Destination
+
+        if not Destination.objects.filter(
+            pk=config["destination_id"],
+            workspace_id=workspace_id,
+            state="test_passed",
+            system__in=systems_for(actor, workspace_id),
+        ).exists():
+            raise ValidationError(
+                "A tested, permitted sandbox destination is required."
+            )
     return config
 
 
@@ -197,6 +230,20 @@ def save_configuration(actor, workspace_id, system_id, expected_version, config)
     if system.state == "retired":
         raise ValidationError("Retired systems cannot accept drafts.")
     validate_config(actor, workspace_id, config)
+    if (
+        config.get("schema_id")
+        and not ContentSchema.objects.filter(
+            pk=config["schema_id"], system=system
+        ).exists()
+    ):
+        raise ValidationError("Schema belongs to another system.")
+    if config.get("destination_id"):
+        from .models import Destination
+
+        if not Destination.objects.filter(
+            pk=config["destination_id"], system=system
+        ).exists():
+            raise ValidationError("Destination belongs to another system.")
     from .models import WorkItem
 
     selected = config.get("source_ids", [])

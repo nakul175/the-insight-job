@@ -532,3 +532,55 @@ class EnrichmentAttempt(Entity):
     state = models.CharField(max_length=30, default="queued")
     reason = models.CharField(max_length=200, blank=True)
     previous = models.ForeignKey("self", null=True, on_delete=models.PROTECT)
+
+
+class SystemResult(Entity):
+    processing_number = models.PositiveIntegerField(default=0)
+    system = models.ForeignKey(
+        ConsumerSystem, on_delete=models.PROTECT, related_name="results"
+    )
+    record = models.ForeignKey(ContentRecord, on_delete=models.PROTECT)
+    content_version = models.ForeignKey(ContentVersion, on_delete=models.PROTECT)
+    analysis = models.ForeignKey(ContentAnalysis, null=True, on_delete=models.PROTECT)
+    configuration = models.ForeignKey(SystemConfiguration, on_delete=models.PROTECT)
+    schema_version = models.ForeignKey(
+        SchemaVersion, null=True, on_delete=models.PROTECT
+    )
+    classification_version = models.PositiveIntegerField(default=0)
+    relevance = models.JSONField(default=dict)
+    fields = models.JSONField(default=dict)
+    qualification = models.JSONField(default=dict)
+    decision = models.CharField(max_length=30, default="review")
+    reason = models.CharField(max_length=300, blank=True)
+    preview = models.BooleanField(default=True)
+    version = models.PositiveIntegerField(default=1)
+    assigned_to = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, on_delete=models.PROTECT
+    )
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=[
+                    "system",
+                    "content_version",
+                    "configuration",
+                    "processing_number",
+                    "classification_version",
+                ],
+                name="system_content_config_unique",
+            )
+        ]
+
+
+class ReviewChange(Entity):
+    result = models.ForeignKey(
+        SystemResult, on_delete=models.PROTECT, related_name="changes"
+    )
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    kind = models.CharField(max_length=20)
+    original = models.JSONField(default=dict)
+    replacement = models.JSONField(default=dict)
+    evidence = models.JSONField(default=dict)
+    reason = models.CharField(max_length=1000)
+    result_version = models.PositiveIntegerField()
