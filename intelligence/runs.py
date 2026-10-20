@@ -12,7 +12,8 @@ from django.utils import timezone
 
 from .access import NeedsAccess, connection_for, headers_for, mark_expired
 from .collector import fetch_public
-from .models import Capture, ContentRecord, ParseResult, Source, WorkItem
+from .content import materialize
+from .models import Capture, ParseResult, Source, WorkItem
 from .parsing import parse_document
 from .permissions import member, sources_for
 from .services import audit, check_work_permission
@@ -424,7 +425,6 @@ def collect_step(item, fetch=fetch_public):
         )
         if parsed["status"] != "parsed":
             missing.append({"reason": parsed["reason"]})
-        text = "\n\n".join(s["text"] for s in parsed["segments"])
         digest = hashlib.sha256(data).hexdigest()
         access_final = connection_for(item.source, item.source_version)
         if (
@@ -462,15 +462,7 @@ def collect_step(item, fetch=fetch_public):
                     "Source changed during recovery; retain the original and start an explicit new run."
                 )
             if created:
-                record = ContentRecord.objects.create(
-                    workspace=item.workspace,
-                    source=item.source,
-                    title=(text.splitlines()[0] if text else url)[:300],
-                    body=text,
-                    status="captured" if parsed["status"] == "parsed" else "review",
-                )
-                saved.record = record
-                saved.save(update_fields=["record"])
+                materialize(saved, parsed)
                 ParseResult.objects.create(capture=saved, **parsed)
             visited = list(checkpoint.get("visited", []))
             visited.append(url)

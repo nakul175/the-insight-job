@@ -313,61 +313,19 @@ def system_api(request, workspace_id, system_id):
 
 @login_required
 @require_GET
-def record_list(request, workspace_id):
-    ctx = context(request, workspace_id)
-    qs = records_for(request.user, workspace_id)
-    if request.GET.get("status"):
-        qs = qs.filter(status=request.GET["status"])
-    if request.GET.get("q"):
-        qs = qs.filter(title__icontains=request.GET["q"])
-    if request.GET.get("window") == "7d":
-        qs = qs.filter(created_at__gte=timezone.now() - timedelta(days=7))
-    ctx["records"] = qs.order_by("-created_at")[:100]
-    return render(request, "intelligence/records.html", ctx)
-
-
-@login_required
-@require_GET
-def record_detail(request, workspace_id, record_id):
-    record = get_object_or_404(records_for(request.user, workspace_id), pk=record_id)
-    return render(
-        request,
-        "intelligence/record.html",
-        {
-            **context(request, workspace_id),
-            "record": record,
-            "derivatives": record.derivative_set.all(),
-        },
-    )
-
-
-@login_required
-@require_GET
 def record_file(request, workspace_id, record_id):
     record = get_object_or_404(
         records_for(request.user, workspace_id, export=True), pk=record_id
     )
-    response = HttpResponse(record.body, content_type="text/plain; charset=utf-8")
-    response["Content-Disposition"] = 'attachment; filename="capture.txt"'
-    return response
-
-
-@login_required
-@require_GET
-def record_export(request, workspace_id):
-    qs = records_for(request.user, workspace_id, export=True)
-    if request.GET.get("q"):
-        qs = qs.filter(title__icontains=request.GET["q"])
-    rows = list(qs.values("id", "title", "body", "version"))
     audit(
         request.user,
         workspace_id,
-        "records.exported",
-        workspace_id,
-        {"count": len(rows)},
+        "record.file_exported",
+        record.pk,
+        {"format": "text/plain", "content_version": record.version},
     )
-    response = JsonResponse({"records": rows})
-    response["Content-Disposition"] = 'attachment; filename="records.json"'
+    response = HttpResponse(record.body, content_type="text/plain; charset=utf-8")
+    response["Content-Disposition"] = 'attachment; filename="capture.txt"'
     return response
 
 

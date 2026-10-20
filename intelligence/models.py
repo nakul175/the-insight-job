@@ -136,6 +136,19 @@ class Invitation(Entity):
 
 
 class ContentRecord(Entity):
+    canonical_url = models.URLField(max_length=2000, blank=True)
+    identity = models.ForeignKey("ContentIdentity", null=True, on_delete=models.PROTECT)
+    classification_version = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["source", "canonical_url"],
+                condition=~models.Q(canonical_url=""),
+                name="content_source_url_unique",
+            )
+        ]
+
     source = models.ForeignKey(Source, on_delete=models.PROTECT)
     title = models.CharField(max_length=300)
     body = models.TextField(blank=True)
@@ -144,6 +157,8 @@ class ContentRecord(Entity):
 
 
 class Derivative(models.Model):
+    content_version = models.PositiveIntegerField(default=1)
+    stale = models.BooleanField(default=False)
     record = models.ForeignKey(ContentRecord, on_delete=models.CASCADE)
     kind = models.CharField(max_length=30)
     value = models.JSONField(default=dict)
@@ -231,7 +246,12 @@ class Capture(Entity):
     original = models.BinaryField(default=bytes)
     status = models.CharField(max_length=30)
     missing = models.JSONField(default=list)
-    record = models.OneToOneField(ContentRecord, null=True, on_delete=models.SET_NULL)
+    record = models.ForeignKey(
+        ContentRecord, null=True, on_delete=models.SET_NULL, related_name="captures"
+    )
+    content_version = models.ForeignKey(
+        "ContentVersion", null=True, on_delete=models.PROTECT
+    )
 
     class Meta:
         constraints: ClassVar[list] = [
@@ -246,3 +266,129 @@ class ParseResult(models.Model):
     status = models.CharField(max_length=30)
     segments = models.JSONField(default=list)
     reason = models.CharField(max_length=200, blank=True)
+
+
+class ContentIdentity(Entity):
+    fingerprint = models.CharField(max_length=64)
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["workspace", "fingerprint"], name="identity_fingerprint_unique"
+            )
+        ]
+
+
+class ContentVersion(Entity):
+    record = models.ForeignKey(
+        ContentRecord, on_delete=models.PROTECT, related_name="revisions"
+    )
+    number = models.PositiveIntegerField()
+    digest = models.CharField(max_length=64)
+    media_type = models.CharField(max_length=100)
+    language = models.CharField(max_length=50, default="unknown")
+    completeness = models.CharField(max_length=30)
+    metadata = models.JSONField(default=dict)
+    summary = models.JSONField(default=dict)
+    body = models.TextField(blank=True)
+    segments = models.JSONField(default=list)
+    changes = models.JSONField(default=dict)
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["record", "number"], name="content_revision_unique"
+            )
+        ]
+
+
+class ContentType(models.Model):
+    record = models.ForeignKey(
+        ContentRecord, on_delete=models.CASCADE, related_name="type_assignments"
+    )
+    key = models.CharField(max_length=60)
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["record", "key"], name="content_type_unique"
+            )
+        ]
+
+
+class ClassificationChange(Entity):
+    record = models.ForeignKey(ContentRecord, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    version = models.PositiveIntegerField()
+    original = models.JSONField(default=list)
+    selected = models.JSONField(default=list)
+    reason = models.TextField()
+
+
+class ContentSchema(Entity):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    name = models.CharField(max_length=120)
+    key = models.SlugField(max_length=60)
+    scope = models.CharField(max_length=20, default="type")
+    system = models.ForeignKey(ConsumerSystem, null=True, on_delete=models.PROTECT)
+    state = models.CharField(max_length=20, default="draft")
+    published_version = models.PositiveIntegerField(null=True)
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["workspace", "key"], name="schema_key_unique"
+            )
+        ]
+
+
+class SchemaVersion(models.Model):
+    schema = models.ForeignKey(
+        ContentSchema, on_delete=models.PROTECT, related_name="versions"
+    )
+    number = models.PositiveIntegerField()
+    fields = models.JSONField(default=list)
+    created_at = models.DateTimeField(default=timezone.now)
+    state = models.CharField(max_length=20, default="draft")
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["schema", "number"], name="schema_revision_unique"
+            )
+        ]
+
+
+class ExtractionJob(Entity):
+    record = models.ForeignKey(ContentRecord, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    classification_version = models.PositiveIntegerField()
+    content_version = models.ForeignKey(
+        ContentVersion, null=True, on_delete=models.PROTECT
+    )
+    schema_version = models.ForeignKey(
+        SchemaVersion, null=True, on_delete=models.PROTECT
+    )
+    state = models.CharField(max_length=30, default="queued")
+    reason = models.CharField(max_length=200, blank=True)
+    result = models.JSONField(default=dict)
+    preview = models.BooleanField(default=True)
+
+
+class DuplicateDecision(Entity):
+    left = models.ForeignKey(
+        ContentRecord, on_delete=models.PROTECT, related_name="duplicate_left"
+    )
+    right = models.ForeignKey(
+        ContentRecord, on_delete=models.PROTECT, related_name="duplicate_right"
+    )
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    decision = models.CharField(max_length=20)
+    reason = models.TextField()
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["left", "right"], name="duplicate_pair_unique"
+            )
+        ]

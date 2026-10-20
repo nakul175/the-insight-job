@@ -1,0 +1,1 @@
+{% extends "intelligence/layout.html" %}{% block app %}<h1>{% if schema %}Edit {{ schema.name }} draft{% else %}Create schema draft{% endif %}</h1><section class="card"><p>Saving creates a new immutable draft version. Published processing is unchanged.</p><form method="post">{% csrf_token %}{{ form.as_p }}<button>Save draft</button></form></section>{% endblock %}

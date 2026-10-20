@@ -1,8 +1,54 @@
 from django.urls import path
 
-from . import access_views, views
+from . import access_views, content_views, views
 
 urlpatterns = [
+    path(
+        "<uuid:workspace_id>/records/<uuid:record_id>/classify/",
+        content_views.classify,
+        name="classify-record",
+    ),
+    path("<uuid:workspace_id>/schemas/", content_views.schema_list, name="schemas"),
+    path(
+        "<uuid:workspace_id>/schemas/new/",
+        content_views.schema_edit,
+        name="schema-create",
+    ),
+    path(
+        "<uuid:workspace_id>/schemas/<uuid:schema_id>/",
+        content_views.schema_detail,
+        name="schema-detail",
+    ),
+    path(
+        "<uuid:workspace_id>/schemas/<uuid:schema_id>/edit/",
+        content_views.schema_edit,
+        name="schema-edit",
+    ),
+    path(
+        "<uuid:workspace_id>/records/<uuid:record_id>/types/",
+        content_views.type_correction,
+        name="type-correction",
+    ),
+    path(
+        "<uuid:workspace_id>/records/<uuid:record_id>/extract/",
+        content_views.extract_preview,
+        name="extract-preview",
+    ),
+    path(
+        "<uuid:workspace_id>/records/<uuid:record_id>/evidence/<uuid:job_id>/<slug:field_key>/",
+        content_views.field_evidence,
+        name="field-evidence",
+    ),
+    path(
+        "<uuid:workspace_id>/records/<uuid:record_id>/duplicates/",
+        content_views.duplicates,
+        name="duplicates",
+    ),
+    path(
+        "<uuid:workspace_id>/records/<uuid:record_id>/duplicate-decision/",
+        content_views.duplicate_action,
+        name="duplicate-action",
+    ),
     path(
         "<uuid:workspace_id>/sources/<uuid:source_id>/connect/",
         access_views.connection_setup,
@@ -92,13 +138,15 @@ urlpatterns = [
         views.system_api,
         name="system-api",
     ),
-    path("<uuid:workspace_id>/records/", views.record_list, name="records"),
+    path("<uuid:workspace_id>/records/", content_views.record_list, name="records"),
     path(
-        "<uuid:workspace_id>/records/export/", views.record_export, name="record-export"
+        "<uuid:workspace_id>/records/export/",
+        content_views.record_export,
+        name="record-export",
     ),
     path(
         "<uuid:workspace_id>/records/<uuid:record_id>/",
-        views.record_detail,
+        content_views.record_detail,
         name="record-detail",
     ),
     path(
