@@ -3,16 +3,42 @@ from django.urls import path
 from . import (
     access_views,
     content_views,
+    draft_views,
     followup_views,
+    governance_views,
+    lifecycle_views,
     operations_views,
     release_views,
+    replay_views,
     review_views,
     schema_views,
+    setup_views,
     system_views,
     views,
 )
 
 urlpatterns = [
+    path(
+        "<uuid:workspace_id>/sources/<uuid:source_id>/setup/",
+        setup_views.source_setup,
+        name="source-setup",
+    ),
+    path(
+        "<uuid:workspace_id>/drafts/<str:scope_kind>/<uuid:scope_id>/<slug:form_key>/",
+        draft_views.draft,
+        name="scoped-draft",
+    ),
+    path("<uuid:workspace_id>/lifecycle/", lifecycle_views.lifecycle, name="lifecycle"),
+    path(
+        "<uuid:workspace_id>/governance/",
+        governance_views.governance,
+        name="governance",
+    ),
+    path(
+        "<uuid:workspace_id>/systems/<uuid:system_id>/replay/",
+        replay_views.replay,
+        name="system-replay",
+    ),
     path(
         "<uuid:workspace_id>/review-tasks/", followup_views.tasks, name="review-tasks"
     ),

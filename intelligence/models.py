@@ -541,6 +541,10 @@ class EnrichmentAttempt(Entity):
 
 
 class SystemResult(Entity):
+    replay_number = models.PositiveIntegerField(default=0)
+    replay_run = models.ForeignKey(
+        "ReplayRun", null=True, on_delete=models.PROTECT, related_name="results"
+    )
     stored_version = models.PositiveIntegerField(null=True)
     bundle = models.ForeignKey("PublishedBundle", null=True, on_delete=models.PROTECT)
     bundle_number = models.PositiveIntegerField(default=0)
@@ -579,6 +583,7 @@ class SystemResult(Entity):
                     "processing_number",
                     "classification_version",
                     "bundle_number",
+                    "replay_number",
                 ],
                 name="system_content_config_unique",
             )
@@ -728,3 +733,146 @@ class SandboxReceipt(Entity):
                 name="sandbox_key_payload_unique",
             )
         ]
+
+
+class ReplayRun(Entity):
+    system = models.ForeignKey(
+        ConsumerSystem, on_delete=models.PROTECT, related_name="replays"
+    )
+    bundle = models.ForeignKey(PublishedBundle, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    number = models.PositiveIntegerField()
+    pins = models.JSONField(default=list)
+    report = models.JSONField(default=dict)
+    state = models.CharField(max_length=30, default="previewed")
+    enabled_results = models.JSONField(default=list)
+    reason = models.CharField(max_length=500, blank=True)
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["system", "number"], name="system_replay_number_unique"
+            )
+        ]
+
+
+class RejectSampling(Entity):
+    system = models.ForeignKey(ConsumerSystem, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    starts_at = models.DateTimeField()
+    ends_at = models.DateTimeField()
+    threshold = models.PositiveIntegerField()
+    result_ids = models.JSONField(default=list)
+    labels = models.JSONField(default=dict)
+
+
+class AlertRule(Entity):
+    condition_active = models.BooleanField(default=False)
+    system = models.ForeignKey(ConsumerSystem, null=True, on_delete=models.PROTECT)
+    source = models.ForeignKey(Source, null=True, on_delete=models.PROTECT)
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="created_alert_rules",
+    )
+    category = models.CharField(max_length=30)
+    threshold = models.PositiveIntegerField()
+    interval_minutes = models.PositiveIntegerField()
+    enabled = models.BooleanField(default=True)
+
+
+class Incident(Entity):
+    rule = models.ForeignKey(AlertRule, null=True, on_delete=models.PROTECT)
+    sampling = models.ForeignKey(RejectSampling, null=True, on_delete=models.PROTECT)
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    fingerprint = models.CharField(max_length=150, unique=True)
+    state = models.CharField(max_length=20, default="open")
+    category = models.CharField(max_length=30)
+    count = models.PositiveIntegerField()
+    acknowledged_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        on_delete=models.PROTECT,
+        related_name="acknowledged_incidents",
+    )
+    acknowledged_at = models.DateTimeField(null=True)
+    resolved_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        on_delete=models.PROTECT,
+        related_name="resolved_incidents",
+    )
+    resolved_at = models.DateTimeField(null=True)
+
+
+class ContentTombstone(Entity):
+    source = models.ForeignKey(Source, on_delete=models.PROTECT)
+    url_hash = models.CharField(max_length=64)
+    record = models.ForeignKey(ContentRecord, on_delete=models.PROTECT)
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["source", "url_hash"], name="source_deleted_url_unique"
+            )
+        ]
+
+
+class DeletionOperation(Entity):
+    record = models.ForeignKey(ContentRecord, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    fingerprint = models.CharField(max_length=64)
+    impact = models.JSONField(default=dict)
+    state = models.CharField(max_length=40, default="previewed")
+    backup_scope = models.CharField(max_length=20, default="unknown")
+    backup_expires_at = models.DateTimeField(null=True)
+    executed_at = models.DateTimeField(null=True)
+
+
+class RecoverySnapshot(Entity):
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    payload = models.JSONField(default=list)
+    digest = models.CharField(max_length=64)
+    manifest = models.JSONField(default=dict)
+    expires_at = models.DateTimeField()
+    state = models.CharField(max_length=30, default="retained")
+
+
+class RecoveryExercise(Entity):
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    snapshot = models.ForeignKey(RecoverySnapshot, on_delete=models.PROTECT)
+    policy = models.JSONField(default=dict)
+    state = models.CharField(max_length=30, default="running")
+    report = models.JSONField(default=dict)
+
+
+class RecoveryControl(models.Model):
+    workspace = models.OneToOneField(Workspace, on_delete=models.CASCADE)
+    delivery_hold = models.BooleanField(default=False)
+    exercise = models.ForeignKey(RecoveryExercise, null=True, on_delete=models.PROTECT)
+
+
+class UserDraft(Entity):
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    scope_kind = models.CharField(max_length=20)
+    scope_id = models.UUIDField()
+    form_key = models.CharField(max_length=30)
+    payload = models.JSONField(default=dict)
+    updated_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["workspace", "actor", "scope_kind", "scope_id", "form_key"],
+                name="user_scoped_form_draft_unique",
+            )
+        ]
+
+
+class SourceActivation(Entity):
+    source = models.ForeignKey(Source, on_delete=models.PROTECT)
+    source_version = models.ForeignKey(SourceVersion, on_delete=models.PROTECT)
+    test = models.ForeignKey(SourceTest, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    scope = models.JSONField(default=dict)

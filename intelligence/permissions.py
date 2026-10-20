@@ -45,7 +45,7 @@ def records_for(user, workspace_id, export=False):
         workspace_id=workspace_id,
         source_id__in=sources_for(user, workspace_id, export=export).values("id"),
         source__workspace_id=workspace_id,
-    )
+    ).exclude(status="deleted")
 
 
 def system_can_read(system, source):
