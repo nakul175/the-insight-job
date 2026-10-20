@@ -115,12 +115,15 @@ def configure(request, workspace_id, system_id):
     if request.method == "POST" and form.is_valid():
         values = form.cleaned_data
         draft = {
+            **config,
             "source_ids": values["sources"],
             "type_keys": values["types"],
             "unknown_type": values["unknown_type"],
         }
         if values["relevance"]:
             draft["relevance"] = values["relevance"]
+        else:
+            draft.pop("relevance", None)
         try:
             save_configuration(
                 request.user, workspace_id, system.pk, values["expected_version"], draft

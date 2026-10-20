@@ -4,7 +4,7 @@ import difflib
 import hashlib
 import math
 import re
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 
 from django.core.exceptions import PermissionDenied, ValidationError
@@ -452,6 +452,8 @@ def typed_value(raw, field):
             raise ValueError("Use true or false.")
         return raw.lower() == "true"
     if kind == "date":
+        if "T" in raw or " " in raw:
+            return datetime.fromisoformat(raw).isoformat()
         return date.fromisoformat(raw).isoformat()
     number = Decimal(raw)
     if not number.is_finite():

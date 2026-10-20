@@ -4,12 +4,30 @@ from . import (
     access_views,
     content_views,
     operations_views,
+    review_views,
     schema_views,
     system_views,
     views,
 )
 
 urlpatterns = [
+    path("<uuid:workspace_id>/process/", review_views.process, name="process-systems"),
+    path("<uuid:workspace_id>/reviews/", review_views.queue, name="review-queue"),
+    path(
+        "<uuid:workspace_id>/reviews/<uuid:result_id>/",
+        review_views.detail,
+        name="review-detail",
+    ),
+    path(
+        "<uuid:workspace_id>/systems/<uuid:system_id>/qualification/",
+        review_views.qualification,
+        name="qualification",
+    ),
+    path(
+        "<uuid:workspace_id>/systems/<uuid:system_id>/state/",
+        review_views.state,
+        name="system-state",
+    ),
     path(
         "<uuid:workspace_id>/systems/<uuid:system_id>/destinations/",
         operations_views.destinations,
