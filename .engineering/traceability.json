@@ -2888,6 +2888,43 @@
       "pr": "https://github.com/nakul175/the-insight-job/pull/1",
       "review_ref": null,
       "notes": "Reconciled historical merge and exact-main CI39343024680 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred."
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "User 2026-10-20: Complete QA for all 79 stories against all 237 acceptance criteria, fix failures and update Linear/dashboard",
+      "requirement_refs": [
+        "docs/product/Planning-View.json#AC-0701-02"
+      ],
+      "design_refs": [
+        "docs/qa/README.md"
+      ],
+      "rationale": "Requirement-led QA exposed a missing type-schema dependency list; repair retains current system permission filtering. Curated diagnostic matrix spans all79R1/237AC, without native qualification claims.",
+      "paths": [
+        "intelligence/content_views.py",
+        "templates/intelligence/schema.html",
+        "intelligence/tests/test_acceptance_audit.py",
+        "intelligence/tests/test_acceptance_browser.py",
+        "intelligence/tests/test_browser_engine.py",
+        "docs/qa/",
+        ".github/workflows/product-ci.yml"
+      ],
+      "status": "implemented",
+      "branch": "qa/r1-acceptance",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "APL-3021; exact-head review/CI pending. No native QA case bindings/independent acceptance owner; conditional semantic and real assistive-technology output remain unverified.",
+      "task_id": "TASK-0701-VERIFY",
+      "story_ids": [
+        "US-0701"
+      ],
+      "criterion_ids": [
+        "AC-0701-02"
+      ],
+      "qa_case_ids": [],
+      "qa_case_refs": []
     }
   ]
 }
