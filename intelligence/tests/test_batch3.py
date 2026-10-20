@@ -537,3 +537,142 @@ class BatchThreeTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, ">budget</a>")
+
+    def test_review_classification_rejects_capture_changed_before_type_commit(self):
+        record, _, _, _ = self.captured("Type: tender\nBudget: 12 USD")
+        self.schema(published=True)
+        original = correct_types
+
+        def race(*args, **kwargs):
+            self.captured("Type: unknown\nBudget: 20 USD")
+            return original(*args, **kwargs)
+
+        with (
+            patch("intelligence.content.correct_types", side_effect=race),
+            self.assertRaises(ValidationError),
+        ):
+            classify_record(self.admin, record)
+        self.assertFalse(record.type_assignments.exists())
+        self.assertFalse(ExtractionJob.objects.filter(record=record).exists())
+
+    def test_review_recapture_invalidates_previous_types_with_history(self):
+        record, _, _, _ = self.captured("Type: tender\nBudget: 12 USD")
+        self.schema(published=True)
+        classify_record(self.admin, record)
+        self.assertTrue(record.type_assignments.exists())
+        changed, _, _, _ = self.captured("Type: unknown\nBudget: 20 USD")
+        changed.refresh_from_db()
+        self.assertFalse(changed.type_assignments.exists())
+        self.assertEqual(
+            changed.classification_version,
+            changed.classificationchange_set.latest("created_at").version,
+        )
+        self.assertTrue(
+            changed.classificationchange_set.filter(
+                reason__contains="require reclassification"
+            ).exists()
+        )
+
+    def test_review_parse_recovery_reuses_source_version_and_pins_new_analysis(self):
+        body = "Budget: 12 USD"
+        item = WorkItem.objects.create(
+            workspace=self.workspace,
+            source=self.source,
+            source_version=self.version,
+            actor=self.admin,
+        )
+        cap = Capture.objects.create(
+            workspace=self.workspace,
+            source=self.source,
+            run=item,
+            url=self.source.url,
+            digest=hashlib.sha256(body.encode()).hexdigest(),
+            media_type="text/plain",
+            original=body.encode(),
+            status="partial",
+        )
+        record, version, _ = materialize(
+            cap,
+            {
+                "status": "failed",
+                "segments": [],
+                "reason": "Transient parser worker failure",
+            },
+        )
+        failed = record.current_analysis
+        _, schema_version = self.schema()
+        old_job = preview_extraction(self.admin, record, schema_version)
+        recovered, reused, _, created = self.captured(body)
+        self.assertFalse(created)
+        self.assertEqual(reused.pk, version.pk)
+        self.assertEqual(recovered.revisions.count(), 1)
+        self.assertEqual(recovered.body, body)
+        self.assertEqual(recovered.current_analysis.number, 2)
+        failed.refresh_from_db()
+        version.refresh_from_db()
+        self.assertEqual(failed.body, "")
+        self.assertEqual(version.body, "")
+        new_job = preview_extraction(self.admin, recovered, schema_version)
+        self.assertEqual(new_job.result["budget"]["value"], 12)
+        self.assertNotEqual(old_job.analysis_id, new_job.analysis_id)
+        self.captured(body)
+        self.assertEqual(version.analyses.count(), 2)
+        self.login()
+        response = self.client.get(
+            reverse("record-detail", args=[self.workspace.pk, record.pk])
+        )
+        self.assertContains(response, "Budget: 12 USD")
+        self.assertContains(response, "Immutable processing revision 2")
+        self.assertContains(
+            self.client.get(
+                reverse(
+                    "field-evidence",
+                    args=[self.workspace.pk, record.pk, old_job.pk, "budget"],
+                )
+            ),
+            "This result is stale",
+        )
+
+    def test_review_duplicate_unlink_splits_group_and_preserves_other_links(self):
+        left, _, _, _ = self.captured("Tender alpha")
+        middle, _, _, _ = self.captured("Tender beta", url="https://example.com/b")
+        right, _, _, _ = self.captured("Tender gamma", url="https://example.com/c")
+        decide_duplicate(self.admin, left, middle, "link", "same opportunity")
+        decide_duplicate(self.admin, middle, right, "link", "same opportunity")
+        for record in [left, middle, right]:
+            record.refresh_from_db()
+        self.assertEqual(left.identity_id, right.identity_id)
+        decide_duplicate(
+            self.admin,
+            left,
+            middle,
+            "separate",
+            "Different source opportunities after review.",
+        )
+        for record in [left, middle, right]:
+            record.refresh_from_db()
+        self.assertNotEqual(left.identity_id, middle.identity_id)
+        self.assertEqual(middle.identity_id, right.identity_id)
+
+    def test_review_duplicate_unlink_rejects_inconsistent_remaining_path(self):
+        left, _, _, _ = self.captured("Tender alpha")
+        middle, _, _, _ = self.captured("Tender beta", url="https://example.com/b")
+        right, _, _, _ = self.captured("Tender gamma", url="https://example.com/c")
+        decide_duplicate(self.admin, left, middle, "link", "same")
+        decide_duplicate(self.admin, middle, right, "link", "same")
+        decide_duplicate(self.admin, left, right, "link", "same")
+        with self.assertRaises(ValidationError):
+            decide_duplicate(
+                self.admin, left, middle, "separate", "separate despite other path"
+            )
+
+    def test_review_default_json_export_retains_legacy_body_contract(self):
+        self.login()
+        response = self.client.get(
+            reverse("record-export", args=[self.workspace.pk]),
+            {"ids": [str(self.visible.pk)]},
+        )
+        self.assertEqual(
+            set(response.json()["records"][0]), {"id", "title", "body", "version"}
+        )
+        self.assertEqual(response.json()["records"][0]["body"], self.visible.body)

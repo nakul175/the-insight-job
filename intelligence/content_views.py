@@ -176,7 +176,10 @@ def available_jobs(actor, workspace_id, record):
         )
         .filter(Q(schema_version__isnull=True) | Q(schema_version__schema__in=schemas))
         .filter(Q(content_version__isnull=True) | Q(content_version__record=record))
-        .select_related("schema_version__schema", "content_version", "actor")
+        .filter(Q(analysis__isnull=True) | Q(analysis__content_version__record=record))
+        .select_related(
+            "schema_version__schema", "content_version", "analysis", "actor"
+        )
         .order_by("-created_at")
     )
 
@@ -204,6 +207,7 @@ def record_detail(request, workspace_id, record_id):
         **context(request, workspace_id),
         "record": record,
         "revision": revision,
+        "analysis": (revision.analyses.first() or revision) if revision else None,
         "versions": versions,
         "back_url": reverse("records", args=[workspace_id])
         + ("?" + back if back else "")
@@ -238,6 +242,12 @@ def type_correction(request, workspace_id, record_id):
             request.POST.getlist("types"),
             request.POST.get("reason", ""),
             int(request.POST.get("expected_version", "0")),
+            expected_content_version=int(
+                request.POST.get("expected_content_version", "0")
+            ),
+            expected_analysis_id=forms.UUIDField(required=False).clean(
+                request.POST.get("expected_analysis_id")
+            ),
         )
     except (ValidationError, ValueError) as exc:
         return render(
@@ -280,14 +290,15 @@ def field_evidence(request, workspace_id, record_id, job_id, field_key):
     field = job.result.get(field_key)
     if not field:
         return HttpResponse("Field is unavailable.", status=404)
+    evidence = job.analysis or job.content_version
     passages = []
     for candidate in field.get("candidates", []):
         index = candidate.get("segment")
-        if isinstance(index, int) and 0 <= index < len(job.content_version.segments):
+        if isinstance(index, int) and 0 <= index < len(evidence.segments):
             passages.append(
                 {
                     "candidate": candidate,
-                    "segment": job.content_version.segments[index],
+                    "segment": evidence.segments[index],
                     "index": index,
                 }
             )
@@ -302,7 +313,8 @@ def field_evidence(request, workspace_id, record_id, job_id, field_key):
             "field": field,
             "passages": passages,
             "stale": record.version != job.content_version.number
-            or record.classification_version != job.classification_version,
+            or record.classification_version != job.classification_version
+            or record.current_analysis_id != job.analysis_id,
         },
     )
 
@@ -459,7 +471,7 @@ EXPORT_FIELDS = {
 
 
 def export_preview(actor, workspace_id, params):
-    requested = params.getlist("fields") or ["id", "title", "version"]
+    requested = params.getlist("fields") or ["id", "title", "body", "version"]
     selected = sorted(set(requested) & EXPORT_FIELDS)
     excluded = [
         {"field": f, "reason": "Unsupported or restricted field"}
@@ -494,6 +506,7 @@ def export_preview(actor, workspace_id, params):
             )
             continue
         revision = record.revisions.filter(number=record.version).first()
+        analysis = record.current_analysis or revision
         values = {
             "id": str(record.pk),
             "title": record.title,
@@ -503,7 +516,7 @@ def export_preview(actor, workspace_id, params):
             "format": revision.media_type if revision else "unknown",
             "language": revision.language if revision else "unknown",
             "metadata": revision.metadata if revision else {},
-            "summary": revision.summary if revision else {},
+            "summary": analysis.summary if analysis else {},
             "types": list(record.type_assignments.values_list("key", flat=True))
             or ["unknown"],
         }

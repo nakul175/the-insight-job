@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404
 
 from .models import (
     ClassificationChange,
+    ContentAnalysis,
     ContentIdentity,
     ContentRecord,
     ContentSchema,
@@ -42,9 +43,31 @@ def schemas_for(actor, workspace_id):
     )
 
 
+def summary_for(parsed):
+    return (
+        {
+            "text": parsed["segments"][0]["text"][:300],
+            "segment_ids": [0],
+            "method": "extractive",
+        }
+        if parsed["segments"]
+        else {}
+    )
+
+
+def analysis_quality(status):
+    return {"parsed": 3, "partial": 2, "empty": 1}.get(status, 0)
+
+
 @transaction.atomic
 def materialize(capture, parsed):
-    """Capture and version writes share the collection transaction and source ACL."""
+    """Source versions track bytes; immutable analyses track parser recovery."""
+    if (
+        capture.workspace_id != capture.source.workspace_id
+        or capture.run.source_id != capture.source_id
+        or capture.run.workspace_id != capture.workspace_id
+    ):
+        raise ValidationError("Capture source/workspace does not match its run.")
     text = "\n\n".join(s["text"] for s in parsed["segments"])
     lookup = {"source": capture.source, "canonical_url": capture.url}
     try:
@@ -60,63 +83,108 @@ def materialize(capture, parsed):
         record = ContentRecord.objects.get(**lookup)
     record = ContentRecord.objects.select_for_update().get(pk=record.pk)
     previous = record.revisions.order_by("-number").first()
-    if previous and previous.digest == capture.digest:
-        capture.record = record
-        capture.content_version = previous
-        capture.save(update_fields=["record", "content_version"])
-        return record, previous, False
-    number = previous.number + 1 if previous else 1
-    identity, _ = ContentIdentity.objects.get_or_create(
-        workspace=capture.workspace, fingerprint=capture.digest
-    )
-    summary = (
-        {
-            "text": parsed["segments"][0]["text"][:300],
-            "segment_ids": [0],
-            "method": "extractive",
-        }
-        if parsed["segments"]
-        else {}
-    )
-    revision = ContentVersion.objects.create(
-        workspace=capture.workspace,
-        record=record,
-        number=number,
-        digest=capture.digest,
-        media_type=capture.media_type,
-        completeness="complete"
+    same = bool(previous and previous.digest == capture.digest)
+    completeness = (
+        "complete"
         if parsed["status"] == "parsed" and not capture.missing
-        else "partial",
-        metadata={"author": None, "date": None, "geography": None},
-        summary=summary,
-        body=text,
-        segments=parsed["segments"],
-        changes={
-            "text_diff": "\n".join(
-                difflib.unified_diff(
-                    previous.body.splitlines() if previous else [],
-                    text.splitlines(),
-                    fromfile=f"v{number - 1}",
-                    tofile=f"v{number}",
-                    lineterm="",
-                )
-            )[:100000],
-            "field_diff": "Previous extraction is stale; explicit reprocessing is required"
-            if previous
-            else "No earlier fields",
-        },
+        else "partial"
     )
-    record.version = number
-    record.identity = identity
-    record.body = text
-    record.title = (text.splitlines()[0] if text else capture.url)[:300]
-    record.status = "captured" if revision.completeness == "complete" else "review"
-    record.save(update_fields=["version", "identity", "body", "title", "status"])
-    Derivative.objects.filter(record=record).update(stale=True)
+    summary = summary_for(parsed)
+    if same:
+        revision = previous
+    else:
+        number = previous.number + 1 if previous else 1
+        revision = ContentVersion.objects.create(
+            workspace=capture.workspace,
+            record=record,
+            number=number,
+            digest=capture.digest,
+            media_type=capture.media_type,
+            completeness=completeness,
+            metadata={"author": None, "date": None, "geography": None},
+            summary=summary,
+            body=text,
+            segments=parsed["segments"],
+            changes={
+                "text_diff": "\n".join(
+                    difflib.unified_diff(
+                        record.body.splitlines() if previous else [],
+                        text.splitlines(),
+                        fromfile=f"v{number - 1}",
+                        tofile=f"v{number}",
+                        lineterm="",
+                    )
+                )[:100000],
+                "field_diff": "Previous extraction is stale; explicit reprocessing is required"
+                if previous
+                else "No earlier fields",
+            },
+        )
+    current = revision.analyses.first()
+    improve = (
+        not current
+        or analysis_quality(parsed["status"]) > analysis_quality(current.status)
+        or (
+            analysis_quality(parsed["status"]) == analysis_quality(current.status)
+            and parsed["status"] in {"parsed", "partial"}
+            and (
+                current.segments != parsed["segments"]
+                or current.completeness != completeness
+            )
+        )
+    )
+    if improve:
+        analysis = ContentAnalysis.objects.create(
+            workspace=capture.workspace,
+            content_version=revision,
+            capture=capture,
+            number=current.number + 1 if current else 1,
+            status=parsed["status"],
+            reason=parsed["reason"],
+            body=text,
+            segments=parsed["segments"],
+            summary=summary,
+            completeness=completeness,
+        )
+        if previous:
+            original = list(record.type_assignments.values_list("key", flat=True))
+            record.type_assignments.all().delete()
+            record.classification_version += 1
+            ClassificationChange.objects.create(
+                workspace=record.workspace,
+                record=record,
+                actor=capture.run.actor,
+                version=record.classification_version,
+                original=original,
+                selected=[],
+                reason="Content or processing evidence changed; previous types require reclassification.",
+            )
+        record.current_analysis = analysis
+        record.body = text
+        record.title = (text.splitlines()[0] if text else capture.url)[:300]
+        record.status = "captured" if completeness == "complete" else "review"
+        Derivative.objects.filter(record=record).update(stale=True)
+    record.version = revision.number
+    if not same:
+        identity, _ = ContentIdentity.objects.get_or_create(
+            workspace=capture.workspace, fingerprint=capture.digest
+        )
+        record.identity = identity
+    record.save(
+        update_fields=[
+            "version",
+            "identity",
+            "current_analysis",
+            "classification_version",
+            "body",
+            "title",
+            "status",
+        ]
+    )
     capture.record = record
     capture.content_version = revision
     capture.save(update_fields=["record", "content_version"])
-    return record, revision, True
+    return record, revision, not same
 
 
 def validate_fields(fields):
@@ -260,9 +328,27 @@ def save_schema(
 
 
 @transaction.atomic
-def correct_types(actor, record, selected, reason, expected_version):
+def correct_types(
+    actor,
+    record,
+    selected,
+    reason,
+    expected_version,
+    expected_content_version=None,
+    expected_analysis_id=None,
+):
     record = editable_record(actor, record.workspace_id, record.pk)
     record = ContentRecord.objects.select_for_update().get(pk=record.pk)
+    if (
+        expected_content_version is not None
+        and expected_content_version != record.version
+    ) or (
+        expected_analysis_id is not None
+        and expected_analysis_id != record.current_analysis_id
+    ):
+        raise ValidationError(
+            "Content changed during classification; reload before correcting types."
+        )
     if expected_version != record.classification_version:
         raise ValidationError("Classification changed; reload before correcting it.")
     if (
@@ -322,6 +408,7 @@ def correct_types(actor, record, selected, reason, expected_version):
             actor=actor,
             classification_version=record.classification_version,
             content_version=revision,
+            analysis=record.current_analysis,
             schema_version=schema_version,
             preview=False,
             state="queued" if revision and schema_version else "action_required",
@@ -442,6 +529,7 @@ def extract_fields(revision, fields):
 @transaction.atomic
 def preview_extraction(actor, record, schema_version):
     record = editable_record(actor, record.workspace_id, record.pk)
+    record = ContentRecord.objects.select_for_update().get(pk=record.pk)
     schema = get_object_or_404(
         schemas_for(actor, record.workspace_id), pk=schema_version.schema_id
     )
@@ -452,13 +540,15 @@ def preview_extraction(actor, record, schema_version):
     revision = record.revisions.order_by("-number").first()
     if not revision:
         raise ValidationError("A parsed content version is required.")
-    result = extract_fields(revision, schema_version.fields)
+    analysis = record.current_analysis
+    result = extract_fields(analysis or revision, schema_version.fields)
     job = ExtractionJob.objects.create(
         workspace_id=record.workspace_id,
         record=record,
         actor=actor,
         classification_version=record.classification_version,
         content_version=revision,
+        analysis=analysis,
         schema_version=schema_version,
         preview=True,
         state="preview",
@@ -476,7 +566,9 @@ def preview_extraction(actor, record, schema_version):
 
 @transaction.atomic
 def decide_duplicate(actor, left, right, decision, reason):
-    member(actor, left.workspace_id)
+    from workspaces.models import Workspace
+
+    Workspace.objects.select_for_update().get(pk=left.workspace_id)
     if member(actor, left.workspace_id).role not in {"administrator", "reviewer"}:
         raise PermissionDenied("Reviewer access required.")
     visible = records_for(actor, left.workspace_id)
@@ -495,15 +587,32 @@ def decide_duplicate(actor, left, right, decision, reason):
         raise ValidationError(
             "Choose link/separate and supply a reason of up to 2000 characters."
         )
+    left = visible.get(pk=left.pk)
+    right = visible.get(pk=right.pk)
     left, right = sorted([left, right], key=lambda r: str(r.pk))
-    # Stable lock order preserves separate provenance and source permissions.
-    locked = list(
-        ContentRecord.objects.select_for_update()
-        .filter(pk__in=[left.pk, right.pk])
-        .order_by("pk")
+    # Rebuild only the visible groups involved. Hidden provenance is never loaded or changed.
+    identities = [i for i in [left.identity_id, right.identity_id] if i]
+    group = list(
+        visible.filter(Q(identity_id__in=identities) | Q(pk__in=[left.pk, right.pk]))
+        .select_for_update()
+        .order_by("pk")[:501]
     )
-    if len(locked) != 2:
-        raise ValidationError("Candidate unavailable.")
+    if len(group) > 500:
+        raise ValidationError(
+            "This identity group exceeds the supported 500-record review budget."
+        )
+    ids = [r.pk for r in group]
+    parent = {pk: pk for pk in ids}
+
+    def root(pk):
+        while parent[pk] != pk:
+            parent[pk] = parent[parent[pk]]
+            pk = parent[pk]
+        return pk
+
+    def union(a, b):
+        parent[root(a)] = root(b)
+
     result, _ = DuplicateDecision.objects.update_or_create(
         left=left,
         right=right,
@@ -514,20 +623,42 @@ def decide_duplicate(actor, left, right, decision, reason):
             "reason": reason,
         },
     )
-    if decision == "link":
-        identity = locked[0].identity or locked[1].identity
-        if identity is None:
-            identity, _ = ContentIdentity.objects.get_or_create(
-                workspace_id=left.workspace_id,
-                fingerprint=hashlib.sha256(
-                    ("manual:" + str(left.pk) + str(right.pk)).encode()
-                ).hexdigest(),
-            )
-        ContentRecord.objects.filter(pk__in=[left.pk, right.pk]).update(
-            identity=identity
+    for a, b in DuplicateDecision.objects.filter(
+        workspace_id=left.workspace_id,
+        left_id__in=ids,
+        right_id__in=ids,
+        decision="link",
+    ).values_list("left_id", "right_id"):
+        union(a, b)
+    digests = {}
+    for pk, digest in ContentVersion.objects.filter(
+        record_id__in=ids, number=F("record__version")
+    ).values_list("record_id", "digest"):
+        if digest in digests:
+            union(pk, digests[digest])
+        else:
+            digests[digest] = pk
+    if decision == "separate" and root(left.pk) == root(right.pk):
+        raise ValidationError(
+            "Other retained links or exact-byte identity still connect these records; resolve those links first."
         )
+    groups = {}
+    for pk in ids:
+        groups.setdefault(root(pk), []).append(pk)
+    for members in groups.values():
+        fingerprint = hashlib.sha256(
+            ("review-group:" + ":".join(sorted(str(pk) for pk in members))).encode()
+        ).hexdigest()
+        identity, _ = ContentIdentity.objects.get_or_create(
+            workspace_id=left.workspace_id, fingerprint=fingerprint
+        )
+        ContentRecord.objects.filter(pk__in=members).update(identity=identity)
     audit(
-        actor, left.workspace_id, "duplicate.decided", result.pk, {"decision": decision}
+        actor,
+        left.workspace_id,
+        "duplicate.decided",
+        result.pk,
+        {"decision": decision, "reason": reason},
     )
     return result
 
@@ -591,11 +722,19 @@ def process_extraction(job_id):
         if (
             record.version != job.content_version.number
             or record.classification_version != job.classification_version
+            or record.current_analysis_id != job.analysis_id
         ):
             job.state = "stale"
             job.reason = "Content or classification changed; explicitly queue current extraction."
         else:
-            job.result = extract_fields(job.content_version, job.schema_version.fields)
+            if (
+                job.analysis_id
+                and job.analysis.content_version_id != job.content_version_id
+            ):
+                raise ValidationError("Analysis is not bound to the content version.")
+            job.result = extract_fields(
+                job.analysis or job.content_version, job.schema_version.fields
+            )
             Derivative.objects.create(
                 record=record,
                 kind="typed",
@@ -618,8 +757,10 @@ def process_extraction(job_id):
     return job
 
 
+@transaction.atomic
 def classify_record(actor, record):
     record = editable_record(actor, record.workspace_id, record.pk)
+    record = ContentRecord.objects.select_for_update().get(pk=record.pk)
     supported = set(
         schemas_for(actor, record.workspace_id)
         .filter(scope="type", state="published")
@@ -642,4 +783,6 @@ def classify_record(actor, record):
         sorted(selected),
         "Explicit source Type labels matched published keys; uncertain/unmatched content is Unknown.",
         record.classification_version,
+        expected_content_version=record.version,
+        expected_analysis_id=record.current_analysis_id,
     )

@@ -136,6 +136,12 @@ class Invitation(Entity):
 
 
 class ContentRecord(Entity):
+    current_analysis = models.ForeignKey(
+        "ContentAnalysis",
+        null=True,
+        on_delete=models.PROTECT,
+        related_name="current_records",
+    )
     canonical_url = models.URLField(max_length=2000, blank=True)
     identity = models.ForeignKey("ContentIdentity", null=True, on_delete=models.PROTECT)
     classification_version = models.PositiveIntegerField(default=1)
@@ -360,6 +366,7 @@ class SchemaVersion(models.Model):
 
 
 class ExtractionJob(Entity):
+    analysis = models.ForeignKey("ContentAnalysis", null=True, on_delete=models.PROTECT)
     record = models.ForeignKey(ContentRecord, on_delete=models.PROTECT)
     actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     classification_version = models.PositiveIntegerField()
@@ -390,5 +397,27 @@ class DuplicateDecision(Entity):
         constraints: ClassVar[list] = [
             models.UniqueConstraint(
                 fields=["left", "right"], name="duplicate_pair_unique"
+            )
+        ]
+
+
+class ContentAnalysis(Entity):
+    content_version = models.ForeignKey(
+        ContentVersion, on_delete=models.PROTECT, related_name="analyses"
+    )
+    capture = models.ForeignKey(Capture, on_delete=models.PROTECT)
+    number = models.PositiveIntegerField()
+    status = models.CharField(max_length=30)
+    reason = models.CharField(max_length=200, blank=True)
+    body = models.TextField(blank=True)
+    segments = models.JSONField(default=list)
+    summary = models.JSONField(default=dict)
+    completeness = models.CharField(max_length=30)
+
+    class Meta:
+        ordering = ("-number",)
+        constraints: ClassVar[list] = [
+            models.UniqueConstraint(
+                fields=["content_version", "number"], name="content_analysis_unique"
             )
         ]
