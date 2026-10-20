@@ -107,7 +107,11 @@ class SystemBrowserTests(StaticLiveServerTestCase):
                 self.assertIn("test_passed", await page.locator("body").inner_text())
                 self.assertIn("unverified", await page.locator("body").inner_text())
                 self.assertLessEqual(
-                    await page.evaluate("document.documentElement.scrollWidth"), 390
+                    await page.evaluate("document.documentElement.scrollWidth"),
+                    390,
+                    await page.evaluate(
+                        "[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth).map(e=>({tag:e.tagName,text:e.textContent.slice(0,80),width:e.getBoundingClientRect().width}))"
+                    ),
                 )
             finally:
                 await browser.close()
