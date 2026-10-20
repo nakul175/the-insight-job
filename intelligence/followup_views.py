@@ -136,13 +136,16 @@ def tasks(request, workspace_id):
             "result__configuration",
             "result__analysis",
         )
-        .order_by("due_at", "pk")[:100]
+        .order_by("due_at", "pk")
+        .iterator(chunk_size=100)
     ):
         try:
             live_access(request.user, task.result, allow_inactive=True)
         except PermissionDenied:
             continue
         visible.append(task)
+        if len(visible) == 100:
+            break
     return render(
         request,
         "intelligence/followup_tasks.html",

@@ -165,14 +165,18 @@ def queue(request, workspace_id):
         elif values["owner"]:
             rows = rows.filter(assigned_to__username=values["owner"])
         visible = []
-        for result in rows.select_related("system", "record", "assigned_to").order_by(
-            "created_at", "pk"
-        )[:100]:
+        for result in (
+            rows.select_related("system", "record", "assigned_to")
+            .order_by("created_at", "pk")
+            .iterator(chunk_size=100)
+        ):
             try:
                 live_access(request.user, result, allow_inactive=True)
             except PermissionDenied:
                 continue
             visible.append(result)
+            if len(visible) == 100:
+                break
         data.update(rows=visible, load_failed=False)
     except DatabaseError:
         data["load_failed"] = True

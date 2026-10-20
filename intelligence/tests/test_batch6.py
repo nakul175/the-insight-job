@@ -659,3 +659,47 @@ class BatchSixTests(TestCase):
         self.assertEqual(result.decision, "review")
         with self.assertRaises(ValidationError):
             store_result(self.admin, self.workspace.pk, result.pk, result.version)
+
+    def test_review_queue_limit_applies_after_evidence_permission_filter(self):
+        from copy import copy
+        from unittest.mock import patch
+
+        from django.urls import reverse
+
+        *_prefix, result = self.published()
+
+        class Rows:
+            def filter(self, **kwargs):
+                return self
+
+            def select_related(self, *args):
+                return self
+
+            def order_by(self, *args):
+                return self
+
+            def iterator(self, **kwargs):
+                return iter(rows)
+
+        rows = []
+        for index in range(101):
+            row = copy(result)
+            row.reason = str(index)
+            rows.append(row)
+
+        def permitted(_actor, row, **kwargs):
+            if row.reason != "100":
+                raise PermissionDenied("Revoked enrichment evidence")
+
+        self.client.force_login(
+            self.admin, backend="django.contrib.auth.backends.ModelBackend"
+        )
+        with (
+            patch("intelligence.review_views.results_for", return_value=Rows()),
+            patch("intelligence.review_views.live_access", side_effect=permitted),
+        ):
+            response = self.client.get(
+                reverse("review-queue", args=[self.workspace.pk])
+            )
+        self.assertEqual(len(response.context["rows"]), 1)
+        self.assertEqual(response.context["rows"][0].reason, "100")
