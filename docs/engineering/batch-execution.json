@@ -38,9 +38,12 @@
         "US-0406",
         "US-0501"
       ],
-      "status": "in_progress",
+      "status": "implemented_pending_review_and_ci",
       "merged_commit": null,
-      "ci_run": null
+      "ci_run": null,
+      "pr": 2,
+      "implementation_commit": "31543f10bc4b507bdc86240a713f9ff4419bfb47",
+      "review_blocker": "ENG-GIT-002 requires independent accountable owner review; owner not designated."
     },
     {
       "number": 3,

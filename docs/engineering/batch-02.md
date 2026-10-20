@@ -32,3 +32,9 @@ Local macOS: lint, formatting, migration drift and runtime dependency audit pass
 All tests use synthetic data. No live source login, DigitalOcean activation, production deployment, native QA run or independent acceptance has occurred. Live source account/MFA interoperability, infrastructure sandbox policy and native release approvals remain separate gates.
 
 Linux PR CI run 39346844861 passed on a9b3d914118f8f99aa777c3a1eff0b6f5f57d1eb: SQLite/Chromium, PostgreSQL, audit and both image builds. Follow-up account-verification/disconnect and parsing-race regressions passed locally; the final candidate requires a fresh CI pass.
+
+## Handover and merge gate
+
+[PR #2](https://github.com/nakul175/the-insight-job/pull/2) contains recovered source plus local corrections. Code revision: `31543f10bc4b507bdc86240a713f9ff4419bfb47`. Five new race/budget regressions pass locally. The final CI run must qualify the current head. All ten mapped Linear issues are In Review; acceptance checkboxes/VERIFY tasks were not marked accepted.
+
+The preserved ENG-GIT-002 requires independent accountable owner review and states that AI/self-review cannot replace it. The repository has no designated owner/review approval. Explicit merge authority is recorded, but no review waiver or staffing exception has been invented. Pending that review and final CI, do not merge or start Batch 3. The user has been asked to identify the reviewer. Once resolved, merge the exact reviewed head, verify main CI, record the merge/run evidence, then proceed in ledger order. No production operation is authorised.
