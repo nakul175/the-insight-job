@@ -1,5 +1,6 @@
 """Exercise the real PostgreSQL enrichment/configuration lock interaction."""
 
+import socket
 import threading
 from unittest.mock import patch
 
@@ -68,7 +69,7 @@ class EnrichmentLockTests(TransactionTestCase):
             ) as exc:
                 errors.append(exc)
             finally:
-                close_old_connections()
+                connection.close()
 
         def enrich():
             close_old_connections()
@@ -88,11 +89,18 @@ class EnrichmentLockTests(TransactionTestCase):
             ) as exc:
                 errors.append(exc)
             finally:
-                close_old_connections()
+                connection.close()
+
+        original_resolver = socket.getaddrinfo
+
+        def source_dns(host, *args, **kwargs):
+            if host == "example.com":
+                return fixtures.PUBLIC_DNS
+            return original_resolver(host, *args, **kwargs)
 
         with (
             patch("intelligence.enrichment.owned_system", side_effect=observed_owned),
-            patch("socket.getaddrinfo", return_value=fixtures.PUBLIC_DNS),
+            patch("socket.getaddrinfo", side_effect=source_dns),
         ):
             threads = [
                 threading.Thread(target=configure),
