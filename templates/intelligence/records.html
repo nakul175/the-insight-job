@@ -1,1 +1,25 @@
-{% extends "intelligence/layout.html" %}{% block app %}<h1>Content</h1><form method="get"><label for="q">Search title</label><input id="q" name="q" value="{{ request.GET.q }}"><input type="hidden" name="status" value="{{ request.GET.status }}"><input type="hidden" name="window" value="{{ request.GET.window }}"><button>Search</button></form>{% for record in records %}<article class="card"><h2><a href="{% url 'record-detail' workspace.id record.id %}">{{ record.title }}</a></h2><p>{{ record.status }}</p></article>{% empty %}<section class="card"><h2>No matching permitted content</h2><p>There are no visible records for these filters.</p><a href="{% url 'records' workspace.id %}">Clear filters</a></section>{% endfor %}{% endblock %}
+{% extends "intelligence/layout.html" %}
+{% block app %}
+<h1>Content</h1>
+{% if load_error %}
+<section class="error" role="alert"><h2>Content search unavailable</h2><p>The service could not load results. Your filters are preserved in the address bar; retry this page.</p></section>
+{% else %}
+<form method="get" class="card">
+<label for="q">Search title and text</label><input id="q" name="q" value="{{ request.GET.q }}">
+<label for="source">Source</label><select id="source" name="source"><option value="">All permitted sources</option>{% for source in sources %}<option value="{{ source.id }}" {% if request.GET.source == source.id|stringformat:'s' %}selected{% endif %}>{{ source.name }}</option>{% endfor %}</select>
+<label for="type">Type</label><select id="type" name="type"><option value="">All types</option><option value="unknown" {% if request.GET.type == 'unknown' %}selected{% endif %}>Unknown</option>{% for type in types %}<option value="{{ type.key }}" {% if request.GET.type == type.key %}selected{% endif %}>{{ type.name }}</option>{% endfor %}</select>
+<label for="status">Status</label><input id="status" name="status" value="{{ request.GET.status }}">
+<label for="format">Media type</label><input id="format" name="format" value="{{ request.GET.format }}" placeholder="text/html">
+<label for="language">Language</label><input id="language" name="language" value="{{ request.GET.language }}" placeholder="unknown">
+<label for="after">Captured on or after</label><input id="after" name="after" type="date" value="{{ request.GET.after }}">
+<label for="before">Captured on or before</label><input id="before" name="before" type="date" value="{{ request.GET.before }}">
+<label for="sort">Sort</label><select id="sort" name="sort"><option value="newest">Newest first</option><option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>Oldest first</option><option value="title" {% if request.GET.sort == 'title' %}selected{% endif %}>Title</option></select>
+<input type="hidden" name="window" value="{{ request.GET.window }}"><button>Apply filters</button>
+</form>
+<p role="status">{{ count }} matching permitted record{{ count|pluralize }}.</p>
+<p><a href="{% url 'record-export' workspace.id %}?{{ query }}&amp;preview=1">Preview export for these filters</a></p>
+{% for record in records %}<article class="card" id="record-{{ record.id }}"><h2><a href="{% url 'record-detail' workspace.id record.id %}?back={{ back|urlencode }}">{{ record.title }}</a></h2><p>{{ record.source.name }} · {{ record.status }} · Capture version {{ record.version }}</p><p>Types: {% for type in record.type_assignments.all %}{{ type.key }}{% if not forloop.last %}, {% endif %}{% empty %}Unknown{% endfor %}</p></article>
+{% empty %}<section class="card"><h2>No matching permitted content</h2><p>There are no visible records for these filters.</p><a href="{% url 'records' workspace.id %}">Clear filters</a></section>{% endfor %}
+<nav aria-label="Result pages">{% if page.has_previous %}<a href="?{{ query }}&amp;page={{ page.previous_page_number }}">Previous page</a>{% endif %} Page {{ page.number }} of {{ page.paginator.num_pages }} {% if page.has_next %}<a href="?{{ query }}&amp;page={{ page.next_page_number }}">Next page</a>{% endif %}</nav>
+{% endif %}
+{% endblock %}

@@ -38,12 +38,13 @@
         "US-0406",
         "US-0501"
       ],
-      "status": "implemented_pending_review_and_ci",
-      "merged_commit": null,
-      "ci_run": null,
+      "status": "coding_complete_merged_ci_passed",
+      "merged_commit": "07fe0cdc34b001b034361a66e023f39d1a3a5433",
+      "ci_run": 39373614478,
       "pr": 2,
       "implementation_commit": "31543f10bc4b507bdc86240a713f9ff4419bfb47",
-      "review_blocker": "ENG-GIT-002 requires independent accountable owner review; owner not designated."
+      "tests": 74,
+      "review": "Separate AI review; user explicitly approved PR2 despite human-review requirement"
     },
     {
       "number": 3,
@@ -59,7 +60,7 @@
         "US-0506",
         "US-0602"
       ],
-      "status": "pending",
+      "status": "in_progress",
       "merged_commit": null,
       "ci_run": null
     },

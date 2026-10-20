@@ -1,0 +1,3 @@
+{% extends "intelligence/layout.html" %}{% block app %}
+<h1>Schema registry</h1><p><a href="{% url 'schema-create' workspace.id %}">Create a draft</a></p>
+{% for schema in schemas %}<article class="card"><h2><a href="{% url 'schema-detail' workspace.id schema.id %}">{{ schema.name }}</a></h2><p>{{ schema.scope }} · Owner {{ schema.owner.username }} · {{ schema.state }}{% if schema.published_version %} · Published v{{ schema.published_version }}{% endif %}</p><p>{% for version in schema.versions.all %}v{{ version.number }} {{ version.state }} {% endfor %}</p></article>{% empty %}<section class="card"><h2>No schemas yet</h2><p>Create a draft to define fields. No default schemas or live configuration have been deployed.</p></section>{% endfor %}{% endblock %}
