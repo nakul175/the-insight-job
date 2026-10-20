@@ -1085,14 +1085,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/05",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "a179a2fd5e5b7599b12aa951f8cf647b478a3829",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/5",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/5",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype preview implementation/local checks; exact-head review/CI pending. Acceptance/deployment unverified.",
+      "notes": "Reconciled historical merge and exact-main CI39381010528 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred.",
       "task_id": "TASK-0804-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2808/us-0804-route-independently-to-multiple-systems",
       "legacy_ids": [],
@@ -1121,14 +1121,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/05",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "a179a2fd5e5b7599b12aa951f8cf647b478a3829",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/5",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/5",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype preview implementation/local checks; exact-head review/CI pending. Acceptance/deployment unverified.",
+      "notes": "Reconciled historical merge and exact-main CI39381010528 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred.",
       "task_id": "TASK-0805-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2809/us-0805-inspect-relevance-decisions",
       "legacy_ids": [],
@@ -1157,14 +1157,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/05",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "a179a2fd5e5b7599b12aa951f8cf647b478a3829",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/5",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/5",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype preview implementation/local checks; exact-head review/CI pending. Acceptance/deployment unverified.",
+      "notes": "Reconciled historical merge and exact-main CI39381010528 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred.",
       "task_id": "TASK-0806-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2810/us-0806-pause-or-retire-a-system",
       "legacy_ids": [],
@@ -1193,14 +1193,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/05",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "a179a2fd5e5b7599b12aa951f8cf647b478a3829",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/5",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/5",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype preview implementation/local checks; exact-head review/CI pending. Acceptance/deployment unverified.",
+      "notes": "Reconciled historical merge and exact-main CI39381010528 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred.",
       "task_id": "TASK-0901-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2811/us-0901-extract-system-specific-fields",
       "legacy_ids": [],
@@ -1229,14 +1229,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/05",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "a179a2fd5e5b7599b12aa951f8cf647b478a3829",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/5",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/5",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype preview implementation/local checks; exact-head review/CI pending. Acceptance/deployment unverified.",
+      "notes": "Reconciled historical merge and exact-main CI39381010528 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred.",
       "task_id": "TASK-0902-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2812/us-0902-build-qualification-rules",
       "legacy_ids": [],
@@ -1265,14 +1265,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/05",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "a179a2fd5e5b7599b12aa951f8cf647b478a3829",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/5",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/5",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype preview implementation/local checks; exact-head review/CI pending. Acceptance/deployment unverified.",
+      "notes": "Reconciled historical merge and exact-main CI39381010528 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred.",
       "task_id": "TASK-0903-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2813/us-0903-evaluate-pass-fail-and-review",
       "legacy_ids": [],
@@ -1301,14 +1301,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/05",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "a179a2fd5e5b7599b12aa951f8cf647b478a3829",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/5",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/5",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype preview implementation/local checks; exact-head review/CI pending. Acceptance/deployment unverified.",
+      "notes": "Reconciled historical merge and exact-main CI39381010528 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred.",
       "task_id": "TASK-0904-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2814/us-0904-handle-deadlines-and-units",
       "legacy_ids": [],
@@ -1337,14 +1337,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/05",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "a179a2fd5e5b7599b12aa951f8cf647b478a3829",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/5",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/5",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype preview implementation/local checks; exact-head review/CI pending. Acceptance/deployment unverified.",
+      "notes": "Reconciled historical merge and exact-main CI39381010528 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred.",
       "task_id": "TASK-1001-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2815/us-1001-triage-the-review-queue",
       "legacy_ids": [],
@@ -1373,14 +1373,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/05",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "a179a2fd5e5b7599b12aa951f8cf647b478a3829",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/5",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/5",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype preview implementation/local checks; exact-head review/CI pending. Acceptance/deployment unverified.",
+      "notes": "Reconciled historical merge and exact-main CI39381010528 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred.",
       "task_id": "TASK-1002-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2816/us-1002-correct-fields-with-evidence",
       "legacy_ids": [],
@@ -1409,14 +1409,14 @@
         "intelligence/",
         "templates/intelligence/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/05",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "a179a2fd5e5b7599b12aa951f8cf647b478a3829",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/5",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/5",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype preview implementation/local checks; exact-head review/CI pending. Acceptance/deployment unverified.",
+      "notes": "Reconciled historical merge and exact-main CI39381010528 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred.",
       "task_id": "TASK-1003-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2817/us-1003-override-a-system-decision",
       "legacy_ids": [],
@@ -2176,14 +2176,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented_verification_pending",
+      "status": "merged",
       "branch": "batch/08",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "ad03681cb742f7d9f748c21a76ef38ba3baa5763",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/8",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/8",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39393520364 and main CI39394110673 passed. Prototype implementation only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1502-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2844/us-1502-resume-system-setup",
       "legacy_ids": [],
@@ -2213,14 +2213,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented_verification_pending",
+      "status": "merged",
       "branch": "batch/08",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "ad03681cb742f7d9f748c21a76ef38ba3baa5763",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/8",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/8",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39393520364 and main CI39394110673 passed. Prototype implementation only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1503-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2845/us-1503-understand-the-next-required-action",
       "legacy_ids": [],
@@ -2250,14 +2250,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented_verification_pending",
+      "status": "merged",
       "branch": "batch/08",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "ad03681cb742f7d9f748c21a76ef38ba3baa5763",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/8",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/8",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39393520364 and main CI39394110673 passed. Prototype implementation only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1504-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2846/us-1504-review-one-issue-with-evidence",
       "legacy_ids": [],
@@ -2287,14 +2287,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented_verification_pending",
+      "status": "merged",
       "branch": "batch/08",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "ad03681cb742f7d9f748c21a76ef38ba3baa5763",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/8",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/8",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39393520364 and main CI39394110673 passed. Prototype implementation only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1505-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2847/us-1505-review-on-a-narrow-screen",
       "legacy_ids": [],
@@ -2324,14 +2324,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented_verification_pending",
+      "status": "merged",
       "branch": "batch/08",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "ad03681cb742f7d9f748c21a76ef38ba3baa5763",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/8",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/8",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39393520364 and main CI39394110673 passed. Prototype implementation only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1506-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2848/us-1506-keep-distinct-empty-and-error-states",
       "legacy_ids": [],
@@ -2361,14 +2361,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented_verification_pending",
+      "status": "merged",
       "branch": "batch/08",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "ad03681cb742f7d9f748c21a76ef38ba3baa5763",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/8",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/8",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39393520364 and main CI39394110673 passed. Prototype implementation only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1507-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2849/us-1507-explain-incomplete-collection",
       "legacy_ids": [],
@@ -2398,14 +2398,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented_verification_pending",
+      "status": "merged",
       "branch": "batch/08",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "ad03681cb742f7d9f748c21a76ef38ba3baa5763",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/8",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/8",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39393520364 and main CI39394110673 passed. Prototype implementation only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1508-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2850/us-1508-recover-concurrent-changes",
       "legacy_ids": [],
@@ -2435,14 +2435,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented_verification_pending",
+      "status": "merged",
       "branch": "batch/08",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "ad03681cb742f7d9f748c21a76ef38ba3baa5763",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/8",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/8",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39393520364 and main CI39394110673 passed. Prototype implementation only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1509-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2851/us-1509-explain-delivery-recovery",
       "legacy_ids": [],
@@ -2472,14 +2472,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented_verification_pending",
+      "status": "merged",
       "branch": "batch/08",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "ad03681cb742f7d9f748c21a76ef38ba3baa5763",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/8",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/8",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39393520364 and main CI39394110673 passed. Prototype implementation only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1510-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2852/us-1510-preview-change-impact",
       "legacy_ids": [],
@@ -2493,6 +2493,396 @@
       ],
       "qa_case_ids": [],
       "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-01.md"
+      ],
+      "rationale": "Sign in and select workspace",
+      "paths": [
+        "config/",
+        "workspaces/",
+        "intelligence/",
+        "templates/",
+        "static/"
+      ],
+      "branch": "batch/01",
+      "release": null,
+      "deployment_evidence": null,
+      "task_id": "TASK-0101-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2773",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0101"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0101-01",
+        "AC-0101-02",
+        "AC-0101-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": [],
+      "status": "merged",
+      "commit": "402673687891ec04210745fa2e1b9ed387265ebf",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/1",
+      "review_ref": null,
+      "notes": "Reconciled historical merge and exact-main CI39343024680 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred."
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-01.md"
+      ],
+      "rationale": "Invite and assign scoped roles",
+      "paths": [
+        "config/",
+        "workspaces/",
+        "intelligence/",
+        "templates/",
+        "static/"
+      ],
+      "branch": "batch/01",
+      "release": null,
+      "deployment_evidence": null,
+      "task_id": "TASK-0102-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2774/us-0102-invite-and-assign-scoped-roles",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0102"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0102-01",
+        "AC-0102-02",
+        "AC-0102-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": [],
+      "status": "merged",
+      "commit": "402673687891ec04210745fa2e1b9ed387265ebf",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/1",
+      "review_ref": null,
+      "notes": "Reconciled historical merge and exact-main CI39343024680 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred."
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-01.md"
+      ],
+      "rationale": "Enforce record permissions",
+      "paths": [
+        "config/",
+        "workspaces/",
+        "intelligence/",
+        "templates/",
+        "static/"
+      ],
+      "branch": "batch/01",
+      "release": null,
+      "deployment_evidence": null,
+      "task_id": "TASK-0103-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2775/us-0103-enforce-record-permissions",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0103"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0103-01",
+        "AC-0103-02",
+        "AC-0103-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": [],
+      "status": "merged",
+      "commit": "402673687891ec04210745fa2e1b9ed387265ebf",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/1",
+      "review_ref": null,
+      "notes": "Reconciled historical merge and exact-main CI39343024680 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred."
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-01.md"
+      ],
+      "rationale": "Revoke access safely",
+      "paths": [
+        "config/",
+        "workspaces/",
+        "intelligence/",
+        "templates/",
+        "static/"
+      ],
+      "branch": "batch/01",
+      "release": null,
+      "deployment_evidence": null,
+      "task_id": "TASK-0104-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2776/us-0104-revoke-access-safely",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0104"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0104-01",
+        "AC-0104-02",
+        "AC-0104-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": [],
+      "status": "merged",
+      "commit": "402673687891ec04210745fa2e1b9ed387265ebf",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/1",
+      "review_ref": null,
+      "notes": "Reconciled historical merge and exact-main CI39343024680 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred."
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-01.md"
+      ],
+      "rationale": "View operational overview",
+      "paths": [
+        "config/",
+        "workspaces/",
+        "intelligence/",
+        "templates/",
+        "static/"
+      ],
+      "branch": "batch/01",
+      "release": null,
+      "deployment_evidence": null,
+      "task_id": "TASK-0105-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2777/us-0105-view-operational-overview",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0105"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0105-01",
+        "AC-0105-02",
+        "AC-0105-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": [],
+      "status": "merged",
+      "commit": "402673687891ec04210745fa2e1b9ed387265ebf",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/1",
+      "review_ref": null,
+      "notes": "Reconciled historical merge and exact-main CI39343024680 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred."
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-01.md"
+      ],
+      "rationale": "Register one source",
+      "paths": [
+        "config/",
+        "workspaces/",
+        "intelligence/",
+        "templates/",
+        "static/"
+      ],
+      "branch": "batch/01",
+      "release": null,
+      "deployment_evidence": null,
+      "task_id": "TASK-0201-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2778/us-0201-register-one-source",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0201"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0201-01",
+        "AC-0201-02",
+        "AC-0201-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": [],
+      "status": "merged",
+      "commit": "402673687891ec04210745fa2e1b9ed387265ebf",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/1",
+      "review_ref": null,
+      "notes": "Reconciled historical merge and exact-main CI39343024680 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred."
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-01.md"
+      ],
+      "rationale": "Define collection boundaries",
+      "paths": [
+        "config/",
+        "workspaces/",
+        "intelligence/",
+        "templates/",
+        "static/"
+      ],
+      "branch": "batch/01",
+      "release": null,
+      "deployment_evidence": null,
+      "task_id": "TASK-0203-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2779/us-0203-define-collection-boundaries",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0203"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0203-01",
+        "AC-0203-02",
+        "AC-0203-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": [],
+      "status": "merged",
+      "commit": "402673687891ec04210745fa2e1b9ed387265ebf",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/1",
+      "review_ref": null,
+      "notes": "Reconciled historical merge and exact-main CI39343024680 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred."
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-01.md"
+      ],
+      "rationale": "Archive a source",
+      "paths": [
+        "config/",
+        "workspaces/",
+        "intelligence/",
+        "templates/",
+        "static/"
+      ],
+      "branch": "batch/01",
+      "release": null,
+      "deployment_evidence": null,
+      "task_id": "TASK-0206-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2781/us-0206-archive-a-source",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0206"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0206-01",
+        "AC-0206-02",
+        "AC-0206-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": [],
+      "status": "merged",
+      "commit": "402673687891ec04210745fa2e1b9ed387265ebf",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/1",
+      "review_ref": null,
+      "notes": "Reconciled historical merge and exact-main CI39343024680 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred."
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-01.md"
+      ],
+      "rationale": "Choose access method",
+      "paths": [
+        "config/",
+        "workspaces/",
+        "intelligence/",
+        "templates/",
+        "static/"
+      ],
+      "branch": "batch/01",
+      "release": null,
+      "deployment_evidence": null,
+      "task_id": "TASK-0301-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2782/us-0301-choose-access-method",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0301"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0301-01",
+        "AC-0301-02",
+        "AC-0301-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": [],
+      "status": "merged",
+      "commit": "402673687891ec04210745fa2e1b9ed387265ebf",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/1",
+      "review_ref": null,
+      "notes": "Reconciled historical merge and exact-main CI39343024680 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred."
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-01.md"
+      ],
+      "rationale": "Test before activation",
+      "paths": [
+        "config/",
+        "workspaces/",
+        "intelligence/",
+        "templates/",
+        "static/"
+      ],
+      "branch": "batch/01",
+      "release": null,
+      "deployment_evidence": null,
+      "task_id": "TASK-0205-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2780/us-0205-test-before-activation",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-0205"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-0205-01",
+        "AC-0205-02",
+        "AC-0205-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": [],
+      "status": "merged",
+      "commit": "402673687891ec04210745fa2e1b9ed387265ebf",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/1",
+      "review_ref": null,
+      "notes": "Reconciled historical merge and exact-main CI39343024680 success. Implementation/engineering evidence only; no additional review, native QA, acceptance or deployment evidence inferred."
     }
   ]
 }
