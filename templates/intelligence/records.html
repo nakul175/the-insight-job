@@ -6,6 +6,7 @@
 {% else %}
 <form method="get" class="card">
 <label for="q">Search title and text</label><input id="q" name="q" value="{{ request.GET.q }}">
+<details class="filter-details" {% if request.GET.source or request.GET.type or request.GET.status or request.GET.format or request.GET.language or request.GET.after or request.GET.before or request.GET.sort %}open{% endif %}><summary>Filter and sort</summary><div class="filter-grid">
 <label for="source">Source</label><select id="source" name="source"><option value="">All permitted sources</option>{% for source in sources %}<option value="{{ source.id }}" {% if request.GET.source == source.id|stringformat:'s' %}selected{% endif %}>{{ source.name }}</option>{% endfor %}</select>
 <label for="type">Type</label><select id="type" name="type"><option value="">All types</option><option value="unknown" {% if request.GET.type == 'unknown' %}selected{% endif %}>Unknown</option>{% for type in types %}<option value="{{ type.key }}" {% if request.GET.type == type.key %}selected{% endif %}>{{ type.name }}</option>{% endfor %}</select>
 <label for="status">Status</label><input id="status" name="status" value="{{ request.GET.status }}">
@@ -14,6 +15,7 @@
 <label for="after">Captured on or after</label><input id="after" name="after" type="date" value="{{ request.GET.after }}">
 <label for="before">Captured on or before</label><input id="before" name="before" type="date" value="{{ request.GET.before }}">
 <label for="sort">Sort</label><select id="sort" name="sort"><option value="newest">Newest first</option><option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>Oldest first</option><option value="title" {% if request.GET.sort == 'title' %}selected{% endif %}>Title</option></select>
+</div></details>
 <input type="hidden" name="window" value="{{ request.GET.window }}"><button>Apply filters</button>
 </form>
 <p role="status">{{ count }} matching permitted record{{ count|pluralize }}.</p>

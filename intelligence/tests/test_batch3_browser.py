@@ -103,6 +103,7 @@ class ContentBrowserTests(StaticLiveServerTestCase):
                 )
                 self.assertIn("q=Tender", page.url)
                 self.assertIn("sort=title", page.url)
+                await page.locator("summary").filter(has_text="Configure").click()
                 await page.get_by_role("link", name="Schemas", exact=True).click()
                 await page.get_by_role("link", name="Create a draft").click()
                 await page.locator("#id_name").fill("Tender schema")
