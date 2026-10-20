@@ -524,7 +524,7 @@ def run_exercise(actor, workspace_id, snapshot_id, policy):
                     or external.acknowledgement
                     and not external.applied
                     or external.operation == "withdrawal"
-                    and not external.applied
+                    and not external.deletion_confirmed
                 ):
                     errors.append(
                         "External write requires receiver reconciliation: "

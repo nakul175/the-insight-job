@@ -43,10 +43,28 @@ def endpoint_url(url):
     return clean
 
 
+def authorized_binding(workspace_id, endpoint, secret_ref):
+    try:
+        bindings = json.loads(os.environ.get("TIJ_EXTERNAL_BINDINGS", "{}"))
+        entries = (
+            bindings.get(str(workspace_id), []) if isinstance(bindings, dict) else []
+        )
+        if (
+            not isinstance(entries, list)
+            or {"endpoint": endpoint, "secret_ref": secret_ref} not in entries
+        ):
+            raise ValueError()
+    except (ValueError, TypeError):
+        raise ValidationError(
+            "No operator-provisioned workspace/endpoint/authentication binding."
+        ) from None
+
+
 def request(destination, operation, lookup=False):
     if connection.in_atomic_block:
         raise ValidationError("External HTTP must run outside database transactions.")
     endpoint = endpoint_url(destination.endpoint)
+    authorized_binding(destination.workspace_id, endpoint, destination.secret_ref)
     if not re.fullmatch(r"TIJ_SECRET_[A-Z0-9_]{1,100}", destination.secret_ref):
         raise ValidationError("Use a protected TIJ_SECRET_ authentication reference.")
     token = os.environ.get(destination.secret_ref, "")

@@ -29,11 +29,32 @@ class ExternalDeliveryTests(TransactionTestCase):
             {
                 "TIJ_EXTERNAL_HOSTS": "receiver.example.com",
                 "TIJ_SECRET_RECEIVER": "synthetic-token",
+                "TIJ_EXTERNAL_BINDINGS": json.dumps(
+                    {
+                        str(self.workspace.pk): [
+                            {
+                                "endpoint": "https://receiver.example.com/evidence",
+                                "secret_ref": "TIJ_SECRET_RECEIVER",
+                            }
+                        ]
+                    }
+                ),
             },
         )
         self.env.start()
         self.addCleanup(self.env.stop)
-        self.dns = patch("socket.getaddrinfo", return_value=fixtures.PUBLIC_DNS)
+        import socket
+
+        original_resolver = socket.getaddrinfo
+
+        def resolver(host, *args, **kwargs):
+            if host in {"example.com", "example.org"} or host.endswith(
+                (".example.com", ".example.org")
+            ):
+                return fixtures.PUBLIC_DNS
+            return original_resolver(host, *args, **kwargs)
+
+        self.dns = patch("socket.getaddrinfo", side_effect=resolver)
         self.dns.start()
         self.addCleanup(self.dns.stop)
         *_, self.result = self.published()
@@ -551,3 +572,23 @@ class ExternalDeliveryTests(TransactionTestCase):
         item.refresh_from_db()
         self.assertEqual(item.state, "blocked")
         self.assertEqual(ExternalOperation.objects.filter(previous=item).count(), 1)
+
+    def test_another_tenants_credential_reference_is_not_authorized(self):
+        with self.assertRaises(ValidationError):
+            service.configure(
+                self.admin,
+                self.workspace.pk,
+                self.intent.destination_id,
+                "https://receiver.example.com/evidence",
+                "TIJ_SECRET_OTHER_TENANT",
+                "approval",
+            )
+        self.target.secret_ref = "TIJ_SECRET_OTHER_TENANT"
+        self.target.save()
+        with self.assertRaises(ValidationError):
+            self.activate()
+        item = self.queued()
+        with patch("http.client.HTTPSConnection") as conn:
+            with self.assertRaises(ValidationError):
+                external_http.request(self.target, item)
+            conn.assert_not_called()

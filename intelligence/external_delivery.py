@@ -67,6 +67,7 @@ def configure(
     )
     owned_system(actor, workspace_id, original.system_id)
     endpoint = external_http.endpoint_url(endpoint)
+    external_http.authorized_binding(workspace_id, endpoint, secret_ref)
     if (
         not re.fullmatch(r"TIJ_SECRET_[A-Z0-9_]{1,100}", secret_ref)
         or not approval_ref.strip()
@@ -116,6 +117,8 @@ def activate(actor, workspace_id, destination_id, active):
     if type(active) is not bool:
         raise ValidationError("Explicit activation choice required.")
     external_http.endpoint_url(item.endpoint)
+    if active:
+        external_http.authorized_binding(workspace_id, item.endpoint, item.secret_ref)
     item.active = active
     item.save(update_fields=["active"])
     audit(
@@ -194,6 +197,14 @@ def evidence_package(actor, intent, destination):
         "result_version": result.version,
         "source": str(result.record.source_id),
         "content_version": str(result.content_version_id),
+        "capture_versions": [
+            str(pk)
+            for pk in Capture.objects.filter(
+                content_version_id=result.content_version_id,
+                workspace_id=intent.workspace_id,
+            ).values_list("pk", flat=True)[:100]
+        ],
+        "analysis_number": result.analysis.number if result.analysis_id else None,
         "analysis_version": str(result.analysis_id) if result.analysis_id else None,
         "configuration": str(result.configuration_id),
         "configuration_version": result.configuration.number,
