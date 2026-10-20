@@ -19,6 +19,7 @@ def parse(data, media_type):
             "reason": "Document byte limit exceeded",
         }
     segments = []
+    truncated = False
     if data.startswith(b"%PDF-"):
         reader = PdfReader(io.BytesIO(data), strict=True)
         if reader.is_encrypted:
@@ -36,6 +37,7 @@ def parse(data, media_type):
         for i, page in enumerate(reader.pages):
             text = page.extract_text() or ""
             if text.strip():
+                truncated |= len(text) > 200000
                 segments.append({"kind": "page", "page": i + 1, "text": text[:200000]})
     elif media_type in {"text/html", "application/xhtml+xml"}:
         soup = BeautifulSoup(data, "html.parser")
@@ -46,6 +48,7 @@ def parse(data, media_type):
         ):
             text = tag.get_text(" ", strip=True)
             if text:
+                truncated |= len(text) > 20000
                 segments.append(
                     {
                         "kind": "table"
@@ -58,10 +61,12 @@ def parse(data, media_type):
         if not segments:
             text = soup.get_text(" ", strip=True)
             if text:
+                truncated |= len(text) > 200000
                 segments = [{"kind": "section", "section": 1, "text": text[:200000]}]
     elif media_type.startswith("text/"):
         text = data.decode("utf-8", errors="replace").strip()
         if text:
+            truncated |= len(text) > 200000
             segments = [{"kind": "text", "section": 1, "text": text[:200000]}]
     else:
         return {
@@ -70,7 +75,7 @@ def parse(data, media_type):
             "reason": "Unsupported document format; original retained",
         }
     total = sum(len(s["text"]) for s in segments)
-    if total > 200000:
+    if total > 200000 or truncated:
         clipped = []
         remaining = 200000
         for segment in segments:

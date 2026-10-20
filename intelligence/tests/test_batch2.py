@@ -849,3 +849,99 @@ class BatchTwoTests(TestCase):
             result = collect_step(item, fetch=lambda *a, **kw: self.capture())
         self.assertEqual(result.state, "needs_access")
         self.assertFalse(Capture.objects.filter(run=item).exists())
+
+    def test_us0302_superseded_handoff_cannot_disconnect_or_activate_new_login(self):
+        from intelligence.browser_worker import finish_handoff, write_handoff
+
+        first = begin_login(
+            self.admin, self.source, "https://example.com/login", "#account", "Analyst"
+        )
+        stale = first.connection
+        second = begin_login(
+            self.admin, self.source, "https://example.com/login", "#account", "Analyst"
+        )
+        self.assertEqual(first.connection_id, second.connection_id)
+        self.assertEqual(write_handoff(first.pk, state="active"), 0)
+        finish_handoff(first.pk)
+        second.connection.refresh_from_db()
+        self.assertEqual(second.connection.state, "connecting")
+        self.assertEqual(second.connection.current_handoff_id, second.pk)
+        with self.assertRaises(ValidationError):
+            verify_identity(stale, "Analyst", {"cookies": []})
+        self.assertEqual(write_handoff(second.pk, state="active"), 1)
+
+    def test_us0302_malformed_scroll_is_rejected_before_queueing(self):
+        handoff = begin_login(
+            self.admin, self.source, "https://example.com/login", "#account", "Analyst"
+        )
+        for value in ["abc", {}, None, True, 801]:
+            with self.subTest(value=value), self.assertRaises(ValidationError):
+                submit_browser_action(self.admin, handoff, "scroll", {"y": value})
+        action = submit_browser_action(self.admin, handoff, "scroll", {"y": -800})
+        self.assertEqual(unseal(action.payload_ciphertext), {"y": -800})
+
+    def test_us0501_every_text_truncation_reports_partial(self):
+        from intelligence.parse_worker import parse
+
+        cases = [
+            (b"a" * 250001, "text/plain", 200000),
+            (b"<p>" + b"a" * 25001 + b"</p>", "text/html", 20000),
+        ]
+        for data, kind, retained in cases:
+            with self.subTest(kind=kind):
+                parsed = parse(data, kind)
+                self.assertEqual(parsed["status"], "partial")
+                self.assertEqual(
+                    sum(len(s["text"]) for s in parsed["segments"]), retained
+                )
+                self.assertTrue(parsed["reason"])
+        reader = MagicMock()
+        reader.is_encrypted = False
+        reader.pages = [MagicMock()]
+        reader.pages[0].extract_text.return_value = "a" * 250001
+        with patch("intelligence.parse_worker.PdfReader", return_value=reader):
+            self.assertEqual(
+                parse(b"%PDF-fixture", "application/pdf")["status"], "partial"
+            )
+
+    def test_us0402_redirected_relative_links_use_final_directory_and_scope(self):
+        self.source.url = "https://example.com/notices"
+        self.source.save(update_fields=["url"])
+        self.version.config = {
+            **self.version.config,
+            "include": ["/notices"],
+            "exclude": ["/notices/private.pdf"],
+        }
+        self.version.save()
+        start_run(self.admin, self.source, "redirect-links")
+        item = claim_next()
+        body = (
+            b'<p>Notice</p><a href="file.pdf">File</a><a href="private.pdf">Private</a>'
+        )
+        with patch(
+            "intelligence.runs.parse_document",
+            return_value={
+                "status": "parsed",
+                "segments": [{"text": "Notice"}],
+                "reason": "",
+            },
+        ):
+            result = collect_step(
+                item,
+                fetch=lambda *a, **kw: self.capture(
+                    body, url="https://example.com/notices/"
+                ),
+            )
+        self.assertEqual(
+            result.checkpoint["pending"][0]["url"],
+            "https://example.com/notices/file.pdf",
+        )
+        self.assertTrue(
+            any(
+                s.get("url") == "https://example.com/notices/private.pdf"
+                for s in result.checkpoint["skipped"]
+            )
+        )
+        captured = Capture.objects.get(run=item)
+        self.assertEqual(captured.url, "https://example.com/notices")
+        self.assertEqual(captured.final_url, "https://example.com/notices/")

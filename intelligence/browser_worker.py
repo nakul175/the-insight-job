@@ -5,11 +5,12 @@ from urllib.parse import urlsplit
 
 from asgiref.sync import async_to_sync, sync_to_async
 from django.core.exceptions import PermissionDenied, ValidationError
+from django.db import transaction
 from django.http import Http404
 
 from .access import handoff_permission, verify_identity
 from .egress_proxy import DomainProxy
-from .models import BrowserAction, BrowserHandoff
+from .models import BrowserAction, BrowserHandoff, Connection
 from .vault import seal, unseal
 
 
@@ -30,14 +31,26 @@ def next_action(handoff_id):
 
 
 def write_handoff(handoff_id, **values):
-    BrowserHandoff.objects.filter(pk=handoff_id).update(**values)
+    return BrowserHandoff.objects.filter(
+        pk=handoff_id,
+        state__in=["pending", "active"],
+        connection__current_handoff_id=handoff_id,
+    ).update(**values)
 
 
+@transaction.atomic
 def finish_handoff(handoff_id):
+    handoff = BrowserHandoff.objects.get(pk=handoff_id)
+    connection = Connection.objects.select_for_update().get(pk=handoff.connection_id)
     BrowserAction.objects.filter(handoff_id=handoff_id).delete()
-    handoff = BrowserHandoff.objects.select_related("connection").get(pk=handoff_id)
-    if handoff.state != "verified" and handoff.connection.state == "connecting":
-        connection = handoff.connection
+    BrowserHandoff.objects.filter(
+        pk=handoff_id, state__in=["pending", "active"]
+    ).update(state="failed", frame_ciphertext="", reason="Browser ended; reconnect.")
+    if (
+        connection.current_handoff_id == handoff_id
+        and handoff.state != "verified"
+        and connection.state == "connecting"
+    ):
         connection.state = "disconnected"
         connection.session_ciphertext = ""
         connection.save(update_fields=["state", "session_ciphertext"])
@@ -116,9 +129,11 @@ async def process_handoff_async(handoff_id):
                         wait_until="domcontentloaded",
                         timeout=20000,
                     )
-                    await sync_to_async(write_handoff, thread_sensitive=True)(
-                        handoff_id, state="active"
-                    )
+                    activated = await sync_to_async(
+                        write_handoff, thread_sensitive=True
+                    )(handoff_id, state="active")
+                    if not activated:
+                        return
                     while True:
                         handoff = await sync_to_async(
                             BrowserHandoff.objects.get, thread_sensitive=True
@@ -139,6 +154,9 @@ async def process_handoff_async(handoff_id):
                                     action.kind,
                                     unseal(action.payload_ciphertext),
                                 )
+                            except (ValueError, TypeError, KeyError):
+                                # A malformed persisted action affects this handoff only.
+                                state = "failed"
                             finally:
                                 await sync_to_async(
                                     action.delete, thread_sensitive=True

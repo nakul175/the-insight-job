@@ -304,6 +304,10 @@ def collect_step(item, fetch=fetch_public):
             raise NeedsAccess(
                 "Account verification changed during capture; reconnect before resuming."
             )
+        final_url = canonical_url(capture.get("url", url))
+        final_allowed, _ = scope_decision(item.source.url, final_url, config)
+        if not final_allowed:
+            raise ValidationError("Final capture URL is outside source scope.")
         data = capture["bytes"]
         media_type = capture["format"]
         item = account_received(item, token, len(data))
@@ -445,6 +449,7 @@ def collect_step(item, fetch=fetch_public):
                     "source": item.source,
                     "digest": digest,
                     "media_type": media_type,
+                    "final_url": final_url,
                     "original": data,
                     "status": "quarantined"
                     if quarantined
@@ -478,7 +483,7 @@ def collect_step(item, fetch=fetch_public):
                     'a[rel~="next"], a.next, a[href$=".pdf"], a[href$=".docx"], a[href$=".mp4"], a[href$=".zip"]'
                 )[:100]
                 for link in links:
-                    discovered = urljoin(url, link.get("href", ""))
+                    discovered = urljoin(final_url, link.get("href", ""))
                     try:
                         discovered = canonical_url(discovered)
                         included, why = scope_decision(

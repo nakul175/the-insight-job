@@ -7,7 +7,7 @@ from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 from django.utils import timezone
 
-from .models import BrowserAction, BrowserHandoff, Connection, WorkItem
+from .models import BrowserAction, BrowserHandoff, Connection, Source, WorkItem
 from .permissions import member, sources_for
 from .services import audit, check_work_permission
 from .urlsafety import canonical_url
@@ -110,13 +110,18 @@ def begin_login(actor, source, login_url, identity_selector, expected_identity):
         raise ValidationError(
             "Specify the website's account-identity selector and expected account identity."
         )
-    conn = Connection.objects.filter(
-        workspace=source.workspace,
-        owner=actor,
-        bound_source=source,
-        domain=urlsplit(source.url).hostname,
-        method="session",
-    ).first()
+    Source.objects.select_for_update().get(pk=source.pk)
+    conn = (
+        Connection.objects.select_for_update()
+        .filter(
+            workspace=source.workspace,
+            owner=actor,
+            bound_source=source,
+            domain=urlsplit(source.url).hostname,
+            method="session",
+        )
+        .first()
+    )
     if conn is None:
         conn = Connection.objects.create(
             workspace=source.workspace,
@@ -145,6 +150,8 @@ def begin_login(actor, source, login_url, identity_selector, expected_identity):
         owner=actor,
         expires_at=timezone.now() + timedelta(minutes=20),
     )
+    conn.current_handoff_id = handoff.pk
+    conn.save(update_fields=["current_handoff_id"])
     audit(
         actor,
         source.workspace_id,
@@ -159,6 +166,7 @@ def handoff_permission(actor, handoff):
     own_connection(actor, handoff.connection)
     if (
         handoff.owner_id != actor.pk
+        or handoff.connection.current_handoff_id != handoff.pk
         or not sources_for(actor, handoff.workspace_id)
         .filter(pk=handoff.source_id)
         .exists()
@@ -186,6 +194,12 @@ def submit_browser_action(actor, handoff, kind, payload):
         0 <= int(payload.get("x", -1)) <= 1280 and 0 <= int(payload.get("y", -1)) <= 800
     ):
         raise ValidationError("Click outside the browser viewport.")
+    if kind == "scroll" and (
+        isinstance(payload.get("y", 400), bool)
+        or not isinstance(payload.get("y", 400), int)
+        or not -800 <= payload.get("y", 400) <= 800
+    ):
+        raise ValidationError("Scroll must be an integer from -800 to 800.")
     if kind == "key" and payload.get("key") not in {
         "Tab",
         "Enter",
@@ -210,6 +224,7 @@ def verify_identity(connection, identity, storage_state):
         or current.state != connection.state
         or current.checked_at != connection.checked_at
         or current.expected_identity != connection.expected_identity
+        or current.current_handoff_id != connection.current_handoff_id
     ):
         raise ValidationError(
             "Connection changed during verification; start a new login."

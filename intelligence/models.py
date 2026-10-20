@@ -32,6 +32,7 @@ class ConsumerSystem(Entity):
 
 
 class Connection(Entity):
+    current_handoff_id = models.UUIDField(null=True, editable=False)
     bound_source = models.ForeignKey("Source", null=True, on_delete=models.PROTECT)
     session_ciphertext = models.TextField(blank=True)
     pending_ciphertext = models.TextField(blank=True)
@@ -221,6 +222,7 @@ class BrowserAction(models.Model):
 
 
 class Capture(Entity):
+    final_url = models.URLField(max_length=2000, blank=True)
     run = models.ForeignKey(WorkItem, on_delete=models.PROTECT)
     source = models.ForeignKey(Source, on_delete=models.PROTECT)
     url = models.URLField(max_length=2000)
