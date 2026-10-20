@@ -55,7 +55,7 @@ class ContentBrowserTests(StaticLiveServerTestCase):
         async_to_sync(self.journey)(record, cookie)
 
     async def journey(self, record, cookie):
-        from playwright.async_api import async_playwright
+        from playwright.async_api import async_playwright, expect
 
         options = {
             "headless": True,
@@ -92,12 +92,15 @@ class ContentBrowserTests(StaticLiveServerTestCase):
                 await page.get_by_role(
                     "link", name="Tender fixture", exact=True
                 ).click()
-                self.assertTrue(
-                    await page.get_by_text("Geography Unknown", exact=False).count()
-                )
+                await expect(
+                    page.get_by_text("Geography Unknown", exact=False)
+                ).to_be_visible()
                 await page.get_by_role(
                     "link", name="Back to filtered results and position"
                 ).click()
+                await page.wait_for_url(
+                    lambda url: "q=Tender" in url and "sort=title" in url
+                )
                 self.assertIn("q=Tender", page.url)
                 self.assertIn("sort=title", page.url)
                 await page.get_by_role("link", name="Schemas", exact=True).click()
@@ -106,11 +109,9 @@ class ContentBrowserTests(StaticLiveServerTestCase):
                 await page.locator("#id_key").fill("tender")
                 await page.locator("#id_fields").fill(json.dumps([field(unit="USD")]))
                 await page.get_by_role("button", name="Save draft", exact=True).click()
-                self.assertTrue(
-                    await page.get_by_role(
-                        "heading", name="Tender schema", exact=True
-                    ).count()
-                )
+                await expect(
+                    page.get_by_role("heading", name="Tender schema", exact=True)
+                ).to_be_visible()
                 await page.goto(
                     self.live_server_url
                     + reverse("record-detail", args=[self.workspace.pk, record.pk])
@@ -124,14 +125,12 @@ class ContentBrowserTests(StaticLiveServerTestCase):
                 await page.get_by_role("link", name="budget", exact=True).wait_for()
                 self.assertIn("budget", await page.locator("body").inner_text())
                 await page.get_by_role("link", name="budget", exact=True).click()
-                self.assertTrue(
-                    await page.get_by_text(
-                        "Original candidate 12 USD", exact=False
-                    ).count()
-                )
-                self.assertTrue(
-                    await page.get_by_text("exact_label", exact=False).count()
-                )
+                await expect(
+                    page.get_by_text("Original candidate 12 USD", exact=False)
+                ).to_be_visible()
+                await expect(
+                    page.get_by_text("exact_label", exact=False)
+                ).to_be_visible()
                 # A small viewport must retain all controls without horizontal overflow.
                 self.assertLessEqual(
                     await page.evaluate("document.documentElement.scrollWidth"), 390
