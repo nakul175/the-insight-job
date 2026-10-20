@@ -245,7 +245,7 @@ def original_file(request, workspace_id, capture_id):
         workspace_id=workspace_id,
         source__in=sources_for(request.user, workspace_id, export=True),
     )
-    if capture.status == "quarantined":
+    if capture.status in {"quarantined", "deleted"}:
         return HttpResponse(
             "This original is quarantined and cannot be downloaded through this viewer.",
             status=403,

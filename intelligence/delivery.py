@@ -229,6 +229,10 @@ def mapped_payload(result, mapping):
 
 
 def validate_result(actor, result, bundle):
+    from .recovery import delivery_held
+
+    if delivery_held(result.workspace_id):
+        raise ValidationError("Recovery reconciliation hold blocks all new delivery.")
     live_access(actor, result)
     if (result.analysis or result.content_version).status not in {"parsed", "partial"}:
         raise ValidationError("Immutable base source security/parsing gate failed.")
@@ -392,6 +396,10 @@ def deliver(intent_id, transport=None):
     original = get_object_or_404(DeliveryIntent, pk=intent_id)
     Workspace.objects.select_for_update(no_key=True).get(pk=original.workspace_id)
     intent = DeliveryIntent.objects.select_for_update().get(pk=intent_id)
+    from .recovery import delivery_held
+
+    if delivery_held(intent.workspace_id):
+        return intent
     current = SystemResult.objects.select_for_update().get(pk=intent.result_id)
     current.record = ContentRecord.objects.select_for_update().get(pk=current.record_id)
     intent.result = current

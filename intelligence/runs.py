@@ -10,6 +10,8 @@ from django.db import transaction
 from django.db.models import F, Q
 from django.utils import timezone
 
+from workspaces.models import Workspace
+
 from .access import NeedsAccess, connection_for, headers_for, mark_expired
 from .collector import fetch_public
 from .content import materialize
@@ -236,6 +238,7 @@ def account_received(item, token, amount):
         raise LeaseLost()
     current.usage = {
         **current.usage,
+        "as_of": timezone.now().isoformat(),
         "bytes": current.usage.get("bytes", 0) + amount,
         "seconds": round((timezone.now() - current.started_at).total_seconds(), 3),
     }
@@ -293,6 +296,9 @@ def collect_step(item, fetch=fetch_public):
         },
     }
     try:
+        from .lifecycle import ensure_not_deleted
+
+        ensure_not_deleted(item.source_id, url)
         allowed, rule = scope_decision(item.source.url, url, config)
         if not allowed:
             checkpoint.setdefault("skipped", []).append({"url": url, "reason": rule})
@@ -448,6 +454,10 @@ def collect_step(item, fetch=fetch_public):
         ) != proof:
             raise NeedsAccess("Account verification changed during parsing; reconnect.")
         with transaction.atomic():
+            Workspace.objects.select_for_update(no_key=True).get(pk=item.workspace_id)
+            from .lifecycle import ensure_not_deleted
+
+            ensure_not_deleted(item.source_id, url, final_url)
             current = WorkItem.objects.select_for_update().get(pk=item.pk)
             if current.lease_token != token:
                 raise LeaseLost()
@@ -542,6 +552,7 @@ def collect_step(item, fetch=fetch_public):
                 "bytes": item.usage.get("bytes", 0),
                 "seconds": round((timezone.now() - item.started_at).total_seconds(), 3),
                 "provider_cost_microunits": 0,
+                "as_of": timezone.now().isoformat(),
             }
             item.lease_until = timezone.now() + timedelta(seconds=60)
             item.save(update_fields=["checkpoint", "usage", "lease_until"])

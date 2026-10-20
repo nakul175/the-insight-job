@@ -167,7 +167,7 @@ def qualify_result(result):
 
 
 @transaction.atomic
-def route_one(actor, workspace_id, record_id, system_id):
+def route_one(actor, workspace_id, record_id, system_id, replay_run=None):
     system = owned_system(actor, workspace_id, system_id)
     record = get_object_or_404(
         records_for(actor, workspace_id).select_for_update(), pk=record_id
@@ -178,7 +178,25 @@ def route_one(actor, workspace_id, record_id, system_id):
         raise PermissionDenied(
             "System routing is paused, retired or lacks source access."
         )
-    bundle = system.active_bundle if system.state == "active" else None
+    if replay_run is not None:
+        from .models import ReplayRun
+
+        replay_run = get_object_or_404(
+            ReplayRun,
+            pk=replay_run.pk,
+            workspace_id=workspace_id,
+            system=system,
+            state="running",
+        )
+        if not any(pin["record"] == str(record.pk) for pin in replay_run.pins):
+            raise PermissionDenied("Record is outside the pinned replay.")
+    bundle = (
+        replay_run.bundle
+        if replay_run
+        else system.active_bundle
+        if system.state == "active"
+        else None
+    )
     config_row = (
         bundle.configuration
         if bundle
@@ -201,6 +219,7 @@ def route_one(actor, workspace_id, record_id, system_id):
         processing_number=processing_number,
         classification_version=record.classification_version,
         bundle_number=bundle.number if bundle else 0,
+        replay_number=replay_run.number if replay_run else 0,
     ).first()
     if existing:
         return existing, False
@@ -299,7 +318,9 @@ def route_one(actor, workspace_id, record_id, system_id):
         configuration=config_row,
         bundle=bundle,
         bundle_number=bundle.number if bundle else 0,
-        preview=bundle is None,
+        preview=bundle is None or replay_run is not None,
+        replay_run=replay_run,
+        replay_number=replay_run.number if replay_run else 0,
         schema_version=schema_version,
         classification_version=record.classification_version,
         processing_number=processing_number,
@@ -622,3 +643,14 @@ def backlog_preview(actor, system):
         )
         .order_by("pk")[:100]
     )
+
+
+def permitted_result_ids(actor, workspace_id):
+    permitted = set()
+    for result in results_for(actor, workspace_id).iterator(chunk_size=100):
+        try:
+            live_access(actor, result, allow_inactive=True)
+        except PermissionDenied:
+            continue
+        permitted.add(str(result.pk))
+    return permitted

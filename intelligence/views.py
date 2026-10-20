@@ -25,7 +25,7 @@ from .services import (
     revoke_source,
     update_source_config,
 )
-from .source_testing import activate, test_source
+from .source_testing import test_source
 from .urlsafety import scope_decision
 
 
@@ -90,7 +90,7 @@ def source_create(request, workspace_id):
             ):
                 raise PermissionDenied()
             return redirect(
-                "source-detail", workspace_id=workspace_id, source_id=source.pk
+                "source-setup", workspace_id=workspace_id, source_id=source.pk
             )
         except ValidationError as exc:
             form.add_error(None, exc)
@@ -177,7 +177,7 @@ def source_action(request, workspace_id, source_id, action):
         if action == "test":
             test_source(request.user, source)
         elif action == "activate":
-            activate(request.user, source, request.POST.get("test_id"))
+            return redirect("source-setup", workspace_id, source.pk)
         elif action == "archive":
             archive_source(request.user, source, request.POST.get("policy"))
         elif action == "restore":

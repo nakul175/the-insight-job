@@ -68,6 +68,12 @@ def materialize(capture, parsed):
         or capture.run.workspace_id != capture.workspace_id
     ):
         raise ValidationError("Capture source/workspace does not match its run.")
+    from workspaces.models import Workspace
+
+    from .lifecycle import ensure_not_deleted
+
+    Workspace.objects.select_for_update(no_key=True).get(pk=capture.workspace_id)
+    ensure_not_deleted(capture.source_id, capture.url, capture.final_url)
     text = "\n\n".join(s["text"] for s in parsed["segments"])
     lookup = {"source": capture.source, "canonical_url": capture.url}
     try:
@@ -82,6 +88,8 @@ def materialize(capture, parsed):
     except IntegrityError:
         record = ContentRecord.objects.get(**lookup)
     record = ContentRecord.objects.select_for_update().get(pk=record.pk)
+    if record.status == "deleted":
+        raise ValidationError("Content was deleted; materialization blocked.")
     previous = record.revisions.order_by("-number").first()
     same = bool(previous and previous.digest == capture.digest)
     completeness = (
@@ -707,6 +715,10 @@ def duplicate_candidates(actor, record):
 def process_extraction(job_id):
     from django.http import Http404
 
+    from workspaces.models import Workspace
+
+    original_job = ExtractionJob.objects.get(pk=job_id)
+    Workspace.objects.select_for_update(no_key=True).get(pk=original_job.workspace_id)
     job = ExtractionJob.objects.select_for_update().get(pk=job_id)
     if job.state != "queued" or job.preview:
         return job

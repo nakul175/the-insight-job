@@ -70,7 +70,7 @@ def save_samples(
     visible = records_for(actor, workspace_id)
     seen = set()
     for item in samples:
-        if not isinstance(item, dict) or set(item) != {
+        if not isinstance(item, dict) or set(item) - {"analysis"} != {
             "content_version",
             "fields",
             "routing",
@@ -105,7 +105,11 @@ def save_samples(
             raise ValidationError(
                 "Explicit expected routing and qualification labels are required."
             )
-        analysis = revision.analyses.order_by("-number").first()
+        analysis = (
+            get_object_or_404(revision.analyses, pk=item["analysis"])
+            if item.get("analysis")
+            else revision.analyses.order_by("-number").first()
+        )
         EvaluationSample.objects.create(
             version=version,
             content_version=revision,
