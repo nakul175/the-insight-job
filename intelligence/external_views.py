@@ -5,9 +5,14 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods
 
 from . import external_delivery as service
-from .models import DeliveryIntent, Destination, ExternalDestination, ExternalOperation
+from .models import (
+    ConsumerSystem,
+    DeliveryIntent,
+    Destination,
+    ExternalDestination,
+    ExternalOperation,
+)
 from .permissions import member
-from .systems import owned_system
 from .views import context
 
 
@@ -41,7 +46,7 @@ class PackageForm(forms.Form):
 @require_http_methods(["GET", "POST"])
 def dashboard(request, workspace_id, system_id):
     member(request.user, workspace_id, admin=True)
-    system = owned_system(request.user, workspace_id, system_id)
+    system = get_object_or_404(ConsumerSystem, pk=system_id, workspace_id=workspace_id)
     endpoint = EndpointForm(
         request.POST if request.POST.get("action") == "configure" else None
     )

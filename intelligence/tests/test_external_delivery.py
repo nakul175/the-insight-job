@@ -344,7 +344,7 @@ class ExternalDeliveryTests(TransactionTestCase):
         response.read1.return_value = b"x"
         with (
             patch("http.client.HTTPSConnection") as conn,
-            patch("intelligence.external_http.time.monotonic", side_effect=[0, 21]),
+            patch("intelligence.external_http.time.monotonic", side_effect=[0, 0, 21]),
         ):
             conn.return_value.getresponse.return_value = response
             with self.assertRaises(OSError):
@@ -372,3 +372,175 @@ class ExternalDeliveryTests(TransactionTestCase):
         self.assertEqual(item.payload, {})
         notice = ExternalOperation.objects.get(previous=item)
         self.assertEqual(notice.operation, "withdrawal")
+
+    def test_ui_send_is_autocommit_and_revocation_during_request_is_safe(self):
+        self.activate()
+        item = self.queued()
+
+        def receive(target, operation, lookup):
+            from intelligence.delivery import queue_withdrawals
+
+            self.assertFalse(connection.in_atomic_block)
+            queue_withdrawals(self.admin, self.workspace.pk, self.source.pk)
+            return self.receipt(operation)
+
+        url = reverse(
+            "external-delivery", args=[self.workspace.pk, self.result.system_id]
+        )
+        self.client.force_login(self.admin)
+        with patch("intelligence.external_http.request", side_effect=receive):
+            response = self.client.post(url, {"action": "send", "target": str(item.pk)})
+        self.assertEqual(response.status_code, 302)
+        item.refresh_from_db()
+        self.assertEqual(item.state, "blocked")
+        with transaction.atomic():
+            service.revoke_source(
+                self.admin, self.workspace.pk, intent_ids=[self.intent.pk], scrub=True
+            )
+        self.assertEqual(ExternalOperation.objects.filter(previous=item).count(), 1)
+
+    def test_recovery_hold_blocks_withdrawal_but_not_receipt_lookup(self):
+        from intelligence.models import RecoveryControl
+
+        self.activate()
+        item = self.queued()
+        with patch(
+            "intelligence.external_http.request", return_value=self.receipt(item)
+        ):
+            service.send(self.admin, self.workspace.pk, item.pk)
+        notice = service.queue(
+            self.admin, self.workspace.pk, self.intent.pk, self.target.pk, item.pk, True
+        )
+        RecoveryControl.objects.create(workspace=self.workspace, delivery_hold=True)
+        with patch("intelligence.external_http.request") as transport:
+            self.assertEqual(
+                service.send(self.admin, self.workspace.pk, notice.pk).state,
+                "manual_follow_up",
+            )
+            transport.assert_not_called()
+
+    def test_watchdog_interrupts_stalled_headers(self):
+        item = self.queued()
+        callbacks = []
+
+        class Timer:
+            def __init__(self, seconds, callback):
+                callbacks.append(callback)
+
+            def start(self):
+                pass
+
+            def cancel(self):
+                pass
+
+        with (
+            patch("intelligence.external_http.threading.Timer", Timer),
+            patch("http.client.HTTPSConnection") as conn,
+        ):
+
+            def stalled():
+                callbacks[0]()
+                self.assertTrue(conn.return_value.sock.shutdown.called)
+                raise OSError("closed by watchdog")
+
+            conn.return_value.getresponse.side_effect = stalled
+            with self.assertRaises(OSError):
+                external_http.request(self.target, item)
+
+    def test_restore_keeps_uncertain_external_writes_unreconciled(self):
+        from intelligence.recovery import run_exercise, take_snapshot
+
+        self.activate()
+        item = self.queued()
+        with patch("intelligence.external_http.request", side_effect=OSError("lost")):
+            service.send(self.admin, self.workspace.pk, item.pk)
+        snapshot = take_snapshot(self.admin, self.workspace.pk, 60)
+        alias = "external_recovery_test"
+        with (
+            patch.object(type(self), "databases", self.databases | {alias}),
+            patch("intelligence.recovery.new_alias", return_value=alias),
+        ):
+            exercise = run_exercise(
+                self.admin,
+                self.workspace.pk,
+                snapshot.pk,
+                {
+                    "scope": "External outbox",
+                    "failure_mode": "Lost receipt",
+                    "recovery_target_minutes": 5,
+                },
+            )
+        self.assertNotEqual(exercise.state, "passed")
+        self.assertIn(
+            "External write requires receiver reconciliation", str(exercise.report)
+        )
+
+    def test_corrected_field_provenance_and_new_version_supersession(self):
+        self.activate()
+        item = self.queued()
+        with patch(
+            "intelligence.external_http.request", return_value=self.receipt(item)
+        ):
+            service.send(self.admin, self.workspace.pk, item.pk)
+        result = self.result
+        result.fields["budget"]["value"] = 13
+        result.fields["budget"]["method"] = "human_correction"
+        result.version += 1
+        result.save()
+        intent, _ = store_result(
+            self.admin, self.workspace.pk, result.pk, result.version
+        )
+        correction = service.queue(
+            self.admin, self.workspace.pk, intent.pk, self.target.pk, item.pk
+        )
+        self.assertEqual(
+            correction.payload["fields"]["budget"]["method"], "human_correction"
+        )
+        self.assertEqual(correction.payload["supersedes"], str(item.pk))
+        self.assertNotEqual(correction.operation_key, item.operation_key)
+
+    def test_postgres_concurrent_revocation_cancels_claim_without_deadlock(self):
+        if not connection.features.has_select_for_update:
+            self.skipTest("Requires PostgreSQL row locks")
+        import threading
+        from django.db import close_old_connections
+        from intelligence.delivery import queue_withdrawals
+
+        self.activate()
+        item = self.queued()
+        started = threading.Event()
+        release = threading.Event()
+        failures = []
+
+        def receive(target, operation, lookup):
+            started.set()
+            if not release.wait(10):
+                raise RuntimeError("Revocation failed to finish")
+            return self.receipt(operation)
+
+        def worker():
+            close_old_connections()
+            try:
+                service.send(self.admin, self.workspace.pk, item.pk)
+            except Exception as exc:
+                failures.append(type(exc).__name__)
+            finally:
+                connection.close()
+
+        with patch("intelligence.external_http.request", side_effect=receive):
+            thread = threading.Thread(target=worker)
+            thread.start()
+            try:
+                self.assertTrue(started.wait(10))
+                with transaction.atomic():
+                    with connection.cursor() as cursor:
+                        cursor.execute("SET LOCAL lock_timeout = '3s'")
+                    queue_withdrawals(self.admin, self.workspace.pk, self.source.pk)
+            finally:
+                release.set()
+                thread.join(15)
+        self.assertFalse(thread.is_alive())
+        self.assertEqual(failures, [])
+        item.refresh_from_db()
+        self.assertEqual(item.state, "blocked")
+        self.assertEqual(ExternalOperation.objects.filter(previous=item).count(), 1)

@@ -7,6 +7,7 @@ import os
 import re
 import socket
 import ssl
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FutureTimeout
@@ -88,7 +89,25 @@ def request(destination, operation, lookup=False):
     )
     if body is not None and len(body) > MAX_BYTES:
         raise ValidationError("Evidence package exceeds256KB.")
+    timed_out = threading.Event()
+    sockets = []
+
+    def expire():
+        timed_out.set()
+        sock = sockets[0] if sockets else conn.sock
+        if sock:
+            try:
+                sock.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+            sock.close()
+
+    timer = threading.Timer(max(0.001, deadline - time.monotonic()), expire)
+    timer.daemon = True
+    timer.start()
     try:
+        if timed_out.is_set():
+            raise OSError("Request deadline exhausted.")
         conn.request(
             "GET" if lookup else "POST",
             path,
@@ -102,6 +121,11 @@ def request(destination, operation, lookup=False):
             },
         )
         active_socket = conn.sock
+        if active_socket:
+            sockets.append(active_socket)
+        if timed_out.is_set():
+            expire()
+            raise OSError("Request deadline exhausted.")
         response = conn.getresponse()
         if response.status not in {200, 201}:
             raise OSError(
@@ -122,4 +146,5 @@ def request(destination, operation, lookup=False):
             raise OSError("Receipt exceeds the response budget.")
         return json.loads(data)
     finally:
+        timer.cancel()
         conn.close()

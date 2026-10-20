@@ -15,6 +15,7 @@ from django.utils import timezone
 from . import external_http
 from .delivery import digest, validate_result
 from .models import (
+    ConsumerSystem,
     DeliveryIntent,
     ExternalAttempt,
     ExternalDestination,
@@ -34,7 +35,9 @@ def payload_hash(payload):
 
 def admin_destination(actor, workspace_id, destination):
     member(actor, workspace_id, admin=True)
-    owned_system(actor, workspace_id, destination.destination.system_id)
+    get_object_or_404(
+        ConsumerSystem, pk=destination.destination.system_id, workspace_id=workspace_id
+    )
     if (
         destination.workspace_id != workspace_id
         or destination.destination.workspace_id != workspace_id
@@ -150,7 +153,9 @@ def evidence_package(actor, intent, destination):
     for key in selected:
         fact = result.fields.get(key, {})
         facts[key] = {
-            k: deepcopy(fact[k]) for k in ["status", "value", "unit"] if k in fact
+            k: deepcopy(fact[k])
+            for k in ["status", "value", "unit", "method"]
+            if k in fact
         }
         if any(
             str(c.get("source")) not in permitted_sources
@@ -193,7 +198,10 @@ def evidence_package(actor, intent, destination):
         "configuration": str(result.configuration_id),
         "configuration_version": result.configuration.number,
         "extraction": {
-            "method": "deterministic literal-terms-v1/exact_label",
+            "method": "per-field method; review changes may supersede extraction",
+            "review_changes": [
+                str(pk) for pk in result.changes.values_list("pk", flat=True)
+            ],
             "bundle": str(intent.bundle_id),
             "classification_version": result.classification_version,
         },
@@ -288,6 +296,10 @@ def queue(
 
 
 def current_authority(actor, item, lookup=False):
+    from .recovery import delivery_held
+
+    if not lookup and delivery_held(item.workspace_id):
+        raise ValidationError("Recovery hold blocks all external writes.")
     target = item.destination
     admin_destination(actor, item.workspace_id, target)
     member(target.owner, item.workspace_id, admin=True)
@@ -321,6 +333,9 @@ def send(actor, workspace_id, operation_id, lookup=False):
         raise ValidationError("Run external operations outside a database transaction.")
     claim = uuid.uuid4()
     with transaction.atomic():
+        from workspaces.models import Workspace
+
+        Workspace.objects.select_for_update(no_key=True).get(pk=workspace_id)
         item = get_object_or_404(
             ExternalOperation.objects.select_for_update(),
             pk=operation_id,
@@ -435,6 +450,9 @@ def send(actor, workspace_id, operation_id, lookup=False):
 
 @transaction.atomic
 def recover(actor, workspace_id, operation_id, reason):
+    from workspaces.models import Workspace
+
+    Workspace.objects.select_for_update(no_key=True).get(pk=workspace_id)
     item = get_object_or_404(
         ExternalOperation.objects.select_for_update(),
         pk=operation_id,
