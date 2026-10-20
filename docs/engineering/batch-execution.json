@@ -18,9 +18,11 @@
         "US-0301",
         "US-0205"
       ],
-      "status": "in_progress",
-      "merged_commit": null,
-      "ci_run": null
+      "status": "coding_complete_merged_ci_passed",
+      "merged_commit": "402673687891ec04210745fa2e1b9ed387265ebf",
+      "ci_run": 39343024680,
+      "pr": 1,
+      "tests": 36
     },
     {
       "number": 2,
@@ -36,7 +38,7 @@
         "US-0406",
         "US-0501"
       ],
-      "status": "pending",
+      "status": "in_progress",
       "merged_commit": null,
       "ci_run": null
     },

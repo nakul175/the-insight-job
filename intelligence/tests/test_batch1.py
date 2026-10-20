@@ -467,6 +467,7 @@ class BatchOneTests(TestCase):
                     {"access": "api", "connection_id": str(self.a.pk)},
                 )
             conn = Connection.objects.create(
+                bound_source=self.source,
                 workspace=self.workspace,
                 owner=self.admin,
                 name="API",
@@ -482,7 +483,7 @@ class BatchOneTests(TestCase):
             self.assertEqual(v.config["connection_id"], str(conn.pk))
             self.assertNotIn("secret", v.config)
         result = test_source(self.admin, self.source)
-        self.assertEqual(result.state, "unsupported")
+        self.assertEqual(result.state, "needs_access")
         self.source.refresh_from_db()
         self.assertEqual(self.source.state, "draft")
 

@@ -54,3 +54,13 @@ def system_can_read(system, source):
         and system.state not in {"paused", "retired"}
         and source.systemsourcegrant_set.filter(system=system, active=True).exists()
     )
+
+
+def runs_for(user, workspace_id):
+    from django.db.models import Q
+
+    from .models import WorkItem
+
+    return WorkItem.objects.filter(
+        workspace_id=workspace_id, source__in=sources_for(user, workspace_id)
+    ).filter(Q(system__isnull=True) | Q(system__in=systems_for(user, workspace_id)))

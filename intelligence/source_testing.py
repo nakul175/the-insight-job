@@ -1,3 +1,5 @@
+from http.client import HTTPException
+
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 
@@ -24,22 +26,25 @@ def test_source(actor, source):
     )
     config = version.config
     try:
-        if config.get("access") != "public":
+        from .access import NeedsAccess, headers_for
+
+        try:
+            headers = headers_for(source, version)
+            report = sample_report(
+                fetch_public(source.url, source.url, config, headers=headers)
+            )
+        except NeedsAccess:
             report = {
-                "state": "unsupported",
+                "state": "needs_access",
                 "formats": [],
                 "missing": [
-                    {
-                        "reason": "This access connector is not enabled; source remains draft."
-                    }
+                    {"reason": "Connect and verify source access before testing."}
                 ],
                 "downstream_delivery": False,
             }
-        else:
-            report = sample_report(fetch_public(source.url, source.url, config))
         test.report = report
         test.state = report["state"]
-    except (ValidationError, OSError, TimeoutError):
+    except (ValidationError, OSError, TimeoutError, HTTPException):
         test.state = "failed"
         test.report = {
             "state": "failed",
@@ -76,8 +81,9 @@ def activate(actor, source, test_id):
         raise ValidationError(
             "Resolve the test error or document and retest an acceptable partial-capture policy before activation."
         )
-    if config.get("access") != "public":
-        raise ValidationError("The selected access connector is not enabled.")
+    from .access import connection_for
+
+    connection_for(source, test.source_version)
     source.state = "active"
     source.save(update_fields=["state"])
     audit(

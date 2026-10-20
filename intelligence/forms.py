@@ -10,7 +10,7 @@ class SourceForm(forms.Form):
     url = forms.URLField(max_length=2000, label="Public HTTP(S) URL")
     owner = forms.ModelChoiceField(queryset=Membership.objects.none())
 
-    def __init__(self, *args, workspace, **kwargs):
+    def __init__(self, *args, workspace, source=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["owner"].queryset = Membership.objects.filter(
             workspace=workspace
@@ -19,10 +19,16 @@ class SourceForm(forms.Form):
 
 
 class ScopeForm(forms.Form):
+    page_limit = forms.IntegerField(min_value=1, max_value=100, initial=10)
+    depth_limit = forms.IntegerField(min_value=0, max_value=5, initial=2)
+    time_limit_seconds = forms.IntegerField(min_value=1, max_value=900, initial=180)
+    byte_limit = forms.IntegerField(min_value=1, max_value=20000000, initial=10000000)
+
     include = forms.CharField(
-        widget=forms.Textarea, help_text="One absolute path prefix per line."
+        widget=forms.Textarea(attrs={"rows": 3}),
+        help_text="One absolute path prefix per line.",
     )
-    exclude = forms.CharField(widget=forms.Textarea, required=False)
+    exclude = forms.CharField(widget=forms.Textarea(attrs={"rows": 3}), required=False)
     access = forms.ChoiceField(
         choices=[
             ("public", "Public"),
@@ -40,13 +46,13 @@ class ScopeForm(forms.Form):
         ]
     )
     partial_reason = forms.CharField(
-        widget=forms.Textarea, required=False, max_length=1000
+        widget=forms.Textarea(attrs={"rows": 3}), required=False, max_length=1000
     )
 
-    def __init__(self, *args, workspace, **kwargs):
+    def __init__(self, *args, workspace, source=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["connection"].queryset = Connection.objects.filter(
-            workspace=workspace
+            workspace=workspace, bound_source=source
         )
 
 
