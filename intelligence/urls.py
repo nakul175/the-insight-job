@@ -1,8 +1,46 @@
 from django.urls import path
 
-from . import access_views, content_views, views
+from . import (
+    access_views,
+    content_views,
+    operations_views,
+    schema_views,
+    system_views,
+    views,
+)
 
 urlpatterns = [
+    path(
+        "<uuid:workspace_id>/systems/<uuid:system_id>/destinations/",
+        operations_views.destinations,
+        name="destinations",
+    ),
+    path(
+        "<uuid:workspace_id>/systems/<uuid:system_id>/enrichment/",
+        operations_views.enrichment,
+        name="enrichment",
+    ),
+    path(
+        "<uuid:workspace_id>/schemas/<uuid:schema_id>/lifecycle/",
+        schema_views.lifecycle,
+        name="schema-lifecycle",
+    ),
+    path("<uuid:workspace_id>/systems/", system_views.systems, name="systems"),
+    path(
+        "<uuid:workspace_id>/systems/<uuid:system_id>/configure/",
+        system_views.configure,
+        name="system-configure",
+    ),
+    path(
+        "<uuid:workspace_id>/systems/<uuid:system_id>/duplicate/",
+        system_views.duplicate,
+        name="system-duplicate",
+    ),
+    path(
+        "<uuid:workspace_id>/systems/<uuid:system_id>/activate/",
+        system_views.activate,
+        name="system-activate",
+    ),
     path(
         "<uuid:workspace_id>/records/<uuid:record_id>/classify/",
         content_views.classify,
@@ -130,7 +168,7 @@ urlpatterns = [
     ),
     path(
         "<uuid:workspace_id>/systems/<uuid:system_id>/",
-        views.system_detail,
+        system_views.detail,
         name="system-detail",
     ),
     path(

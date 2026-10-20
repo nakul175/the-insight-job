@@ -1,0 +1,1 @@
+{% extends "intelligence/layout.html" %}{% block app %}<h1>Configure {{ system.name }}</h1><p>Saving a draft does not activate routing or delivery.</p><form method="post">{% csrf_token %}{{ form.as_p }}<button>Save versioned draft</button></form>{% endblock %}

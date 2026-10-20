@@ -60,9 +60,12 @@
         "US-0506",
         "US-0602"
       ],
-      "status": "in_progress",
-      "merged_commit": null,
-      "ci_run": null
+      "status": "coding_complete_merged_ci_passed",
+      "merged_commit": "5759d254b7a786b4d7cae7143260d70aeb55e477",
+      "ci_run": 39376738854,
+      "pr": 3,
+      "reviewed_commit": "2600ed85193f41d4250dd4a72b78f8b5a7c0c54f",
+      "review": "Separate AI review; user explicitly approved this and future such prototype batch merges despite ENG-GIT-002 human-review requirement"
     },
     {
       "number": 4,
@@ -78,7 +81,7 @@
         "US-0704",
         "US-0705"
       ],
-      "status": "pending",
+      "status": "in_progress",
       "merged_commit": null,
       "ci_run": null
     },

@@ -3,3 +3,6 @@
 .app-nav{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:32px}.app-nav a{font-size:14px}.card{margin-bottom:24px}textarea,select{font:inherit;width:100%;padding:12px;border:1px solid #a7a8b3;border-radius:7px}textarea{min-height:100px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}button{min-height:44px;padding:10px 16px;border:1px solid #a7a8b3;border-radius:6px;background:white;color:#2c2f71;margin-top:12px}input[type=hidden]{display:none}.errorlist{color:#932929}input[type=checkbox]{width:auto;height:auto}.workspace-grid{margin-top:24px}
 
 #browser-frame{display:block;max-width:100%;height:auto;background:#ececf0;border:1px solid #bbb}#browser-controls button{margin:8px 8px 0 0}
+
+/* Source endpoints and immutable IDs must remain readable on narrow screens. */
+main{min-width:0;overflow-wrap:anywhere}main h1,main h2,main h3,main p,main a{overflow-wrap:anywhere}
