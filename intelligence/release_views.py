@@ -6,6 +6,7 @@ from django.core.exceptions import PermissionDenied, ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods
 
+from .decision_support import comparison_summary, setup_progress
 from .delivery import deliver, retry_delivery, save_contract, save_mapping, store_result
 from .models import (
     ConfigurationComparison,
@@ -88,6 +89,18 @@ def release(request, workspace_id, system_id):
                     integer(data, "evaluation_version_id", 1),
                 )
             elif action == "publish":
+                blockers = [
+                    step
+                    for step in setup_progress(request.user, workspace_id, system)
+                    if not step["complete"] and step["key"] != "publish"
+                ]
+                if blockers:
+                    raise ValidationError(
+                        "Publication held: "
+                        + "; ".join(
+                            step["name"] + ": " + step["reason"] for step in blockers
+                        )
+                    )
                 publish_bundle(
                     request.user,
                     workspace_id,
@@ -157,6 +170,7 @@ def release(request, workspace_id, system_id):
             permitted_samples(request.user, comparison.evaluation_version)
         except PermissionDenied:
             continue
+        comparison.summary = comparison_summary(comparison)
         comparisons.append(comparison)
     intents = []
     for intent in DeliveryIntent.objects.filter(
@@ -184,6 +198,7 @@ def release(request, workspace_id, system_id):
             **context(request, workspace_id),
             "system": system,
             "form": form,
+            "setup_steps": setup_progress(request.user, workspace_id, system),
             "destinations": system.destinations.prefetch_related("contracts"),
             "schemas": system.contentschema_set.prefetch_related("versions"),
             "configurations": system.configurations.order_by("-number"),

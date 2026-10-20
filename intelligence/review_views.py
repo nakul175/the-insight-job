@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_http_methods
 
-from .models import ContentSchema, Destination
+from .models import ContentSchema, Destination, UserDraft
 from .permissions import records_for, systems_for
 from .routing import (
     backlog_preview,
@@ -224,9 +224,42 @@ def detail(request, workspace_id, result_id):
     from .review_workflow import evidence_for
 
     enriched_evidence = evidence_for(request.user, result)
-    form = ReviewForm(
-        request.POST or None,
-        initial={"expected_version": result.version, "action": "claim"},
+    initial = {"expected_version": result.version, "action": "claim"}
+    pending = UserDraft.objects.filter(
+        workspace_id=workspace_id,
+        actor=request.user,
+        scope_kind="result",
+        scope_id=result.pk,
+        form_key="conflict",
+    ).first()
+    if request.method == "GET" and pending:
+        initial.update(
+            {
+                key: values[-1]
+                for key, values in pending.payload.items()
+                if values
+                and key
+                in {
+                    "expected_version",
+                    "action",
+                    "key",
+                    "value",
+                    "segment",
+                    "decision",
+                    "reason",
+                }
+            }
+        )
+    form_data = request.POST or None
+    if request.method == "GET" and pending:
+        from django.http import QueryDict
+
+        form_data = QueryDict(mutable=True)
+        for key, value in initial.items():
+            form_data[key] = value
+    form = ReviewForm(form_data, initial=initial)
+    version_conflict = bool(
+        pending and str(initial["expected_version"]) != str(result.version)
     )
     if request.method == "POST" and form.is_valid():
         try:
@@ -255,9 +288,97 @@ def detail(request, workspace_id, result_id):
                     values["decision"],
                     values["reason"],
                 )
+            UserDraft.objects.filter(
+                workspace_id=workspace_id,
+                actor=request.user,
+                scope_kind="result",
+                scope_id=result.pk,
+                form_key="conflict",
+            ).delete()
             return redirect("review-detail", workspace_id, result.pk)
         except ValidationError as error:
+            result.refresh_from_db()
+            live_access(request.user, result, review=True)
+            version_conflict = values[
+                "expected_version"
+            ] != result.version or not result_is_current(result)
+            if version_conflict:
+                form.add_error(
+                    None,
+                    "Version conflict: your change was not saved. Compare the current revision; your unsaved reason is retained.",
+                )
+                from django.db import transaction
+
+                from workspaces.models import Workspace
+
+                with transaction.atomic():
+                    Workspace.objects.select_for_update(no_key=True).get(
+                        pk=workspace_id
+                    )
+                    fresh = get_object_or_404(
+                        results_for(request.user, workspace_id), pk=result.pk
+                    )
+                    live_access(request.user, fresh, review=True)
+                    UserDraft.objects.update_or_create(
+                        workspace_id=workspace_id,
+                        actor=request.user,
+                        scope_kind="result",
+                        scope_id=result.pk,
+                        form_key="conflict",
+                        defaults={
+                            "payload": {
+                                key: [request.POST[key]]
+                                for key in [
+                                    "expected_version",
+                                    "action",
+                                    "key",
+                                    "value",
+                                    "segment",
+                                    "decision",
+                                    "reason",
+                                ]
+                                if key in request.POST
+                            },
+                            "updated_at": timezone.now(),
+                        },
+                    )
             form.add_error(None, error)
+            enriched_evidence = evidence_for(request.user, result)
+    captures = {str(item["capture"].pk): item["capture"] for item in enriched_evidence}
+    field_rows = []
+    for key, fact in result.fields.items():
+        candidates = []
+        for candidate in fact.get("candidates", []):
+            capture = captures.get(candidate.get("capture"))
+            candidates.append(
+                {
+                    "value": candidate.get("value"),
+                    "method": candidate.get("method", "Unknown"),
+                    "segment": candidate.get("segment"),
+                    "source": capture.source.name
+                    if capture
+                    else result.record.source.name,
+                    "content_version": capture.content_version.number
+                    if capture and capture.content_version_id
+                    else result.content_version.number
+                    if not capture
+                    else None,
+                    "source_configuration": capture.run.source_version.version
+                    if capture
+                    else None,
+                    "capture": str(capture.pk) if capture else None,
+                }
+            )
+        field_rows.append(
+            {
+                "key": key,
+                "status": fact.get("status"),
+                "value": fact.get("value"),
+                "unit": fact.get("unit", ""),
+                "method": fact.get("method", "Unknown"),
+                "candidates": candidates,
+            }
+        )
     return render(
         request,
         "intelligence/review_detail.html",
@@ -265,6 +386,14 @@ def detail(request, workspace_id, result_id):
             **context(request, workspace_id),
             "result": result,
             "form": form,
+            "version_conflict": version_conflict,
+            "field_rows": field_rows,
+            "latest_change": result.changes.select_related("actor")
+            .order_by("-created_at")
+            .first(),
+            "current_segments": result.record.current_analysis.segments
+            if result.record.current_analysis_id
+            else [],
             "current": result_is_current(result),
             "enriched_evidence": enriched_evidence,
             "relevance": json.dumps(result.relevance, indent=2),

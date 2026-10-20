@@ -70,6 +70,15 @@ def preview_replay(actor, workspace_id, system_id, bundle_id, record_ids):
             "estimated_processing_units": len(pins),
             "estimated_provider_cost": "unavailable; no model/provider invoked",
             "delivery": "off",
+            "destination_effects": {
+                "destination": str(bundle.mapping.contract.destination_id),
+                "contract_version": bundle.mapping.contract.number,
+                "policy": bundle.mapping.contract.update_policy,
+                "mode": "local_sandbox",
+                "writes_during_replay": 0,
+                "after_explicit_enable": "Only reviewed passing current results may be stored; owner must separately execute delivery",
+                "external_endpoint_contacted": False,
+            },
         },
     )
     audit(

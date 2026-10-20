@@ -138,7 +138,7 @@
       "tests_executed_sqlite": 159,
       "tests_executed_postgresql": 157,
       "review": "Separate AI review cleared; explicit user authority for future such prototype merges",
-      "pending_criterion_dependency": "AC-1206-02 content deletion integration pending Batch 7 US-1404"
+      "completed_dependency": "AC-1206-02 content-deletion integration merged in PR7 and main CI39390179430 passed"
     },
     {
       "number": 7,
@@ -154,9 +154,15 @@
         "US-1407",
         "US-1501"
       ],
-      "status": "in_progress",
-      "merged_commit": null,
-      "ci_run": null
+      "status": "coding_complete_merged_ci_passed",
+      "merged_commit": "e594cc971da7d975578abefa5886486a750022ed",
+      "ci_run": 39390179430,
+      "pr": 7,
+      "reviewed_commit": "af1edf5232f47d600d64547dc51af195ec284696",
+      "tests_discovered": 184,
+      "tests_executed_sqlite": 178,
+      "tests_executed_postgresql": 178,
+      "review": "Separate AI review cleared; standing explicit user authority for such prototype merges"
     },
     {
       "number": 8,
@@ -171,7 +177,7 @@
         "US-1509",
         "US-1510"
       ],
-      "status": "pending",
+      "status": "in_progress",
       "merged_commit": null,
       "ci_run": null
     }

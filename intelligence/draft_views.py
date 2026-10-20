@@ -35,6 +35,21 @@ def draft(request, workspace_id, scope_kind, scope_id, form_key):
                 results_for(request.user, workspace_id), pk=scope_id
             )
             live_access(request.user, result, review=True)
+        elif scope_kind == "delivery":
+            from .models import DeliveryIntent
+            from .routing import live_access
+
+            intent = get_object_or_404(
+                DeliveryIntent,
+                pk=scope_id,
+                workspace_id=workspace_id,
+                result__system__in=systems_for(request.user, workspace_id),
+            )
+            try:
+                live_access(request.user, intent.result, allow_inactive=True)
+            except PermissionDenied:
+                if membership.role != "administrator":
+                    raise
         elif scope_kind == "record":
             if membership.role not in {"administrator", "operator", "reviewer"}:
                 raise PermissionDenied()
@@ -45,12 +60,24 @@ def draft(request, workspace_id, scope_kind, scope_id, form_key):
                 raise PermissionDenied()
         elif scope_kind in {"source", "system"}:
             member(request.user, workspace_id, write=True)
-            get_object_or_404(
+            scoped = get_object_or_404(
                 sources_for(request.user, workspace_id)
                 if scope_kind == "source"
                 else systems_for(request.user, workspace_id),
                 pk=scope_id,
             )
+            if scope_kind == "system":
+                from .systems import current_config
+
+                configured_sources = set(current_config(scoped).get("source_ids", []))
+                allowed_sources = {
+                    str(pk)
+                    for pk in sources_for(request.user, workspace_id).values_list(
+                        "pk", flat=True
+                    )
+                }
+                if not configured_sources <= allowed_sources:
+                    raise PermissionDenied()
         else:
             raise PermissionDenied()
     except (PermissionDenied, Http404):

@@ -10,6 +10,7 @@ from workspaces.models import Workspace
 from .access import NeedsAccess, connection_for
 from .models import Source, SourceActivation
 from .permissions import member, sources_for
+from .runs import validated_limits
 from .source_testing import activate
 from .views import context
 
@@ -53,7 +54,7 @@ def source_setup(request, workspace_id, source_id):
         "access": config.get("access"),
         "include": config.get("include", []),
         "exclude": config.get("exclude", []),
-        "limits": config.get("limits", {}),
+        "limits": validated_limits(config),
         "partial_policy": config.get("partial_policy"),
         "partial_reason": config.get("partial_reason", ""),
     }
@@ -94,7 +95,7 @@ def source_setup(request, workspace_id, source_id):
             "access_error": access_error,
             "form": form,
             "details_complete": bool(source.name and source.url and source.owner_id),
-            "scope_complete": bool(config.get("include") and config.get("limits")),
+            "scope_complete": bool(config.get("include") and scope["limits"]),
             "activations": SourceActivation.objects.filter(source=source).order_by(
                 "-created_at"
             )[:10],

@@ -97,6 +97,27 @@ def live_access(actor, result, review=False, allow_inactive=False):
         for candidate in field.get("candidates", [])
         if candidate.get("capture")
     }
+
+    def history_captures(value):
+        found = set()
+        if isinstance(value, dict):
+            if value.get("capture") and isinstance(value["capture"], str):
+                found.add(value["capture"])
+            for child in value.values():
+                found.update(history_captures(child))
+        elif isinstance(value, list):
+            for child in value:
+                found.update(history_captures(child))
+        return found
+
+    for change in result.changes.values("original", "replacement", "evidence").iterator(
+        chunk_size=50
+    ):
+        capture_ids.update(history_captures(change))
+    for event in result.enriched_events.values("original", "merged").iterator(
+        chunk_size=50
+    ):
+        capture_ids.update(history_captures(event))
     for capture_id in capture_ids:
         capture = (
             Capture.objects.filter(

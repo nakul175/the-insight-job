@@ -132,13 +132,19 @@ def record_list(request, workspace_id):
         query = request.GET.copy()
         query.pop("page", None)
         ctx.update(
-            records=page.object_list,
+            records=list(page.object_list),
+            has_visible_records=records_for(request.user, workspace_id).exists(),
+            has_filters=any(
+                value
+                for key, value in request.GET.items()
+                if key not in {"page", "sort"}
+            ),
             page=page,
             count=paginator.count,
             back=back,
             query=query.urlencode(),
-            sources=sources_for(request.user, workspace_id),
-            types=schemas_for(request.user, workspace_id).filter(scope="type"),
+            sources=list(sources_for(request.user, workspace_id)),
+            types=list(schemas_for(request.user, workspace_id).filter(scope="type")),
         )
     except ValidationError as exc:
         return render(

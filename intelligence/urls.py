@@ -3,6 +3,8 @@ from django.urls import path
 from . import (
     access_views,
     content_views,
+    decision_views,
+    delivery_views,
     draft_views,
     followup_views,
     governance_views,
@@ -18,6 +20,16 @@ from . import (
 )
 
 urlpatterns = [
+    path(
+        "<uuid:workspace_id>/deliveries/<uuid:intent_id>/",
+        delivery_views.detail,
+        name="delivery-detail",
+    ),
+    path(
+        "<uuid:workspace_id>/systems/<uuid:system_id>/setup/",
+        decision_views.system_setup,
+        name="system-setup",
+    ),
     path(
         "<uuid:workspace_id>/sources/<uuid:source_id>/setup/",
         setup_views.source_setup,

@@ -1704,7 +1704,7 @@
       "review_ref": "https://github.com/nakul175/the-insight-job/pull/6",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Separate exact-head AI review and main CI39385245895 passed. No independent product acceptance/deployment. AC1206-02 deletion integration pending Batch7 US1404.",
+      "notes": "Source revocation implementation merged PR6; content-deletion integration merged PR7 with main CI39390179430 passed. No independent product acceptance or external deployment.",
       "task_id": "TASK-1206-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2829/us-1206-apply-updates-and-withdrawals",
       "legacy_ids": [],
@@ -1806,14 +1806,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/07",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "e594cc971da7d975578abefa5886486a750022ed",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/7",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/7",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype Batch 7 implementation; exact-head review and Linux CI pending. Local sandbox/isolated recovery only; no independent acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39389628450 and main CI39390179430 passed. Local isolated recovery only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1304-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2833/us-1304-preview-and-execute-replay",
       "legacy_ids": [],
@@ -1843,14 +1843,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/07",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "e594cc971da7d975578abefa5886486a750022ed",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/7",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/7",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype Batch 7 implementation; exact-head review and Linux CI pending. Local sandbox/isolated recovery only; no independent acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39389628450 and main CI39390179430 passed. Local isolated recovery only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1305-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2834/us-1305-sample-rejects-for-missed-matches",
       "legacy_ids": [],
@@ -1880,14 +1880,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/07",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "e594cc971da7d975578abefa5886486a750022ed",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/7",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/7",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype Batch 7 implementation; exact-head review and Linux CI pending. Local sandbox/isolated recovery only; no independent acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39389628450 and main CI39390179430 passed. Local isolated recovery only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1401-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2835/us-1401-inspect-audit-history",
       "legacy_ids": [],
@@ -1917,14 +1917,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/07",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "e594cc971da7d975578abefa5886486a750022ed",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/7",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/7",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype Batch 7 implementation; exact-head review and Linux CI pending. Local sandbox/isolated recovery only; no independent acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39389628450 and main CI39390179430 passed. Local isolated recovery only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1402-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2836/us-1402-monitor-stages-and-cost",
       "legacy_ids": [],
@@ -1954,14 +1954,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/07",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "e594cc971da7d975578abefa5886486a750022ed",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/7",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/7",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype Batch 7 implementation; exact-head review and Linux CI pending. Local sandbox/isolated recovery only; no independent acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39389628450 and main CI39390179430 passed. Local isolated recovery only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1403-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2837/us-1403-configure-alerts",
       "legacy_ids": [],
@@ -1991,14 +1991,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/07",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "e594cc971da7d975578abefa5886486a750022ed",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/7",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/7",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype Batch 7 implementation; exact-head review and Linux CI pending. Local sandbox/isolated recovery only; no independent acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39389628450 and main CI39390179430 passed. Local isolated recovery only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1404-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2838/us-1404-enforce-retention-and-deletion",
       "legacy_ids": [],
@@ -2028,14 +2028,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/07",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "e594cc971da7d975578abefa5886486a750022ed",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/7",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/7",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype Batch 7 implementation; exact-head review and Linux CI pending. Local sandbox/isolated recovery only; no independent acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39389628450 and main CI39390179430 passed. Local isolated recovery only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1405-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2839/us-1405-restore-durable-processing-state",
       "legacy_ids": [],
@@ -2065,14 +2065,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/07",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "e594cc971da7d975578abefa5886486a750022ed",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/7",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/7",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype Batch 7 implementation; exact-head review and Linux CI pending. Local sandbox/isolated recovery only; no independent acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39389628450 and main CI39390179430 passed. Local isolated recovery only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1406-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2841/us-1406-use-keyboard-and-small-screen-review",
       "legacy_ids": [],
@@ -2102,14 +2102,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/07",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "e594cc971da7d975578abefa5886486a750022ed",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/7",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/7",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype Batch 7 implementation; exact-head review and Linux CI pending. Local sandbox/isolated recovery only; no independent acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39389628450 and main CI39390179430 passed. Local isolated recovery only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1407-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2842/us-1407-preserve-drafts-and-recover-ui-errors",
       "legacy_ids": [],
@@ -2139,14 +2139,14 @@
         "templates/intelligence/",
         "static/"
       ],
-      "status": "implemented",
+      "status": "merged",
       "branch": "batch/07",
-      "commit": null,
-      "pr": null,
-      "review_ref": null,
+      "commit": "e594cc971da7d975578abefa5886486a750022ed",
+      "pr": "https://github.com/nakul175/the-insight-job/pull/7",
+      "review_ref": "https://github.com/nakul175/the-insight-job/pull/7",
       "release": null,
       "deployment_evidence": null,
-      "notes": "Prototype Batch 7 implementation; exact-head review and Linux CI pending. Local sandbox/isolated recovery only; no independent acceptance or production deployment.",
+      "notes": "Separate exact-head AI review, PR CI39389628450 and main CI39390179430 passed. Local isolated recovery only; no human/native acceptance or production deployment.",
       "task_id": "TASK-1501-BUILD",
       "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2843/us-1501-guided-source-setup",
       "legacy_ids": [],
@@ -2157,6 +2157,339 @@
         "AC-1501-01",
         "AC-1501-02",
         "AC-1501-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-08.md"
+      ],
+      "rationale": "Resume system setup",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/",
+        "static/"
+      ],
+      "status": "implemented_verification_pending",
+      "branch": "batch/08",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "task_id": "TASK-1502-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2844/us-1502-resume-system-setup",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1502"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1502-01",
+        "AC-1502-02",
+        "AC-1502-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-08.md"
+      ],
+      "rationale": "Understand the next required action",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/",
+        "static/"
+      ],
+      "status": "implemented_verification_pending",
+      "branch": "batch/08",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "task_id": "TASK-1503-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2845/us-1503-understand-the-next-required-action",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1503"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1503-01",
+        "AC-1503-02",
+        "AC-1503-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-08.md"
+      ],
+      "rationale": "Review one issue with evidence",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/",
+        "static/"
+      ],
+      "status": "implemented_verification_pending",
+      "branch": "batch/08",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "task_id": "TASK-1504-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2846/us-1504-review-one-issue-with-evidence",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1504"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1504-01",
+        "AC-1504-02",
+        "AC-1504-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-08.md"
+      ],
+      "rationale": "Review on a narrow screen",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/",
+        "static/"
+      ],
+      "status": "implemented_verification_pending",
+      "branch": "batch/08",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "task_id": "TASK-1505-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2847/us-1505-review-on-a-narrow-screen",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1505"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1505-01",
+        "AC-1505-02",
+        "AC-1505-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-08.md"
+      ],
+      "rationale": "Keep distinct empty and error states",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/",
+        "static/"
+      ],
+      "status": "implemented_verification_pending",
+      "branch": "batch/08",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "task_id": "TASK-1506-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2848/us-1506-keep-distinct-empty-and-error-states",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1506"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1506-01",
+        "AC-1506-02",
+        "AC-1506-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-08.md"
+      ],
+      "rationale": "Explain incomplete collection",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/",
+        "static/"
+      ],
+      "status": "implemented_verification_pending",
+      "branch": "batch/08",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "task_id": "TASK-1507-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2849/us-1507-explain-incomplete-collection",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1507"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1507-01",
+        "AC-1507-02",
+        "AC-1507-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-08.md"
+      ],
+      "rationale": "Recover concurrent changes",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/",
+        "static/"
+      ],
+      "status": "implemented_verification_pending",
+      "branch": "batch/08",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "task_id": "TASK-1508-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2850/us-1508-recover-concurrent-changes",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1508"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1508-01",
+        "AC-1508-02",
+        "AC-1508-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-08.md"
+      ],
+      "rationale": "Explain delivery recovery",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/",
+        "static/"
+      ],
+      "status": "implemented_verification_pending",
+      "branch": "batch/08",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "task_id": "TASK-1509-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2851/us-1509-explain-delivery-recovery",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1509"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1509-01",
+        "AC-1509-02",
+        "AC-1509-03"
+      ],
+      "qa_case_ids": [],
+      "qa_run_ids": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/engineering/batch-execution.json",
+      "requirement_refs": [
+        "docs/product/Planning-View.json"
+      ],
+      "design_refs": [
+        "docs/engineering/batch-08.md"
+      ],
+      "rationale": "Preview change impact",
+      "paths": [
+        "intelligence/",
+        "templates/intelligence/",
+        "static/"
+      ],
+      "status": "implemented_verification_pending",
+      "branch": "batch/08",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Final prototype increment; engineering verification and separate review pending. No independent native QA/product acceptance or production deployment.",
+      "task_id": "TASK-1510-BUILD",
+      "tracker_ref": "https://linear.app/aplyd-sandbox/issue/APL-2852/us-1510-preview-change-impact",
+      "legacy_ids": [],
+      "story_ids": [
+        "US-1510"
+      ],
+      "acceptance_criterion_ids": [
+        "AC-1510-01",
+        "AC-1510-02",
+        "AC-1510-03"
       ],
       "qa_case_ids": [],
       "qa_run_ids": []
