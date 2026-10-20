@@ -56,8 +56,11 @@ def configure(
     receipt_contract_ref="",
     supports_notices=False,
 ):
+    from workspaces.models import Workspace
+
     from .models import Destination
 
+    Workspace.objects.select_for_update(no_key=True).get(pk=workspace_id)
     member(actor, workspace_id, admin=True)
     original = get_object_or_404(
         Destination.objects.select_for_update(),
