@@ -20,10 +20,10 @@ from .services import audit
 
 
 def owned_system(actor, workspace_id, system_id):
-    Workspace.objects.select_for_update().get(pk=workspace_id)
+    Workspace.objects.select_for_update(no_key=True).get(pk=workspace_id)
     membership = member(actor, workspace_id, write=True)
     system = get_object_or_404(
-        systems_for(actor, workspace_id).select_for_update(), pk=system_id
+        systems_for(actor, workspace_id).select_for_update(no_key=True), pk=system_id
     )
     if membership.role != "administrator" and system.owner_id != actor.pk:
         raise PermissionDenied("Only the scoped owner can configure this system.")

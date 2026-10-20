@@ -572,7 +572,7 @@ def preview_extraction(actor, record, schema_version):
 def decide_duplicate(actor, left, right, decision, reason):
     from workspaces.models import Workspace
 
-    Workspace.objects.select_for_update().get(pk=left.workspace_id)
+    Workspace.objects.select_for_update(no_key=True).get(pk=left.workspace_id)
     if member(actor, left.workspace_id).role not in {"administrator", "reviewer"}:
         raise PermissionDenied("Reviewer access required.")
     visible = records_for(actor, left.workspace_id)
