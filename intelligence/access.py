@@ -204,6 +204,18 @@ def submit_browser_action(actor, handoff, kind, payload):
 
 @transaction.atomic
 def verify_identity(connection, identity, storage_state):
+    current = Connection.objects.select_for_update().get(pk=connection.pk)
+    if (
+        current.state not in {"connecting", "connected", "needs_access"}
+        or current.state != connection.state
+        or current.checked_at != connection.checked_at
+        or current.expected_identity != connection.expected_identity
+    ):
+        raise ValidationError(
+            "Connection changed during verification; start a new login."
+        )
+    # Keep the caller object updated, but never write stale connection fields.
+    connection.refresh_from_db()
     own_connection(connection.owner, connection)
     if (
         not connection.bound_source_id
@@ -238,6 +250,7 @@ def verify_identity(connection, identity, storage_state):
 
 @transaction.atomic
 def confirm_changed_identity(actor, connection):
+    connection = Connection.objects.select_for_update().get(pk=connection.pk)
     own_connection(actor, connection)
     if (
         not sources_for(actor, connection.workspace_id)
@@ -277,12 +290,17 @@ def resume_waiting(connection):
 
 def mark_expired(connection):
     if connection:
-        connection.state = "needs_access"
-        connection.save(update_fields=["state"])
+        Connection.objects.filter(
+            pk=connection.pk,
+            state="connected",
+            checked_at=connection.checked_at,
+            secret_ref=connection.secret_ref,
+        ).update(state="needs_access")
 
 
 @transaction.atomic
 def disconnect(actor, connection):
+    connection = Connection.objects.select_for_update().get(pk=connection.pk)
     own_connection(actor, connection)
     connection.state = "disconnected"
     connection.session_ciphertext = ""
@@ -302,6 +320,7 @@ def disconnect(actor, connection):
 
 @transaction.atomic
 def rotate_api(actor, connection, new_ref, source, fetch):
+    connection = Connection.objects.select_for_update().get(pk=connection.pk)
     own_connection(actor, connection)
     if not sources_for(actor, source.workspace_id).filter(pk=source.pk).exists():
         raise PermissionDenied()

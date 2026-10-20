@@ -422,6 +422,13 @@ def collect_step(item, fetch=fetch_public):
             missing.append({"reason": parsed["reason"]})
         text = "\n\n".join(s["text"] for s in parsed["segments"])
         digest = hashlib.sha256(data).hexdigest()
+        access_final = connection_for(item.source, item.source_version)
+        if (
+            (access_final.pk, access_final.checked_at, access_final.secret_ref)
+            if access_final
+            else None
+        ) != proof:
+            raise NeedsAccess("Account verification changed during parsing; reconnect.")
         with transaction.atomic():
             current = WorkItem.objects.select_for_update().get(pk=item.pk)
             if current.lease_token != token:

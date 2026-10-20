@@ -805,3 +805,47 @@ class BatchTwoTests(TestCase):
         self.assertGreater(result.usage["seconds"], 180)
         self.assertGreater(result.usage["bytes"], 0)
         self.assertFalse(Capture.objects.filter(run=item).exists())
+
+    def test_us0304_stale_browser_cannot_reconnect_after_disconnect(self):
+        conn = self.connection(state="connecting")
+        disconnect(self.admin, conn)
+        with self.assertRaises(ValidationError):
+            verify_identity(conn, "Analyst", {"cookies": []})
+        conn.refresh_from_db()
+        self.assertEqual(conn.state, "disconnected")
+        self.assertEqual(conn.session_ciphertext, "")
+
+    def test_us0303_account_change_during_parse_discards_capture(self):
+        conn = self.connection(
+            state="connected",
+            verified_identity="Analyst",
+            session_ciphertext=seal(
+                {
+                    "cookies": [
+                        {
+                            "name": "session",
+                            "value": "synthetic",
+                            "domain": "example.com",
+                            "path": "/",
+                            "expires": -1,
+                        }
+                    ]
+                }
+            ),
+        )
+        self.session_version(conn)
+        start_run(self.admin, self.source, "parse-race")
+        item = claim_next()
+
+        def parse(*args):
+            Connection.objects.filter(pk=conn.pk).update(state="identity_changed")
+            return {
+                "status": "parsed",
+                "segments": [{"text": "Evidence"}],
+                "reason": "",
+            }
+
+        with patch("intelligence.runs.parse_document", side_effect=parse):
+            result = collect_step(item, fetch=lambda *a, **kw: self.capture())
+        self.assertEqual(result.state, "needs_access")
+        self.assertFalse(Capture.objects.filter(run=item).exists())
