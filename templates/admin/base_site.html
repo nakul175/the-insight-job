@@ -1,0 +1,5 @@
+{% extends "admin/base.html" %}{% load static i18n %}
+{% block title %}{{ title }} | Source Almighty{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static 'admin-brand.css' %}">{% endblock %}
+{% block extrahead %}{{ block.super }}<link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">{% endblock %}
+{% block branding %}<div id="site-name"><a class="source-admin-brand" href="{% url 'admin:index' %}"><img src="{% static 'source-almighty-mark.svg' %}" width="38" height="44" alt="">Source Almighty</a></div>{% if user.is_anonymous %}{% include "admin/color_theme_toggle.html" %}{% endif %}{% endblock %}

@@ -1,8 +1,13 @@
 from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 from django.urls import include, path
+from django.utils.translation import gettext_lazy as _
 
 from workspaces import views
+
+admin.site.site_header = _("Source Almighty administration")
+admin.site.site_title = "Source Almighty"
+admin.site.index_title = _("Workspace administration")
 
 urlpatterns = [
     path("app/", include("intelligence.urls")),

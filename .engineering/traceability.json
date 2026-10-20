@@ -2505,7 +2505,8 @@
       ],
       "design_refs": [
         "docs/engineering/batch-01.md",
-        "docs/engineering/ui-refresh.md"
+        "docs/engineering/ui-refresh.md",
+        "docs/engineering/source-almighty-brand.md"
       ],
       "rationale": "Sign in and select workspace",
       "paths": [
