@@ -182,7 +182,18 @@ def inventory(record):
         "derivatives": record.derivative_set.count(),
         "extraction_jobs": m.ExtractionJob.objects.filter(record=record).count(),
         "indexes": "Database content/title/type/identity indexes and retained URL lookup",
-        "external_copies": "Local sandbox intents include acknowledged and uncertain writes; unsupported withdrawal needs manual follow-up",
+        "external_operations": [
+            {
+                "id": str(x.pk),
+                "state": x.state,
+                "digest": x.payload_digest,
+                "attempted_at": x.attempted_at.isoformat() if x.attempted_at else None,
+            }
+            for x in m.ExternalOperation.objects.filter(intent_id__in=intents).order_by(
+                "pk"
+            )
+        ],
+        "external_copies": "Sandbox and external attempts include acknowledged/uncertain copies; unsupported withdrawal needs manual follow-up",
         "exports": "Previously downloaded files are outside application control; residual copies unknown",
     }
 
@@ -302,6 +313,9 @@ def execute_deletion(actor, workspace_id, operation_id):
                 "reason": "Content deleted; legacy receipt lacks record identity, verify residual copy manually",
             },
         )
+    from .external_delivery import revoke_source
+
+    revoke_source(actor, workspace_id, intent_ids=impact["intents"], scrub=True)
     # Scrub accessible content, while retaining non-content identifiers needed for withdrawal/audit.
     m.ContentRecord.objects.filter(pk=record.pk).update(
         status="deleted",

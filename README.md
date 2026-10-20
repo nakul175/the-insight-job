@@ -29,3 +29,9 @@ python manage.py makemigrations --check --dry-run --settings=config.test_setting
 All79original mapped R1 stories are implemented and merged in eight batches. PR11 mainCI39406731586 passed SQLite/PostgreSQL tests, audit and both builds at sourcea040812388e703e6acfc0e4f12d641ddb0503a6c. A sign-in-protected public prototype is hosted on the existing APLYD droplet at https://insightjob.aplyd.org/ under explicit user-approved prototype exceptions. Native QA/product acceptance and formal production release remain unverified; see the batch ledger and engineering evidence.
 
 The Source Almighty visual rebrand is a subsequent user-requested presentation change; its own review, CI and deployment evidence are recorded separately. Four external-delivery stories APL-2938–APL-2941 remain Low-priority Backlog, outside the79-story denominator; they are not implemented. Current delivery remains the local sandbox contract.
+
+## External delivery extension (TIJ-01–04)
+
+The four additional stories APL-2938–APL-2941 are separate from79R1. Administrator-only external delivery is available through each system’s destinations page. Configure an inactive operator-approved receiver, explicitly activate, then queue and send a pinned package. Uncertain operations permit receipt lookup only; no automatic POST retries. Receiver application/deletion evidence stays separate from acknowledgement. See [receiver contract and provisioning](docs/engineering/external-delivery.md). No receiver is configured or activated by installation.
+
+Primary prototype hostname: https://sourcealmighty.aplyd.org/ (existing insightjob.aplyd.org retained during transition). Deployment and independent product acceptance remain separate from engineering completion.

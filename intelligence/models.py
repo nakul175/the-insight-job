@@ -876,3 +876,42 @@ class SourceActivation(Entity):
     test = models.ForeignKey(SourceTest, on_delete=models.PROTECT)
     actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     scope = models.JSONField(default=dict)
+
+
+class ExternalDestination(Entity):
+    destination = models.OneToOneField(Destination, on_delete=models.PROTECT)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    contract = models.ForeignKey(DestinationContract, on_delete=models.PROTECT)
+    endpoint = models.URLField(max_length=2000)
+    secret_ref = models.CharField(max_length=120)
+    approval_ref = models.CharField(max_length=300)
+    receipt_contract_ref = models.CharField(max_length=300, blank=True)
+    supports_notices = models.BooleanField(default=False)
+    active = models.BooleanField(default=False)
+
+
+class ExternalOperation(Entity):
+    destination = models.ForeignKey(ExternalDestination, on_delete=models.PROTECT)
+    intent = models.ForeignKey(DeliveryIntent, on_delete=models.PROTECT)
+    previous = models.ForeignKey("self", null=True, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    operation = models.CharField(max_length=20, default="finding")
+    operation_key = models.CharField(max_length=64, unique=True)
+    payload = models.JSONField(default=dict)
+    payload_digest = models.CharField(max_length=64)
+    state = models.CharField(max_length=30, default="pending")
+    claim = models.UUIDField(null=True)
+    attempted_at = models.DateTimeField(null=True)
+    acknowledgement = models.JSONField(default=dict)
+    applied = models.BooleanField(default=False)
+    deletion_confirmed = models.BooleanField(default=False)
+    reason = models.CharField(max_length=300, blank=True)
+
+
+class ExternalAttempt(Entity):
+    operation = models.ForeignKey(
+        ExternalOperation, on_delete=models.PROTECT, related_name="history"
+    )
+    action = models.CharField(max_length=20)
+    outcome = models.CharField(max_length=30)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)

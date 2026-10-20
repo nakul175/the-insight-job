@@ -294,6 +294,12 @@ def sanitized_rows(snapshot, tombstones):
                 fields["state"] = "blocked"
             if "passed" in fields:
                 fields["passed"] = False
+        if row["model"] == "intelligence.externaldestination":
+            fields["active"] = False
+        if row["model"] == "intelligence.externaloperation":
+            fields["claim"] = None
+            if fields["state"] == "sending":
+                fields["state"] = "uncertain"
         if row["model"] == "intelligence.workitem" and fields["state"] not in {
             "running",
             "queued",
@@ -500,6 +506,30 @@ def run_exercise(actor, workspace_id, snapshot_id, policy):
                     .exists()
                 ):
                     errors.append("Missing local receipt: " + str(intent.pk))
+            for external in m.ExternalOperation.objects.using(alias).filter(
+                workspace_id=workspace_id
+            ):
+                if (
+                    external.destination.workspace_id != workspace_id
+                    or external.intent.workspace_id != workspace_id
+                    or external.destination.destination_id
+                    != external.intent.destination_id
+                ):
+                    errors.append(
+                        "External delivery lineage mismatch: " + str(external.pk)
+                    )
+                if (
+                    external.claim
+                    or external.state in {"sending", "uncertain", "manual_follow_up"}
+                    or external.acknowledgement
+                    and not external.applied
+                    or external.operation == "withdrawal"
+                    and not external.deletion_confirmed
+                ):
+                    errors.append(
+                        "External write requires receiver reconciliation: "
+                        + str(external.pk)
+                    )
             for receipt in m.SandboxReceipt.objects.using(alias).filter(
                 message__workspace_id=workspace_id
             ):

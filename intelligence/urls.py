@@ -6,6 +6,7 @@ from . import (
     decision_views,
     delivery_views,
     draft_views,
+    external_views,
     followup_views,
     governance_views,
     lifecycle_views,
@@ -20,6 +21,11 @@ from . import (
 )
 
 urlpatterns = [
+    path(
+        "<uuid:workspace_id>/systems/<uuid:system_id>/external-delivery/",
+        external_views.dashboard,
+        name="external-delivery",
+    ),
     path(
         "<uuid:workspace_id>/deliveries/<uuid:intent_id>/",
         delivery_views.detail,
