@@ -139,6 +139,7 @@ def sample_report(capture):
         soup = BeautifulSoup(data, "html.parser")
         has_app_shell_marker = bool(
             soup.select_one("#app, #root, [data-reactroot], [data-react-root]")
+            and soup.select_one("script[src], script[type='module']")
         )
         for tag in soup.select(
             "script, style, noscript, template, [hidden], [aria-hidden='true']"

@@ -443,7 +443,10 @@ class BatchOneTests(TestCase):
             "intelligence.source_testing.fetch_public",
             return_value={
                 "state": "captured",
-                "bytes": b"<html><body><div id='app'>Tenders Search</div></body></html>",
+                "bytes": (
+                    b"<html><body><div id='app'>Tenders Search</div>"
+                    b"<script type='module' src='/app.js'></script></body></html>"
+                ),
                 "format": "text/html",
                 "missing": [],
             },
@@ -475,7 +478,11 @@ class BatchOneTests(TestCase):
         report = sample_report(
             {
                 "state": "captured",
-                "bytes": b"<div id='root'>" + visible_text + b"</div>",
+                "bytes": (
+                    b"<div id='root'>"
+                    + visible_text
+                    + b"</div><script src='/app.js'></script>"
+                ),
                 "format": "text/html",
                 "missing": [],
             }
@@ -491,7 +498,7 @@ class BatchOneTests(TestCase):
                 "bytes": (
                     b"<div id='app'></div><div hidden>"
                     + (b"metadata " * 25)
-                    + b"</div>"
+                    + b"</div><script src='/app.js'></script>"
                 ),
                 "format": "text/html",
                 "missing": [],
@@ -500,6 +507,22 @@ class BatchOneTests(TestCase):
 
         self.assertEqual(report["state"], "failed")
         self.assertEqual(report["text_characters"], 0)
+
+    def test_us0205_short_server_rendered_notice_inside_root_remains_eligible(self):
+        report = sample_report(
+            {
+                "state": "captured",
+                "bytes": (
+                    b"<div id='root'><article><h1>Award closed</h1>"
+                    b"<p>Reference 42</p></article></div>"
+                ),
+                "format": "text/html",
+                "missing": [],
+            }
+        )
+
+        self.assertEqual(report["state"], "passed")
+        self.assertLess(report["text_characters"], 100)
 
     def test_us0206_archive_stops_schedules_and_selected_work_then_restores_draft(self):
         Schedule.objects.create(
