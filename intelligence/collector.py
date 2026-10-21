@@ -148,15 +148,21 @@ def sample_report(capture):
         is_access_interstitial = title in INTERSTITIAL_TITLES or (
             title.startswith("attention required") and title.endswith("| cloudflare")
         )
+        has_cloudflare_challenge_script = bool(
+            soup.select_one("script[src*='/cdn-cgi/challenge-platform/']")
+        )
         has_app_shell_marker = bool(
             soup.select_one("#app, #root, [data-reactroot], [data-react-root]")
             and soup.select_one("script[src], script[type='module']")
         )
         for tag in soup.select(
-            "script, style, noscript, template, [hidden], [aria-hidden='true']"
+            "head, script, style, noscript, template, [hidden], [aria-hidden='true']"
         ):
             tag.decompose()
         text = soup.get_text(" ", strip=True)
+        is_access_interstitial = is_access_interstitial or (
+            has_cloudflare_challenge_script and not text
+        )
         for tag in soup.find_all(["img", "video", "audio", "iframe", "object"]):
             missing.append(
                 {
