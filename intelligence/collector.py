@@ -13,6 +13,12 @@ from .urlsafety import canonical_url, scope_decision
 
 MAX_BYTES = 2_000_000
 MIN_USEFUL_HTML_TEXT_CHARACTERS = 100
+INTERSTITIAL_TITLES = {
+    "attention required",
+    "checking your browser",
+    "just a moment...",
+    "just a moment…",
+}
 
 
 def fetch_public(url, base, config, headers=None):
@@ -135,8 +141,13 @@ def sample_report(capture):
     missing = list(capture.get("missing", []))
     text = ""
     formats = [kind]
+    is_access_interstitial = False
     if kind in {"text/html", "application/xhtml+xml"}:
         soup = BeautifulSoup(data, "html.parser")
+        title = soup.title.get_text(" ", strip=True).casefold() if soup.title else ""
+        is_access_interstitial = title in INTERSTITIAL_TITLES or (
+            title.startswith("attention required") and title.endswith("| cloudflare")
+        )
         has_app_shell_marker = bool(
             soup.select_one("#app, #root, [data-reactroot], [data-react-root]")
             and soup.select_one("script[src], script[type='module']")
@@ -175,7 +186,16 @@ def sample_report(capture):
         and 0 < len(text) < MIN_USEFUL_HTML_TEXT_CHARACTERS
         and has_app_shell_marker
     )
-    if insufficient_html_text:
+    if is_access_interstitial:
+        missing.append(
+            {
+                "reason": (
+                    "Captured an access or browser-verification interstitial instead "
+                    "of source content."
+                )
+            }
+        )
+    elif insufficient_html_text:
         missing.append(
             {
                 "reason": (
@@ -184,7 +204,7 @@ def sample_report(capture):
                 )
             }
         )
-    if not text or insufficient_html_text:
+    if not text or insufficient_html_text or is_access_interstitial:
         state = "failed"
     elif missing:
         state = "partial"
@@ -201,7 +221,9 @@ def sample_report(capture):
         "missing": missing,
         "scope": "One page, at most 2 MB, at most 3 redirects, 10 seconds per connection",
         "completeness": (
-            "insufficient visible text"
+            "access interstitial"
+            if is_access_interstitial
+            else "insufficient visible text"
             if insufficient_html_text
             else ("partial" if missing else ("text captured" if text else "empty"))
         ),
