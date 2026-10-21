@@ -376,7 +376,9 @@ class BatchOneTests(TestCase):
     ):
         capture = {
             "state": "captured",
-            "bytes": b"<h1>Actual text</h1>",
+            "bytes": b"<h1>Actual notice</h1><p>"
+            + (b"Useful public source text. " * 5)
+            + b"</p>",
             "format": "text/html",
             "missing": [],
         }
@@ -395,7 +397,7 @@ class BatchOneTests(TestCase):
     @patch("socket.getaddrinfo", return_value=PUBLIC_DNS)
     def test_us0205_missing_media_and_empty_capture_do_not_silently_activate(self, dns):
         for body, expected in [
-            (b'<video src="a.mp4"></video><p>Text</p>', "partial"),
+            (b'<video src="a.mp4"></video><p>Text</p>', "failed"),
             (b"<script>x</script>", "failed"),
         ]:
             with patch(
@@ -411,6 +413,7 @@ class BatchOneTests(TestCase):
             self.assertEqual(result.state, expected)
             with self.assertRaises(ValidationError):
                 activate(self.admin, self.source, result.pk)
+
         update_source_config(
             self.admin,
             self.source,
@@ -423,13 +426,35 @@ class BatchOneTests(TestCase):
             "intelligence.source_testing.fetch_public",
             return_value={
                 "state": "captured",
-                "bytes": b"<video></video><p>Text</p>",
+                "bytes": b"<video></video><p>"
+                + (b"Useful documented text. " * 5)
+                + b"</p>",
                 "format": "text/html",
                 "missing": [],
             },
         ):
             result = test_source(self.admin, self.source)
         activate(self.admin, self.source, result.pk)
+
+    @patch("socket.getaddrinfo", return_value=PUBLIC_DNS)
+    def test_us0205_html_shell_with_too_little_visible_text_cannot_activate(self, dns):
+        with patch(
+            "intelligence.source_testing.fetch_public",
+            return_value={
+                "state": "captured",
+                "bytes": b"<html><body><div id='app'>Tenders Search</div></body></html>",
+                "format": "text/html",
+                "missing": [],
+            },
+        ):
+            result = test_source(self.admin, self.source)
+
+        self.assertEqual(result.state, "failed")
+        self.assertEqual(result.report["completeness"], "insufficient visible text")
+        self.assertEqual(result.report["text_characters"], 14)
+        self.assertIn("too little visible text", result.report["missing"][0]["reason"])
+        with self.assertRaises(ValidationError):
+            activate(self.admin, self.source, result.pk)
 
     def test_us0206_archive_stops_schedules_and_selected_work_then_restores_draft(self):
         Schedule.objects.create(
