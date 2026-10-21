@@ -145,7 +145,9 @@ def sample_report(capture):
     if kind in {"text/html", "application/xhtml+xml"}:
         soup = BeautifulSoup(data, "html.parser")
         title = soup.title.get_text(" ", strip=True).casefold() if soup.title else ""
-        is_access_interstitial = title in INTERSTITIAL_TITLES
+        is_access_interstitial = title in INTERSTITIAL_TITLES or (
+            title.startswith("attention required") and title.endswith("| cloudflare")
+        )
         has_app_shell_marker = bool(
             soup.select_one("#app, #root, [data-reactroot], [data-react-root]")
             and soup.select_one("script[src], script[type='module']")

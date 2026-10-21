@@ -561,6 +561,24 @@ class BatchOneTests(TestCase):
 
         self.assertEqual(report["state"], "passed")
 
+    def test_us0205_cloudflare_block_interstitial_cannot_activate(self):
+        report = sample_report(
+            {
+                "state": "captured",
+                "bytes": (
+                    b"<html><head><title>Attention Required! | Cloudflare</title>"
+                    b"</head><body><main><h1>Sorry, you have been blocked</h1><p>"
+                    + (b"This website uses a security service to protect itself. " * 3)
+                    + b"</p></main></body></html>"
+                ),
+                "format": "text/html",
+                "missing": [],
+            }
+        )
+
+        self.assertEqual(report["state"], "failed")
+        self.assertEqual(report["completeness"], "access interstitial")
+
     def test_us0206_archive_stops_schedules_and_selected_work_then_restores_draft(self):
         Schedule.objects.create(
             workspace=self.workspace, source=self.source, enabled=True
