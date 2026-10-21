@@ -524,6 +524,26 @@ class BatchOneTests(TestCase):
         self.assertEqual(report["state"], "passed")
         self.assertLess(report["text_characters"], 100)
 
+    def test_us0205_browser_verification_interstitial_cannot_activate(self):
+        report = sample_report(
+            {
+                "state": "captured",
+                "bytes": (
+                    b"<!doctype html><html><head><title>Just a moment...</title>"
+                    b"</head><body><main>Enable JavaScript and cookies to continue"
+                    b"</main><script src='/challenge.js'></script></body></html>"
+                ),
+                "format": "text/html",
+                "missing": [],
+            }
+        )
+
+        self.assertEqual(report["state"], "failed")
+        self.assertEqual(report["completeness"], "access interstitial")
+        self.assertIn(
+            "browser-verification interstitial", report["missing"][0]["reason"]
+        )
+
     def test_us0206_archive_stops_schedules_and_selected_work_then_restores_draft(self):
         Schedule.objects.create(
             workspace=self.workspace, source=self.source, enabled=True
