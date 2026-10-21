@@ -579,6 +579,58 @@ class BatchOneTests(TestCase):
         self.assertEqual(report["state"], "failed")
         self.assertEqual(report["completeness"], "access interstitial")
 
+    def test_us0205_cloudflare_challenge_script_cannot_activate(self):
+        report = sample_report(
+            {
+                "state": "captured",
+                "bytes": (
+                    b"<html><head><title>DevelopmentAid</title></head><body>"
+                    b"<script src='/cdn-cgi/challenge-platform/scripts/jsd/main.js'>"
+                    b"</script></body></html>"
+                ),
+                "format": "text/html",
+                "missing": [],
+            }
+        )
+
+        self.assertEqual(report["state"], "failed")
+        self.assertEqual(report["completeness"], "access interstitial")
+
+    def test_us0205_substantive_page_with_cloudflare_jsd_remains_eligible(self):
+        report = sample_report(
+            {
+                "state": "captured",
+                "bytes": (
+                    b"<html><head><title>Tender notice</title></head><body><main>"
+                    + (b"Complete procurement notice with supporting details. " * 4)
+                    + b"</main><script src='/cdn-cgi/challenge-platform/scripts/jsd/"
+                    b"api.js'></script></body></html>"
+                ),
+                "format": "text/html",
+                "missing": [],
+            }
+        )
+
+        self.assertEqual(report["state"], "passed")
+
+    def test_us0205_short_notice_with_cloudflare_jsd_remains_eligible(self):
+        report = sample_report(
+            {
+                "state": "captured",
+                "bytes": (
+                    b"<html><head><title>Award</title></head><body><article>"
+                    b"Award closed. Reference 42.</article><script "
+                    b"src='/cdn-cgi/challenge-platform/scripts/jsd/api.js'>"
+                    b"</script></body></html>"
+                ),
+                "format": "text/html",
+                "missing": [],
+            }
+        )
+
+        self.assertEqual(report["state"], "passed")
+        self.assertLess(report["text_characters"], 100)
+
     def test_us0206_archive_stops_schedules_and_selected_work_then_restores_draft(self):
         Schedule.objects.create(
             workspace=self.workspace, source=self.source, enabled=True
