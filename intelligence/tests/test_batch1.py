@@ -544,6 +544,23 @@ class BatchOneTests(TestCase):
             "browser-verification interstitial", report["missing"][0]["reason"]
         )
 
+    def test_us0205_notice_with_attention_required_in_title_remains_eligible(self):
+        report = sample_report(
+            {
+                "state": "captured",
+                "bytes": (
+                    b"<html><head><title>Attention required: revised tender deadline</title>"
+                    b"</head><body><article><h1>Deadline revised</h1><p>"
+                    + (b"Complete procurement notice with supporting details. " * 3)
+                    + b"</p></article></body></html>"
+                ),
+                "format": "text/html",
+                "missing": [],
+            }
+        )
+
+        self.assertEqual(report["state"], "passed")
+
     def test_us0206_archive_stops_schedules_and_selected_work_then_restores_draft(self):
         Schedule.objects.create(
             workspace=self.workspace, source=self.source, enabled=True
