@@ -137,7 +137,12 @@ def sample_report(capture):
     formats = [kind]
     if kind in {"text/html", "application/xhtml+xml"}:
         soup = BeautifulSoup(data, "html.parser")
-        for tag in soup(["script", "style", "noscript"]):
+        has_app_shell_marker = bool(
+            soup.select_one("#app, #root, [data-reactroot], [data-react-root]")
+        )
+        for tag in soup.select(
+            "script, style, noscript, template, [hidden], [aria-hidden='true']"
+        ):
             tag.decompose()
         text = soup.get_text(" ", strip=True)
         for tag in soup.find_all(["img", "video", "audio", "iframe", "object"]):
@@ -167,13 +172,14 @@ def sample_report(capture):
     insufficient_html_text = (
         kind in {"text/html", "application/xhtml+xml"}
         and 0 < len(text) < MIN_USEFUL_HTML_TEXT_CHARACTERS
+        and has_app_shell_marker
     )
     if insufficient_html_text:
         missing.append(
             {
                 "reason": (
-                    "Captured HTML contains too little visible text to verify useful "
-                    f"source content (minimum {MIN_USEFUL_HTML_TEXT_CHARACTERS} characters)."
+                    "Captured HTML application shell contains too little visible text "
+                    "to verify useful source content."
                 )
             }
         )

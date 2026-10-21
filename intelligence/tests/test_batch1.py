@@ -8,6 +8,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+from intelligence.collector import sample_report
 from intelligence.models import (
     AuditEvent,
     Connection,
@@ -397,7 +398,7 @@ class BatchOneTests(TestCase):
     @patch("socket.getaddrinfo", return_value=PUBLIC_DNS)
     def test_us0205_missing_media_and_empty_capture_do_not_silently_activate(self, dns):
         for body, expected in [
-            (b'<video src="a.mp4"></video><p>Text</p>', "failed"),
+            (b'<video src="a.mp4"></video><p>Text</p>', "partial"),
             (b"<script>x</script>", "failed"),
         ]:
             with patch(
@@ -455,6 +456,50 @@ class BatchOneTests(TestCase):
         self.assertIn("too little visible text", result.report["missing"][0]["reason"])
         with self.assertRaises(ValidationError):
             activate(self.admin, self.source, result.pk)
+
+    def test_us0205_short_complete_html_notice_remains_eligible(self):
+        report = sample_report(
+            {
+                "state": "captured",
+                "bytes": b"<article><h1>Award closed</h1><p>Reference 42</p></article>",
+                "format": "text/html",
+                "missing": [],
+            }
+        )
+
+        self.assertEqual(report["state"], "passed")
+        self.assertLess(report["text_characters"], 100)
+
+    def test_us0205_app_shell_at_visible_text_boundary_remains_eligible(self):
+        visible_text = b"x" * 100
+        report = sample_report(
+            {
+                "state": "captured",
+                "bytes": b"<div id='root'>" + visible_text + b"</div>",
+                "format": "text/html",
+                "missing": [],
+            }
+        )
+
+        self.assertEqual(report["state"], "passed")
+        self.assertEqual(report["text_characters"], 100)
+
+    def test_us0205_hidden_text_does_not_make_an_empty_app_shell_eligible(self):
+        report = sample_report(
+            {
+                "state": "captured",
+                "bytes": (
+                    b"<div id='app'></div><div hidden>"
+                    + (b"metadata " * 25)
+                    + b"</div>"
+                ),
+                "format": "text/html",
+                "missing": [],
+            }
+        )
+
+        self.assertEqual(report["state"], "failed")
+        self.assertEqual(report["text_characters"], 0)
 
     def test_us0206_archive_stops_schedules_and_selected_work_then_restores_draft(self):
         Schedule.objects.create(
