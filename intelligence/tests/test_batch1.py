@@ -8,6 +8,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+from intelligence.collector import sample_report
 from intelligence.models import (
     AuditEvent,
     Connection,
@@ -376,7 +377,9 @@ class BatchOneTests(TestCase):
     ):
         capture = {
             "state": "captured",
-            "bytes": b"<h1>Actual text</h1>",
+            "bytes": b"<h1>Actual notice</h1><p>"
+            + (b"Useful public source text. " * 5)
+            + b"</p>",
             "format": "text/html",
             "missing": [],
         }
@@ -411,6 +414,7 @@ class BatchOneTests(TestCase):
             self.assertEqual(result.state, expected)
             with self.assertRaises(ValidationError):
                 activate(self.admin, self.source, result.pk)
+
         update_source_config(
             self.admin,
             self.source,
@@ -423,13 +427,102 @@ class BatchOneTests(TestCase):
             "intelligence.source_testing.fetch_public",
             return_value={
                 "state": "captured",
-                "bytes": b"<video></video><p>Text</p>",
+                "bytes": b"<video></video><p>"
+                + (b"Useful documented text. " * 5)
+                + b"</p>",
                 "format": "text/html",
                 "missing": [],
             },
         ):
             result = test_source(self.admin, self.source)
         activate(self.admin, self.source, result.pk)
+
+    @patch("socket.getaddrinfo", return_value=PUBLIC_DNS)
+    def test_us0205_html_shell_with_too_little_visible_text_cannot_activate(self, dns):
+        with patch(
+            "intelligence.source_testing.fetch_public",
+            return_value={
+                "state": "captured",
+                "bytes": (
+                    b"<html><body><div id='app'>Tenders Search</div>"
+                    b"<script type='module' src='/app.js'></script></body></html>"
+                ),
+                "format": "text/html",
+                "missing": [],
+            },
+        ):
+            result = test_source(self.admin, self.source)
+
+        self.assertEqual(result.state, "failed")
+        self.assertEqual(result.report["completeness"], "insufficient visible text")
+        self.assertEqual(result.report["text_characters"], 14)
+        self.assertIn("too little visible text", result.report["missing"][0]["reason"])
+        with self.assertRaises(ValidationError):
+            activate(self.admin, self.source, result.pk)
+
+    def test_us0205_short_complete_html_notice_remains_eligible(self):
+        report = sample_report(
+            {
+                "state": "captured",
+                "bytes": b"<article><h1>Award closed</h1><p>Reference 42</p></article>",
+                "format": "text/html",
+                "missing": [],
+            }
+        )
+
+        self.assertEqual(report["state"], "passed")
+        self.assertLess(report["text_characters"], 100)
+
+    def test_us0205_app_shell_at_visible_text_boundary_remains_eligible(self):
+        visible_text = b"x" * 100
+        report = sample_report(
+            {
+                "state": "captured",
+                "bytes": (
+                    b"<div id='root'>"
+                    + visible_text
+                    + b"</div><script src='/app.js'></script>"
+                ),
+                "format": "text/html",
+                "missing": [],
+            }
+        )
+
+        self.assertEqual(report["state"], "passed")
+        self.assertEqual(report["text_characters"], 100)
+
+    def test_us0205_hidden_text_does_not_make_an_empty_app_shell_eligible(self):
+        report = sample_report(
+            {
+                "state": "captured",
+                "bytes": (
+                    b"<div id='app'></div><div hidden>"
+                    + (b"metadata " * 25)
+                    + b"</div><script src='/app.js'></script>"
+                ),
+                "format": "text/html",
+                "missing": [],
+            }
+        )
+
+        self.assertEqual(report["state"], "failed")
+        self.assertEqual(report["text_characters"], 0)
+
+    def test_us0205_short_server_rendered_notice_inside_root_remains_eligible(self):
+        report = sample_report(
+            {
+                "state": "captured",
+                "bytes": (
+                    b"<div id='root'><article><h1>Award closed</h1>"
+                    b"<p>Reference 42</p></article></div>"
+                ),
+                "format": "text/html",
+                "missing": [],
+            }
+        )
+
+        self.assertEqual(report["state"], "passed")
+        self.assertLess(report["text_characters"], 100)
 
     def test_us0206_archive_stops_schedules_and_selected_work_then_restores_draft(self):
         Schedule.objects.create(

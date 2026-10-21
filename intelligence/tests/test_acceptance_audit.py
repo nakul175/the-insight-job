@@ -425,7 +425,11 @@ class AcceptanceAuditTests(TestCase):
 
         capture = {
             "state": "captured",
-            "bytes": b'<h1>Notice</h1><img src="evidence.png">',
+            "bytes": (
+                b"<h1>Notice</h1><p>"
+                + (b"Useful captured source evidence. " * 4)
+                + b'</p><img src="evidence.png">'
+            ),
             "format": "text/html",
             "missing": [],
         }

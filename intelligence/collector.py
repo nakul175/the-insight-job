@@ -12,6 +12,7 @@ from django.core.exceptions import ValidationError
 from .urlsafety import canonical_url, scope_decision
 
 MAX_BYTES = 2_000_000
+MIN_USEFUL_HTML_TEXT_CHARACTERS = 100
 
 
 def fetch_public(url, base, config, headers=None):
@@ -136,7 +137,13 @@ def sample_report(capture):
     formats = [kind]
     if kind in {"text/html", "application/xhtml+xml"}:
         soup = BeautifulSoup(data, "html.parser")
-        for tag in soup(["script", "style", "noscript"]):
+        has_app_shell_marker = bool(
+            soup.select_one("#app, #root, [data-reactroot], [data-react-root]")
+            and soup.select_one("script[src], script[type='module']")
+        )
+        for tag in soup.select(
+            "script, style, noscript, template, [hidden], [aria-hidden='true']"
+        ):
             tag.decompose()
         text = soup.get_text(" ", strip=True)
         for tag in soup.find_all(["img", "video", "audio", "iframe", "object"]):
@@ -163,7 +170,21 @@ def sample_report(capture):
         text = data.decode("utf-8", errors="replace").strip()
     else:
         missing.append({"reason": "Unsupported sample format"})
-    if not text:
+    insufficient_html_text = (
+        kind in {"text/html", "application/xhtml+xml"}
+        and 0 < len(text) < MIN_USEFUL_HTML_TEXT_CHARACTERS
+        and has_app_shell_marker
+    )
+    if insufficient_html_text:
+        missing.append(
+            {
+                "reason": (
+                    "Captured HTML application shell contains too little visible text "
+                    "to verify useful source content."
+                )
+            }
+        )
+    if not text or insufficient_html_text:
         state = "failed"
     elif missing:
         state = "partial"
@@ -179,8 +200,10 @@ def sample_report(capture):
         "hash": hashlib.sha256(data).hexdigest(),
         "missing": missing,
         "scope": "One page, at most 2 MB, at most 3 redirects, 10 seconds per connection",
-        "completeness": "partial"
-        if missing
-        else ("text captured" if text else "empty"),
+        "completeness": (
+            "insufficient visible text"
+            if insufficient_html_text
+            else ("partial" if missing else ("text captured" if text else "empty"))
+        ),
         "downstream_delivery": False,
     }
