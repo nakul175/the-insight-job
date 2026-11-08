@@ -4,6 +4,7 @@ import sys
 from django.core.management.base import BaseCommand, CommandError
 
 from workspaces.portal_permissions import dispatch
+from workspaces.portal_scopes import dispatch_scopes
 
 
 class Command(BaseCommand):
@@ -14,7 +15,11 @@ class Command(BaseCommand):
             payload = json.loads(sys.stdin.read(65537))
             if not isinstance(payload, dict):
                 raise TypeError
-            result = dispatch(payload)
+            result = (
+                dispatch_scopes(payload)
+                if payload.get("operation") in {"scopes_preview", "scopes_apply"}
+                else dispatch(payload)
+            )
         except Exception:  # noqa: BLE001 — never expose native request details at the process boundary
             raise CommandError("Native permission request rejected.") from None
         self.stdout.write(json.dumps(result, default=str))
