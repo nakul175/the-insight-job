@@ -2925,6 +2925,30 @@
       ],
       "qa_case_ids": [],
       "qa_case_refs": []
+    },
+    {
+      "kind": "implementation",
+      "authorization_ref": "docs/PORTAL-PERMISSION-STAGING.md#owner-authority",
+      "requirement_refs": [
+        "Owner 2026-11-08: Portal Create/Save first login and same-session permission acceptance"
+      ],
+      "design_refs": [
+        "docs/PORTAL-NEW-ACCOUNT-STAGING.md"
+      ],
+      "rationale": "Explicit new Source Viewer with exact central first login and current native permissions",
+      "paths": [
+        "workspaces/portal_provisioning.py",
+        "workspaces/suite_oidc.py",
+        "workspaces/suite_session.py"
+      ],
+      "status": "implemented-staging-review-pending",
+      "branch": "codex/source-provisioning-20261108",
+      "commit": null,
+      "pr": null,
+      "review_ref": null,
+      "release": null,
+      "deployment_evidence": null,
+      "notes": "Existing owner staging-only exception; no fabricated native Product/QA task binding, no adoption or production approval."
     }
   ]
 }
