@@ -124,3 +124,5 @@ AXES_SENSITIVE_PARAMETERS = ["username", "password", "ip_address"]
 
 # Separate explicit deployment gates; all disabled unless provisioned.
 APLYD_SOURCE_WRITER_ENABLED = os.environ.get("APLYD_SOURCE_WRITER_ENABLED") == "1"
+
+APLYD_SOURCE_SCOPES_ENABLED = os.environ.get("APLYD_SOURCE_SCOPES_ENABLED") == "1"
