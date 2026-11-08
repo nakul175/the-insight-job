@@ -20,3 +20,11 @@ Every open workspace page polls a no-store permission status at five seconds and
 ## Limits
 
 Only existing, explicitly reviewed workspace memberships and native Administrator/Operator/Reviewer/Viewer roles. Source/system/export editors, native account provisioning and central native sign-in are not delivered by this change. The Portal process bridge is staging SQLite only; PostgreSQL native logic is tested separately. No live connector certification or production writer enablement. Independent Product/QA review and production migration/restore gates remain outstanding.
+
+## Validation and dependency repair
+
+The first Linux CI candidate passed 269 SQLite/browser tests (8 explicit skips) and 269 PostgreSQL tests (10 explicit skips), including the new contention check. The unchanged dependency audit then rejected pypdf 6.21.1 for ten advisories. Pin updated to the minimal patched 6.21.4, verified against https://github.com/advisories/GHSA-cggf-277g-3q54 and https://github.com/py-pdf/pypdf/releases/tag/6.21.4; full CI rerun required. No audit suppression or parser isolation weakening.
+
+## Future rollback restriction
+
+Reverting to code that ignores Membership.active, or removing these columns, can restore suspended access. A future production release must preserve deny/epoch enforcement across rollback and independently prove consistent PostgreSQL backup/restore. This PR does not authorize or certify a production rollback.
