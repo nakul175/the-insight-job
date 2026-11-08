@@ -126,3 +126,19 @@ AXES_SENSITIVE_PARAMETERS = ["username", "password", "ip_address"]
 APLYD_SOURCE_WRITER_ENABLED = os.environ.get("APLYD_SOURCE_WRITER_ENABLED") == "1"
 
 APLYD_SOURCE_SCOPES_ENABLED = os.environ.get("APLYD_SOURCE_SCOPES_ENABLED") == "1"
+
+# Staging-first, explicit per-installation central authentication and creation gates.
+APLYD_SOURCE_PROVISIONING_ENABLED = (
+    os.environ.get("APLYD_SOURCE_PROVISIONING_ENABLED") == "1"
+)
+APLYD_SOURCE_OIDC_ENABLED = os.environ.get("APLYD_SOURCE_OIDC_ENABLED") == "1"
+APLYD_ACCOUNTS_ISSUER = os.environ.get(
+    "APLYD_ACCOUNTS_ISSUER", "https://accounts.aplyd.org"
+).rstrip("/")
+APLYD_SOURCE_ORIGIN = os.environ.get("APLYD_SOURCE_ORIGIN", "").rstrip("/")
+APLYD_SOURCE_CLIENT_ID = os.environ.get("APLYD_SOURCE_CLIENT_ID", "sourcealmighty")
+APLYD_SOURCE_CLIENT_SECRET = os.environ.get("APLYD_SOURCE_CLIENT_SECRET", "")
+MIDDLEWARE.insert(
+    MIDDLEWARE.index("workspaces.middleware.WorkspaceSessionGuard"),
+    "workspaces.suite_session.SuiteSessionGuard",
+)

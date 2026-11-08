@@ -10,6 +10,15 @@ from .models import Membership, Workspace, WorkspaceSelection
 
 
 class SignInView(LoginView):
+    def dispatch(self, request, *args, **kwargs):
+        from django.conf import settings
+
+        if settings.APLYD_SOURCE_OIDC_ENABLED:
+            from .suite_session import start
+
+            return start(request)
+        return super().dispatch(request, *args, **kwargs)
+
     template_name = "registration/login.html"
     redirect_authenticated_user = True
 

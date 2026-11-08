@@ -81,3 +81,47 @@ class PortalScopeConcurrencyTests(TransactionTestCase):
         PortalScopeTests.apply(self, {"sources": {}, "systems": []}, expected=current)
         with self.assertRaises(ValidationError):
             fixture.PortalPermissionTests.apply(self, "operator", expected=role_before)
+
+
+@override_settings(
+    APLYD_SOURCE_WRITER_ENABLED=True, APLYD_SOURCE_PROVISIONING_ENABLED=True
+)
+class PortalProvisionConcurrencyTests(TransactionTestCase):
+    def test_only_one_creation_commits(self):
+        if connection.vendor != "postgresql":
+            self.skipTest("Requires PostgreSQL creation serialization.")
+        import uuid
+
+        from workspaces.portal_provisioning import dispatch_provision
+
+        from .test_portal_provisioning import ProvisionTests
+
+        ProvisionTests.setUp(self)
+        before = dispatch_provision(self.args | {"operation": "provision_preview"})
+        barrier = Barrier(2)
+
+        def attempt():
+            close_old_connections()
+            try:
+                barrier.wait(timeout=5)
+                dispatch_provision(
+                    self.args
+                    | {
+                        "operation": "provision_apply",
+                        "request_id": str(uuid.uuid4()),
+                        "expected": before,
+                    }
+                )
+                return "created"
+            except ValidationError:
+                return "denied"
+            finally:
+                connections.close_all()
+
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            a = pool.submit(attempt)
+            b = pool.submit(attempt)
+            self.assertCountEqual(
+                [a.result(timeout=12), b.result(timeout=12)], ["created", "denied"]
+            )
+        self.assertEqual(PortalPermissionReceipt.objects.count(), 1)
