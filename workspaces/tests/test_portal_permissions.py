@@ -190,3 +190,40 @@ class PortalPermissionTests(TestCase):
         Membership.objects.filter(user=self.actor).update(role="viewer")
         with self.assertRaises(Membership.DoesNotExist):
             self.apply("operator", before)
+
+    def test_suspension_blocks_only_target_work_without_deleting_checkpoints(self):
+        from intelligence.models import Source, SourceVersion, WorkItem
+
+        source = Source.objects.create(
+            workspace=self.workspace,
+            owner=self.actor,
+            name="Synthetic source",
+            url="https://example.invalid/jobs",
+        )
+        version = SourceVersion.objects.create(source=source, version=1)
+        mine = WorkItem.objects.create(
+            workspace=self.workspace,
+            actor=self.target,
+            source=source,
+            source_version=version,
+            state="running",
+            checkpoint={"offset": 7},
+        )
+        other = WorkItem.objects.create(
+            workspace=self.workspace,
+            actor=self.actor,
+            source=source,
+            source_version=version,
+            state="queued",
+            checkpoint={"offset": 12},
+        )
+        self.apply("revoke")
+        mine.refresh_from_db()
+        other.refresh_from_db()
+        self.assertEqual(mine.state, "blocked")
+        self.assertEqual(mine.checkpoint, {"offset": 7})
+        self.assertEqual(other.state, "queued")
+        self.assertEqual(other.checkpoint, {"offset": 12})
+        self.apply("viewer")
+        mine.refresh_from_db()
+        self.assertEqual(mine.state, "blocked")
