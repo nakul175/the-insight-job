@@ -227,3 +227,35 @@ class PortalPermissionTests(TestCase):
         self.apply("viewer")
         mine.refresh_from_db()
         self.assertEqual(mine.state, "blocked")
+
+    def test_stale_admin_forms_cannot_reset_revoke_epoch_or_review_revision(self):
+        from django.db import IntegrityError, transaction
+        from django.forms import modelform_factory
+
+        before = self.preview()
+        self.apply("revoke")
+        self.apply("viewer")
+        # SQLite rejects the stale assignment; PostgreSQL ignores it in the
+        # existing BEFORE trigger. Neither may lower the revocation generation.
+        try:
+            with transaction.atomic():
+                Membership.objects.filter(pk=self.membership.pk).update(
+                    generation=before["generation"]
+                )
+        except IntegrityError:
+            pass
+        self.assertEqual(self.preview()["generation"], before["generation"] + 2)
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            Workspace.objects.filter(pk=self.workspace.pk).update(
+                permission_revision=before["revision"]
+            )
+        self.assertGreater(self.preview()["revision"], before["revision"])
+        self.assertNotIn(
+            "generation", modelform_factory(Membership, fields="__all__").base_fields
+        )
+        self.assertNotIn(
+            "permission_revision",
+            modelform_factory(Workspace, fields="__all__").base_fields,
+        )
+        with self.assertRaises(ValidationError):
+            self.apply("administrator", expected=before)

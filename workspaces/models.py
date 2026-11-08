@@ -7,7 +7,7 @@ from django.db import models
 
 class Workspace(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    permission_revision = models.PositiveBigIntegerField(default=0)
+    permission_revision = models.PositiveBigIntegerField(default=0, editable=False)
     name = models.CharField(max_length=120)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -20,7 +20,7 @@ class Workspace(models.Model):
 
 class Membership(models.Model):
     active = models.BooleanField(default=True)
-    generation = models.PositiveBigIntegerField(default=0)
+    generation = models.PositiveBigIntegerField(default=0, editable=False)
     role = models.CharField(
         max_length=20,
         choices=[
