@@ -9,7 +9,7 @@ WRITE_ROLES = {"administrator", "operator"}
 
 
 def member(user, workspace_id, write=False, admin=False):
-    m = get_object_or_404(Membership, user=user, workspace_id=workspace_id)
+    m = get_object_or_404(Membership, user=user, workspace_id=workspace_id, active=True)
     if admin and m.role != "administrator":
         raise PermissionDenied("Administrator access required.")
     if write and m.role not in WRITE_ROLES:
