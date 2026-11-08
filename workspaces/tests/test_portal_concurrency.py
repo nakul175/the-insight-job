@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier
 
 from django.core.exceptions import ValidationError
-from django.db import close_old_connections, connection
+from django.db import close_old_connections, connection, connections
 from django.test import TransactionTestCase, override_settings
 
 from workspaces.models import PortalPermissionReceipt
@@ -33,7 +33,7 @@ class PortalPermissionConcurrencyTests(TransactionTestCase):
             except ValidationError:
                 return "stale"
             finally:
-                close_old_connections()
+                connections.close_all()
 
         with ThreadPoolExecutor(max_workers=2) as pool:
             first = pool.submit(attempt, "operator")
