@@ -22,10 +22,14 @@ from .portal_permissions import digest, identities, plan
 def scope_plan(workspace, actor, target, membership, organisation):
     result = plan(workspace, actor, target, membership, organisation)
     sources = list(
-        Source.objects.filter(workspace=workspace).order_by("id").values("id", "name")
+        Source.objects.select_for_update()
+        .filter(workspace=workspace)
+        .order_by("id")
+        .values("id", "name")
     )
     systems = list(
-        ConsumerSystem.objects.filter(workspace=workspace)
+        ConsumerSystem.objects.select_for_update()
+        .filter(workspace=workspace)
         .order_by("id")
         .values("id", "name")
     )
