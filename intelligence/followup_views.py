@@ -60,7 +60,9 @@ def followup(request, workspace_id, result_id):
     )
     recipients = []
     for membership in Membership.objects.filter(
-        workspace_id=workspace_id, role__in=["administrator", "operator", "reviewer"]
+        active=True,
+        workspace_id=workspace_id,
+        role__in=["administrator", "operator", "reviewer"],
     ).select_related("user")[:250]:
         try:
             live_access(membership.user, result, review=True)

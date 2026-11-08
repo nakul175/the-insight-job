@@ -13,7 +13,7 @@ class SourceForm(forms.Form):
     def __init__(self, *args, workspace, source=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["owner"].queryset = Membership.objects.filter(
-            workspace=workspace
+            active=True, workspace=workspace
         ).select_related("user")
         self.fields["owner"].label_from_instance = lambda m: m.user.get_username()
 

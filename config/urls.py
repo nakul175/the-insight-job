@@ -10,6 +10,11 @@ admin.site.site_title = "Source Almighty"
 admin.site.index_title = _("Workspace administration")
 
 urlpatterns = [
+    path(
+        "workspaces/<uuid:workspace_id>/permission-status/",
+        views.permission_status,
+        name="permission-status",
+    ),
     path("app/", include("intelligence.urls")),
     path("", views.home, name="home"),
     path("sign-in/", views.SignInView.as_view(), name="login"),

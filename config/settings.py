@@ -35,6 +35,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "workspaces.middleware.PrivateResponseMiddleware",
+    "workspaces.middleware.WorkspaceSessionGuard",
     "axes.middleware.AxesMiddleware",
 ]
 ROOT_URLCONF = "config.urls"
@@ -120,3 +121,6 @@ AXES_RESET_ON_SUCCESS = True
 AXES_CLIENT_IP_CALLABLE = "workspaces.security.direct_client_ip"
 AXES_LOCKOUT_TEMPLATE = "registration/locked.html"
 AXES_SENSITIVE_PARAMETERS = ["username", "password", "ip_address"]
+
+# Separate explicit deployment gates; all disabled unless provisioned.
+APLYD_SOURCE_WRITER_ENABLED = os.environ.get("APLYD_SOURCE_WRITER_ENABLED") == "1"
