@@ -18,6 +18,7 @@ class SignInView(LoginView):
         return "/workspaces/"
 
     def form_valid(self, form):
+        self.request.session.pop("source_suite", None)
         response = super().form_valid(form)
         self.request.session.pop("active_workspace", None)
         return response
