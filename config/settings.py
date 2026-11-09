@@ -142,3 +142,7 @@ MIDDLEWARE.insert(
     MIDDLEWARE.index("workspaces.middleware.WorkspaceSessionGuard"),
     "workspaces.suite_session.SuiteSessionGuard",
 )
+
+APLYD_SOURCE_ENROLLMENT_ENABLED = (
+    os.environ.get("APLYD_SOURCE_ENROLLMENT_ENABLED") == "1"
+)
