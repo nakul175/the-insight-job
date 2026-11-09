@@ -129,3 +129,30 @@ class SuiteSessionTests(TestCase):
     def test_default_off_preserves_legacy_login(self):
         self.assertEqual(self.client.get("/sign-in/").status_code, 200)
         self.assertEqual(self.client.get("/auth/login/").status_code, 404)
+
+    @override_settings(
+        APLYD_SOURCE_IDENTITY_SOURCE="portal",
+        APLYD_SOURCE_BINDINGS_FILE="/unused-reviewed-file",
+    )
+    def test_portal_authority_never_falls_back_to_legacy_file(self):
+        with patch("workspaces.suite_identity.file_mapped_user") as legacy:
+            self.assertEqual(
+                suite_session.mapped_user("known", str(self.user.pk)), self.user
+            )
+            self.identity.delete()
+            with self.assertRaises(suite_oidc.OIDCError):
+                suite_session.mapped_user("known", str(self.user.pk))
+            legacy.assert_not_called()
+
+    @override_settings(
+        APLYD_SOURCE_IDENTITY_SOURCE="file",
+        APLYD_SOURCE_BINDINGS_FILE="/missing-reviewed-file",
+    )
+    def test_file_authority_never_falls_back_to_database_mapping(self):
+        with self.assertRaises(suite_oidc.OIDCError):
+            suite_session.mapped_user("known", str(self.user.pk))
+
+    @override_settings(APLYD_SOURCE_IDENTITY_SOURCE="unreviewed")
+    def test_unknown_identity_authority_denied(self):
+        with self.assertRaises(suite_oidc.OIDCError):
+            suite_session.mapped_user("known", str(self.user.pk))

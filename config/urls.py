@@ -9,7 +9,7 @@ admin.site.site_title = "Source Almighty"
 admin.site.index_title = _("Workspace administration")
 
 urlpatterns = [
-    path("auth/login/", suite_session.start),
+    path("auth/login/", suite_session.start, name="suite-login"),
     path("auth/callback/", suite_session.callback),
     path(
         "workspaces/<uuid:workspace_id>/permission-status/",

@@ -13,7 +13,9 @@ class SignInView(LoginView):
     def dispatch(self, request, *args, **kwargs):
         from django.conf import settings
 
-        if settings.APLYD_SOURCE_OIDC_ENABLED:
+        from .suite_identity import identity_source
+
+        if settings.APLYD_SOURCE_OIDC_ENABLED and identity_source() == "portal":
             from .suite_session import start
 
             return start(request)
@@ -27,6 +29,7 @@ class SignInView(LoginView):
         return "/workspaces/"
 
     def form_valid(self, form):
+        self.request.session.pop("source_suite", None)
         response = super().form_valid(form)
         self.request.session.pop("active_workspace", None)
         return response

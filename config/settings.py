@@ -49,11 +49,24 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "workspaces.suite_context.context",
             ]
         },
     }
 ]
 WSGI_APPLICATION = "config.wsgi.application"
+APLYD_SOURCE_OIDC_ENABLED = os.environ.get("APLYD_SOURCE_OIDC_ENABLED") == "1"
+APLYD_ACCOUNTS_ISSUER = os.environ.get(
+    "APLYD_ACCOUNTS_ISSUER", "https://accounts.aplyd.org"
+).rstrip("/")
+APLYD_SOURCE_ORIGIN = os.environ.get("APLYD_SOURCE_ORIGIN", "").rstrip("/")
+APLYD_SOURCE_CLIENT_ID = os.environ.get("APLYD_SOURCE_CLIENT_ID", "sourcealmighty")
+APLYD_SOURCE_CLIENT_SECRET = os.environ.get("APLYD_SOURCE_CLIENT_SECRET", "")
+APLYD_SOURCE_BINDINGS_FILE = os.environ.get("APLYD_SOURCE_BINDINGS_FILE", "")
+MIDDLEWARE.insert(
+    MIDDLEWARE.index("django.contrib.auth.middleware.AuthenticationMiddleware") + 1,
+    "workspaces.suite_session.SuiteSessionGuard",
+)
 db_url = os.environ.get("DATABASE_URL")
 if not db_url and not DEBUG:
     raise ImproperlyConfigured("DATABASE_URL is required outside local development.")
@@ -131,18 +144,10 @@ APLYD_SOURCE_SCOPES_ENABLED = os.environ.get("APLYD_SOURCE_SCOPES_ENABLED") == "
 APLYD_SOURCE_PROVISIONING_ENABLED = (
     os.environ.get("APLYD_SOURCE_PROVISIONING_ENABLED") == "1"
 )
-APLYD_SOURCE_OIDC_ENABLED = os.environ.get("APLYD_SOURCE_OIDC_ENABLED") == "1"
-APLYD_ACCOUNTS_ISSUER = os.environ.get(
-    "APLYD_ACCOUNTS_ISSUER", "https://accounts.aplyd.org"
-).rstrip("/")
-APLYD_SOURCE_ORIGIN = os.environ.get("APLYD_SOURCE_ORIGIN", "").rstrip("/")
-APLYD_SOURCE_CLIENT_ID = os.environ.get("APLYD_SOURCE_CLIENT_ID", "sourcealmighty")
-APLYD_SOURCE_CLIENT_SECRET = os.environ.get("APLYD_SOURCE_CLIENT_SECRET", "")
-MIDDLEWARE.insert(
-    MIDDLEWARE.index("workspaces.middleware.WorkspaceSessionGuard"),
-    "workspaces.suite_session.SuiteSessionGuard",
-)
 
 APLYD_SOURCE_ENROLLMENT_ENABLED = (
     os.environ.get("APLYD_SOURCE_ENROLLMENT_ENABLED") == "1"
 )
+
+# Choose one reviewed authority; never fall back between mapping stores.
+APLYD_SOURCE_IDENTITY_SOURCE = os.environ.get("APLYD_SOURCE_IDENTITY_SOURCE", "")
