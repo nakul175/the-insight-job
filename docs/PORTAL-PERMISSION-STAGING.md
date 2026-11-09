@@ -28,3 +28,11 @@ The first Linux CI candidate passed 269 SQLite/browser tests (8 explicit skips) 
 ## Future rollback restriction
 
 Reverting to code that ignores Membership.active, or removing these columns, can restore suspended access. A future production release must preserve deny/epoch enforcement across rollback and independently prove consistent PostgreSQL backup/restore. This PR does not authorize or certify a production rollback.
+
+## Additional workspace design (9 November, C2)
+
+Owner requested staging-only closure of additional-workspace gaps in the same conversation. The existing staging exception above applies; draft adoption and independent native QA bindings remain draft. This change does not supply or impersonate Product/QA approval.
+
+An explicit origin workspace plus exact issuer, subject and native user ID establish the existing identity. A distinct configured destination requires a separately reviewed active native administrator. Enrollment adds only a Viewer membership and a non-reviewer identity mapping; it neither creates a user nor modifies the original membership, login credentials, creation receipt or Accounts link. Existing or dormant destination memberships are refused. No source/system/export grants are created.
+
+The operation pins both workspace revisions, original membership generation/role, all subject mappings and destination reviewer authority. It locks both workspaces in deterministic order, rechecks absence and writes membership, mapping, audit and one-use receipt atomically. Unknown response handling remains held at Portal. Verification must cover exact-ID conflict, default-off, drift, rollback, same-session workspace selection, grant/downgrade/revoke and independent home access.

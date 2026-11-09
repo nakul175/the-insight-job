@@ -3,6 +3,7 @@ import sys
 
 from django.core.management.base import BaseCommand, CommandError
 
+from workspaces.portal_enrollment import dispatch_enrollment
 from workspaces.portal_permissions import dispatch
 from workspaces.portal_provisioning import dispatch_provision
 from workspaces.portal_scopes import dispatch_scopes
@@ -17,7 +18,10 @@ class Command(BaseCommand):
             if not isinstance(payload, dict):
                 raise TypeError
             result = (
-                dispatch_provision(payload)
+                dispatch_enrollment(payload)
+                if payload.get("operation")
+                in {"enrollment_preview", "enrollment_apply"}
+                else dispatch_provision(payload)
                 if payload.get("operation") in {"provision_preview", "provision_apply"}
                 else dispatch_scopes(payload)
                 if payload.get("operation") in {"scopes_preview", "scopes_apply"}
