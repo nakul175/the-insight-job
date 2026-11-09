@@ -10,6 +10,17 @@ from .models import Membership, Workspace, WorkspaceSelection
 
 
 class SignInView(LoginView):
+    def dispatch(self, request, *args, **kwargs):
+        from django.conf import settings
+
+        from .suite_identity import identity_source
+
+        if settings.APLYD_SOURCE_OIDC_ENABLED and identity_source() == "portal":
+            from .suite_session import start
+
+            return start(request)
+        return super().dispatch(request, *args, **kwargs)
+
     template_name = "registration/login.html"
     redirect_authenticated_user = True
 
@@ -18,6 +29,7 @@ class SignInView(LoginView):
         return "/workspaces/"
 
     def form_valid(self, form):
+        self.request.session.pop("source_suite", None)
         response = super().form_valid(form)
         self.request.session.pop("active_workspace", None)
         return response
@@ -31,7 +43,9 @@ def home(request):
 @login_required
 @require_GET
 def workspace_list(request):
-    workspaces = Workspace.objects.filter(memberships__user=request.user)
+    workspaces = Workspace.objects.filter(
+        memberships__user=request.user, memberships__active=True
+    )
     active = request.session.get("active_workspace")
     if active and not workspaces.filter(pk=active).exists():
         request.session.pop("active_workspace", None)
@@ -46,6 +60,7 @@ def select_workspace(request, workspace_id):
         membership = get_object_or_404(
             Membership.objects.select_for_update(),
             user=request.user,
+            active=True,
             workspace_id=workspace_id,
         )
         WorkspaceSelection.objects.create(
@@ -59,7 +74,10 @@ def select_workspace(request, workspace_id):
 @require_GET
 def workspace_detail(request, workspace_id):
     workspace = get_object_or_404(
-        Workspace.objects.filter(memberships__user=request.user), pk=workspace_id
+        Workspace.objects.filter(
+            memberships__user=request.user, memberships__active=True
+        ),
+        pk=workspace_id,
     )
     return render(request, "workspaces/detail.html", {"workspace": workspace})
 
@@ -73,3 +91,18 @@ def readiness(request):
     except DatabaseError:
         return JsonResponse({"status": "unavailable"}, status=503)
     return JsonResponse({"status": "ready"})
+
+
+@require_GET
+def permission_status(request, workspace_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "sign_in_required"}, status=401)
+    membership = get_object_or_404(
+        Membership.objects.select_related("workspace"),
+        user=request.user,
+        workspace_id=workspace_id,
+        active=True,
+    )
+    return JsonResponse(
+        {"stamp": f"{membership.workspace.permission_revision}:{membership.role}"}
+    )

@@ -1,4 +1,25 @@
 {
   "schema_version": 2,
-  "exceptions": []
+  "exceptions": [
+    {
+      "id": "75b1aa9f-9280-4ffb-bcd1-f31d32f3a315",
+      "control_ids": [
+        "AGENTS.md:stop-rule"
+      ],
+      "status": "approved",
+      "scope": "Source Almighty staging-only implementation and synthetic permission acceptance. No production operation or adoption approval.",
+      "reason": "Repository adoption and PM/QA bindings remain draft; owner explicitly approved this bounded staging exception on 2026-11-08.",
+      "risk": "Unapproved full-product integration and native QA bindings must not be confused with bounded engineering evidence.",
+      "mitigation": "Isolated synthetic databases; writers default off; exact reviewed identities; no production data or deployment; report remaining native QA limitations.",
+      "owner": "Nakul Jain (user/owner)",
+      "approver": "Nakul Jain (user/owner)",
+      "approval_ref": "docs/PORTAL-PERMISSION-STAGING.md#owner-authority",
+      "expires_on": null,
+      "remediation_ref": "docs/PORTAL-PERMISSION-STAGING.md#limits",
+      "domains": [
+        "engineering",
+        "product"
+      ]
+    }
+  ]
 }

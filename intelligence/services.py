@@ -131,7 +131,7 @@ def change_role(actor, workspace_id, membership_id, role):
         target.role == "administrator"
         and role != "administrator"
         and Membership.objects.filter(
-            workspace_id=workspace_id, role="administrator"
+            workspace_id=workspace_id, role="administrator", active=True
         ).count()
         <= 1
     ):
@@ -159,7 +159,7 @@ def revoke_membership(actor, workspace_id, membership_id):
     if (
         target.role == "administrator"
         and Membership.objects.filter(
-            workspace_id=workspace_id, role="administrator"
+            workspace_id=workspace_id, role="administrator", active=True
         ).count()
         <= 1
     ):

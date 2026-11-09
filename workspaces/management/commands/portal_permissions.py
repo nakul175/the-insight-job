@@ -1,0 +1,32 @@
+import json
+import sys
+
+from django.core.management.base import BaseCommand, CommandError
+
+from workspaces.portal_enrollment import dispatch_enrollment
+from workspaces.portal_permissions import dispatch
+from workspaces.portal_provisioning import dispatch_provision
+from workspaces.portal_scopes import dispatch_scopes
+
+
+class Command(BaseCommand):
+    help = "Reviewed OS-local Portal permission bridge (default off)"
+
+    def handle(self, *args, **options):
+        try:
+            payload = json.loads(sys.stdin.read(65537))
+            if not isinstance(payload, dict):
+                raise TypeError
+            result = (
+                dispatch_enrollment(payload)
+                if payload.get("operation")
+                in {"enrollment_preview", "enrollment_apply"}
+                else dispatch_provision(payload)
+                if payload.get("operation") in {"provision_preview", "provision_apply"}
+                else dispatch_scopes(payload)
+                if payload.get("operation") in {"scopes_preview", "scopes_apply"}
+                else dispatch(payload)
+            )
+        except Exception:  # noqa: BLE001 — never expose native request details at the process boundary
+            raise CommandError("Native permission request rejected.") from None
+        self.stdout.write(json.dumps(result, default=str))

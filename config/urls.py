@@ -1,19 +1,25 @@
 from django.contrib import admin
-from django.contrib.auth.views import LogoutView
 from django.urls import include, path
 from django.utils.translation import gettext_lazy as _
 
-from workspaces import views
+from workspaces import suite_session, views
 
 admin.site.site_header = _("Source Almighty administration")
 admin.site.site_title = "Source Almighty"
 admin.site.index_title = _("Workspace administration")
 
 urlpatterns = [
+    path("auth/login/", suite_session.start, name="suite-login"),
+    path("auth/callback/", suite_session.callback),
+    path(
+        "workspaces/<uuid:workspace_id>/permission-status/",
+        views.permission_status,
+        name="permission-status",
+    ),
     path("app/", include("intelligence.urls")),
     path("", views.home, name="home"),
     path("sign-in/", views.SignInView.as_view(), name="login"),
-    path("sign-out/", LogoutView.as_view(), name="logout"),
+    path("sign-out/", suite_session.end, name="logout"),
     path("workspaces/", views.workspace_list, name="workspaces"),
     path(
         "workspaces/<uuid:workspace_id>/select/",
